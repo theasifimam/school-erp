@@ -2,7 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay, isSameDay, addDays, subDays } from "date-fns";
+import {
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  isSameDay,
+  addDays,
+  subDays,
+} from "date-fns";
 import { enUS } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Button } from "@/components/ui/button";
@@ -102,11 +110,31 @@ const currentUser = {
 
 // Sample users for notifications
 const users = [
-  { id: "t124", name: "Ms. Thompson", role: USER_ROLES.TEACHER, class: "Grade 10-B" },
-  { id: "t125", name: "Mr. Davis", role: USER_ROLES.TEACHER, class: "Grade 11-A" },
+  {
+    id: "t124",
+    name: "Ms. Thompson",
+    role: USER_ROLES.TEACHER,
+    class: "Grade 10-B",
+  },
+  {
+    id: "t125",
+    name: "Mr. Davis",
+    role: USER_ROLES.TEACHER,
+    class: "Grade 11-A",
+  },
   { id: "a101", name: "Principal Wilson", role: USER_ROLES.ADMIN },
-  { id: "s101", name: "Alex Smith", role: USER_ROLES.STUDENT, class: "Grade 10-A" },
-  { id: "s102", name: "Jamie Lee", role: USER_ROLES.STUDENT, class: "Grade 10-A" },
+  {
+    id: "s101",
+    name: "Alex Smith",
+    role: USER_ROLES.STUDENT,
+    class: "Grade 10-A",
+  },
+  {
+    id: "s102",
+    name: "Jamie Lee",
+    role: USER_ROLES.STUDENT,
+    class: "Grade 10-A",
+  },
 ];
 
 // Sample classes
@@ -149,7 +177,7 @@ const generateEvents = () => {
   const today = new Date();
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
-  
+
   const baseEvents = [
     {
       id: 1,
@@ -269,7 +297,7 @@ const generateEvents = () => {
       recurrenceEndDate: addDays(today, 60),
     },
   ];
-  
+
   // Generate sample notifications
   const notifications = [
     {
@@ -296,11 +324,12 @@ const generateEvents = () => {
       relatedEventId: 1,
     },
   ];
-  
+
   return { events: baseEvents, notifications };
 };
 
-const { events: eventsData, notifications: notificationsData } = generateEvents();
+const { events: eventsData, notifications: notificationsData } =
+  generateEvents();
 
 export default function ModernCalendar() {
   const [events, setEvents] = useState(eventsData);
@@ -314,10 +343,10 @@ export default function ModernCalendar() {
   const [calendarView, setCalendarView] = useState("month");
   const [filters, setFilters] = useState({
     types: Object.keys(EVENT_TYPES),
-    classes: classes.map(c => c.id),
-    subjects: subjects.map(s => s.id),
+    classes: classes.map((c) => c.id),
+    subjects: subjects.map((s) => s.id),
   });
-  
+
   const [newEvent, setNewEvent] = useState({
     title: "",
     type: "CLASS",
@@ -333,7 +362,7 @@ export default function ModernCalendar() {
     notifyStudents: true,
     attachments: [],
   });
-  
+
   const [leaveRequest, setLeaveRequest] = useState({
     type: "sick",
     start: new Date(),
@@ -342,11 +371,11 @@ export default function ModernCalendar() {
     documents: [],
     contactNumber: "",
   });
-  
+
   const [searchTerm, setSearchTerm] = useState("");
 
   // Count unread notifications
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   // Filter events based on user role and filters
   const getFilteredEvents = (user, filterSettings, search) => {
@@ -378,37 +407,41 @@ export default function ModernCalendar() {
         return true;
       return false;
     });
-    
+
     // Apply type filters
     if (filterSettings.types.length > 0) {
-      filtered = filtered.filter(e => filterSettings.types.includes(e.type));
+      filtered = filtered.filter((e) => filterSettings.types.includes(e.type));
     }
-    
+
     // Apply class filters if teacher or admin
-    if ((user.role === USER_ROLES.TEACHER || user.role === USER_ROLES.ADMIN) && 
-        filterSettings.classes.length > 0) {
-      filtered = filtered.filter(e => 
-          !e.class || filterSettings.classes.includes(e.class)
+    if (
+      (user.role === USER_ROLES.TEACHER || user.role === USER_ROLES.ADMIN) &&
+      filterSettings.classes.length > 0
+    ) {
+      filtered = filtered.filter(
+        (e) => !e.class || filterSettings.classes.includes(e.class)
       );
     }
-    
+
     // Apply subject filters
     if (filterSettings.subjects.length > 0) {
-      filtered = filtered.filter(e => 
-          !e.subject || filterSettings.subjects.includes(e.subject)
+      filtered = filtered.filter(
+        (e) => !e.subject || filterSettings.subjects.includes(e.subject)
       );
     }
-    
+
     // Apply search
     if (search && search.trim() !== "") {
       const searchLower = search.toLowerCase();
-      filtered = filtered.filter(e => 
-          e.title.toLowerCase().includes(searchLower) || 
-          (e.description && e.description.toLowerCase().includes(searchLower)) ||
+      filtered = filtered.filter(
+        (e) =>
+          e.title.toLowerCase().includes(searchLower) ||
+          (e.description &&
+            e.description.toLowerCase().includes(searchLower)) ||
           (e.location && e.location.toLowerCase().includes(searchLower))
       );
     }
-    
+
     return filtered;
   };
 
@@ -442,30 +475,34 @@ export default function ModernCalendar() {
 
   const handleAddEvent = () => {
     const eventColor = EVENT_TYPES[newEvent.type]?.color || "#4F46E5";
-    
+
     const event = {
       id: Math.max(...events.map((e) => e.id), 0) + 1,
       ...newEvent,
-      audience: newEvent.type === "CLASS" || newEvent.type === "EXAM" 
-        ? "class" 
-        : newEvent.type === "MEETING" 
-        ? "staff" 
-        : "all",
+      audience:
+        newEvent.type === "CLASS" || newEvent.type === "EXAM"
+          ? "class"
+          : newEvent.type === "MEETING"
+          ? "staff"
+          : "all",
       color: eventColor,
       teacherId: currentUser.id,
-      organizer: currentUser.name
+      organizer: currentUser.name,
     };
-    
+
     // Add new notification
     const newNotification = {
-      id: Math.max(...notifications.map(n => n.id), 100) + 1,
+      id: Math.max(...notifications.map((n) => n.id), 100) + 1,
       title: `New ${EVENT_TYPES[newEvent.type]?.label} Added`,
-      message: `${newEvent.title} has been scheduled for ${format(newEvent.start, "PPp")}`,
+      message: `${newEvent.title} has been scheduled for ${format(
+        newEvent.start,
+        "PPp"
+      )}`,
       read: false,
       date: new Date(),
       relatedEventId: event.id,
     };
-    
+
     setEvents([...events, event]);
     setNotifications([newNotification, ...notifications]);
     setShowEventModal(false);
@@ -489,7 +526,10 @@ export default function ModernCalendar() {
   const handleSubmitLeave = () => {
     const leaveEvent = {
       id: Math.max(...events.map((e) => e.id), 0) + 1,
-      title: `${currentUser.name} - ${LEAVE_TYPES.find(l => l.value === leaveRequest.type)?.label || leaveRequest.type}`,
+      title: `${currentUser.name} - ${
+        LEAVE_TYPES.find((l) => l.value === leaveRequest.type)?.label ||
+        leaveRequest.type
+      }`,
       start: leaveRequest.start,
       end: leaveRequest.end,
       type: "LEAVE",
@@ -504,20 +544,26 @@ export default function ModernCalendar() {
       location: "",
       organizer: currentUser.name,
       recurring: false,
-      ...(leaveRequest.start === leaveRequest.end && { allDay: true })
+      ...(leaveRequest.start === leaveRequest.end && { allDay: true }),
     };
-    
+
     // Add new notification for admins/teachers
     const newNotification = {
-      id: Math.max(...notifications.map(n => n.id), 100) + 1,
+      id: Math.max(...notifications.map((n) => n.id), 100) + 1,
       title: "New Leave Request",
-      message: `${currentUser.name} has requested ${LEAVE_TYPES.find(l => l.value === leaveRequest.type)?.label || leaveRequest.type} from ${format(leaveRequest.start, "PP")} to ${format(leaveRequest.end, "PP")}`,
+      message: `${currentUser.name} has requested ${
+        LEAVE_TYPES.find((l) => l.value === leaveRequest.type)?.label ||
+        leaveRequest.type
+      } from ${format(leaveRequest.start, "PP")} to ${format(
+        leaveRequest.end,
+        "PP"
+      )}`,
       read: false,
       date: new Date(),
       relatedEventId: leaveEvent.id,
       forRole: USER_ROLES.ADMIN,
     };
-    
+
     setEvents([...events, leaveEvent]);
     setNotifications([newNotification, ...notifications]);
     setShowLeaveModal(false);
@@ -530,54 +576,61 @@ export default function ModernCalendar() {
       contactNumber: "",
     });
   };
-  
+
   const handleDeleteEvent = (eventId) => {
-    setEvents(events.filter(e => e.id !== eventId));
+    setEvents(events.filter((e) => e.id !== eventId));
     setShowEventDetailsModal(false);
-    
+
     // Add deletion notification
-    const deletedEvent = events.find(e => e.id === eventId);
+    const deletedEvent = events.find((e) => e.id === eventId);
     if (deletedEvent) {
       const newNotification = {
-        id: Math.max(...notifications.map(n => n.id), 100) + 1,
+        id: Math.max(...notifications.map((n) => n.id), 100) + 1,
         title: "Event Deleted",
-        message: `${deletedEvent.title} scheduled for ${format(deletedEvent.start, "PPp")} has been deleted`,
+        message: `${deletedEvent.title} scheduled for ${format(
+          deletedEvent.start,
+          "PPp"
+        )} has been deleted`,
         read: false,
         date: new Date(),
       };
       setNotifications([newNotification, ...notifications]);
     }
   };
-  
+
   const handleEditEvent = (eventId) => {
-    const eventToEdit = events.find(e => e.id === eventId);
+    const eventToEdit = events.find((e) => e.id === eventId);
     if (eventToEdit) {
       setNewEvent({
         ...eventToEdit,
         recurring: eventToEdit.recurring || false,
         recurrencePattern: eventToEdit.recurrencePattern || "weekly",
-        recurrenceEndDate: eventToEdit.recurrenceEndDate || addDays(new Date(), 30),
+        recurrenceEndDate:
+          eventToEdit.recurrenceEndDate || addDays(new Date(), 30),
         notifyStudents: eventToEdit.notifyStudents !== false,
       });
       setShowEventDetailsModal(false);
       setShowEventModal(true);
     }
   };
-  
+
   const handleApproveLeave = (eventId) => {
-    setEvents(events.map(e => 
-      e.id === eventId 
-        ? { ...e, status: "approved", color: "#4CAF50" } 
-        : e
-    ));
-    
-    const leaveEvent = events.find(e => e.id === eventId);
+    setEvents(
+      events.map((e) =>
+        e.id === eventId ? { ...e, status: "approved", color: "#4CAF50" } : e
+      )
+    );
+
+    const leaveEvent = events.find((e) => e.id === eventId);
     if (leaveEvent) {
       // Add approval notification
       const newNotification = {
-        id: Math.max(...notifications.map(n => n.id), 100) + 1,
+        id: Math.max(...notifications.map((n) => n.id), 100) + 1,
         title: "Leave Request Approved",
-        message: `Your leave request from ${format(leaveEvent.start, "PP")} to ${format(leaveEvent.end, "PP")} has been approved`,
+        message: `Your leave request from ${format(
+          leaveEvent.start,
+          "PP"
+        )} to ${format(leaveEvent.end, "PP")} has been approved`,
         read: false,
         date: new Date(),
         relatedEventId: eventId,
@@ -585,24 +638,27 @@ export default function ModernCalendar() {
       };
       setNotifications([newNotification, ...notifications]);
     }
-    
+
     setShowEventDetailsModal(false);
   };
-  
+
   const handleRejectLeave = (eventId) => {
-    setEvents(events.map(e => 
-      e.id === eventId 
-        ? { ...e, status: "rejected", color: "#F44336" } 
-        : e
-    ));
-    
-    const leaveEvent = events.find(e => e.id === eventId);
+    setEvents(
+      events.map((e) =>
+        e.id === eventId ? { ...e, status: "rejected", color: "#F44336" } : e
+      )
+    );
+
+    const leaveEvent = events.find((e) => e.id === eventId);
     if (leaveEvent) {
       // Add rejection notification
       const newNotification = {
-        id: Math.max(...notifications.map(n => n.id), 100) + 1,
+        id: Math.max(...notifications.map((n) => n.id), 100) + 1,
         title: "Leave Request Rejected",
-        message: `Your leave request from ${format(leaveEvent.start, "PP")} to ${format(leaveEvent.end, "PP")} has been rejected`,
+        message: `Your leave request from ${format(
+          leaveEvent.start,
+          "PP"
+        )} to ${format(leaveEvent.end, "PP")} has been rejected`,
         read: false,
         date: new Date(),
         relatedEventId: eventId,
@@ -610,56 +666,58 @@ export default function ModernCalendar() {
       };
       setNotifications([newNotification, ...notifications]);
     }
-    
+
     setShowEventDetailsModal(false);
   };
-  
+
   const markAllNotificationsAsRead = () => {
-    setNotifications(notifications.map(n => ({ ...n, read: true })));
+    setNotifications(notifications.map((n) => ({ ...n, read: true })));
   };
-  
+
   const deleteNotification = (notificationId) => {
-    setNotifications(notifications.filter(n => n.id !== notificationId));
+    setNotifications(notifications.filter((n) => n.id !== notificationId));
   };
-  
+
   const markNotificationAsRead = (notificationId) => {
-    setNotifications(notifications.map(n => 
-      n.id === notificationId 
-        ? { ...n, read: true } 
-        : n
-    ));
+    setNotifications(
+      notifications.map((n) =>
+        n.id === notificationId ? { ...n, read: true } : n
+      )
+    );
   };
-  
+
   const toggleFilter = (filterType, value) => {
-    setFilters(prev => {
+    setFilters((prev) => {
       const currentValues = [...prev[filterType]];
       const index = currentValues.indexOf(value);
-      
+
       if (index === -1) {
         currentValues.push(value);
       } else {
         currentValues.splice(index, 1);
       }
-      
+
       return {
         ...prev,
-        [filterType]: currentValues
+        [filterType]: currentValues,
       };
     });
   };
-  
+
   const clearFilters = () => {
     setFilters({
       types: Object.keys(EVENT_TYPES),
-      classes: classes.map(c => c.id),
-      subjects: subjects.map(s => s.id),
+      classes: classes.map((c) => c.id),
+      subjects: subjects.map((s) => s.id),
     });
     setSearchTerm("");
   };
-  
+
   const exportCalendar = () => {
     // This would typically generate an iCal file
-    alert("Calendar exported! (This would download an iCal file in a real implementation)");
+    alert(
+      "Calendar exported! (This would download an iCal file in a real implementation)"
+    );
   };
 
   // Custom Toolbar Component
@@ -771,7 +829,7 @@ export default function ModernCalendar() {
                 />
                 <Search className="h-4 w-4 text-gray-400 absolute left-3 top-3" />
               </div>
-              
+
               <Button
                 variant="outline"
                 size="sm"
@@ -781,7 +839,7 @@ export default function ModernCalendar() {
                 <Filter className="h-4 w-4 mr-2" />
                 Filters
               </Button>
-              
+
               <Button
                 variant="outline"
                 size="sm"
@@ -791,7 +849,7 @@ export default function ModernCalendar() {
                 <Download className="h-4 w-4 mr-2" />
                 Export
               </Button>
-              
+
               <div className="relative">
                 <Button
                   variant="outline"
@@ -807,13 +865,13 @@ export default function ModernCalendar() {
                     </span>
                   )}
                 </Button>
-                
+
                 {showNotifications && (
                   <div className="absolute right-0 mt-2 w-80 md:w-96 bg-white rounded-xl shadow-lg border border-gray-200 z-50">
                     <div className="p-3 flex justify-between items-center border-b border-gray-100">
                       <h3 className="font-medium">Notifications</h3>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="sm"
                         className="text-xs"
                         onClick={markAllNotificationsAsRead}
@@ -827,10 +885,12 @@ export default function ModernCalendar() {
                           No notifications
                         </div>
                       ) : (
-                        notifications.map(notification => (
-                          <div 
+                        notifications.map((notification) => (
+                          <div
                             key={notification.id}
-                            className={`p-3 border-b border-gray-100 flex gap-3 ${notification.read ? 'bg-white' : 'bg-blue-50'}`}
+                            className={`p-3 border-b border-gray-100 flex gap-3 ${
+                              notification.read ? "bg-white" : "bg-blue-50"
+                            }`}
                           >
                             <div className="flex-shrink-0 mt-1">
                               {notification.relatedEventId ? (
@@ -841,16 +901,23 @@ export default function ModernCalendar() {
                             </div>
                             <div className="flex-grow">
                               <div className="flex justify-between items-start">
-                                <h4 className="font-medium text-sm">{notification.title}</h4>
+                                <h4 className="font-medium text-sm">
+                                  {notification.title}
+                                </h4>
                                 <Button
                                   variant="ghost"
-                                  size="sm"className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
-                                  onClick={() => deleteNotification(notification.id)}
+                                  size="sm"
+                                  className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+                                  onClick={() =>
+                                    deleteNotification(notification.id)
+                                  }
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
                               </div>
-                              <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
+                              <p className="text-sm text-gray-600 mt-1">
+                                {notification.message}
+                              </p>
                               <div className="flex justify-between items-center mt-2">
                                 <span className="text-xs text-gray-500">
                                   {format(new Date(notification.date), "PPp")}
@@ -860,7 +927,9 @@ export default function ModernCalendar() {
                                     variant="ghost"
                                     size="sm"
                                     className="text-xs h-6"
-                                    onClick={() => markNotificationAsRead(notification.id)}
+                                    onClick={() =>
+                                      markNotificationAsRead(notification.id)
+                                    }
                                   >
                                     Mark as read
                                   </Button>
@@ -930,7 +999,7 @@ export default function ModernCalendar() {
                   Reset Filters
                 </Button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <h4 className="text-sm font-medium mb-2">Event Types</h4>
@@ -954,8 +1023,9 @@ export default function ModernCalendar() {
                     ))}
                   </div>
                 </div>
-                
-                {(currentUser.role === USER_ROLES.ADMIN || currentUser.role === USER_ROLES.TEACHER) && (
+
+                {(currentUser.role === USER_ROLES.ADMIN ||
+                  currentUser.role === USER_ROLES.TEACHER) && (
                   <div>
                     <h4 className="text-sm font-medium mb-2">Classes</h4>
                     <div className="flex flex-wrap gap-2">
@@ -975,7 +1045,7 @@ export default function ModernCalendar() {
                     </div>
                   </div>
                 )}
-                
+
                 <div>
                   <h4 className="text-sm font-medium mb-2">Subjects</h4>
                   <div className="flex flex-wrap gap-2">
@@ -1014,27 +1084,35 @@ export default function ModernCalendar() {
                     </p>
                     {filteredEvents[0] && (
                       <p className="text-xs text-indigo-600 mt-1">
-                        {format(new Date(filteredEvents[0].start), "MMMM d, yyyy")} •{" "}
-                        {format(new Date(filteredEvents[0].start), "h:mm a")}
+                        {format(
+                          new Date(filteredEvents[0].start),
+                          "MMMM d, yyyy"
+                        )}{" "}
+                        • {format(new Date(filteredEvents[0].start), "h:mm a")}
                         {filteredEvents[0].location &&
                           ` • ${filteredEvents[0].location}`}
                       </p>
                     )}
                   </div>
                 </div>
-                
+
                 {/* Upcoming today */}
                 <div>
                   <h3 className="font-semibold text-gray-800 mb-2">Today</h3>
-                  {filteredEvents.filter(e => isSameDay(new Date(e.start), new Date())).length > 0 ? (
+                  {filteredEvents.filter((e) =>
+                    isSameDay(new Date(e.start), new Date())
+                  ).length > 0 ? (
                     filteredEvents
-                      .filter(e => isSameDay(new Date(e.start), new Date()))
+                      .filter((e) => isSameDay(new Date(e.start), new Date()))
                       .slice(0, 2)
-                      .map(event => (
-                        <div key={event.id} className="flex items-center mb-2 last:mb-0">
-                          <div 
-                            className="w-3 h-3 rounded-full mr-2" 
-                            style={{ backgroundColor: event.color }} 
+                      .map((event) => (
+                        <div
+                          key={event.id}
+                          className="flex items-center mb-2 last:mb-0"
+                        >
+                          <div
+                            className="w-3 h-3 rounded-full mr-2"
+                            style={{ backgroundColor: event.color }}
                           />
                           <span className="text-sm">{event.title}</span>
                           <span className="text-xs text-gray-500 ml-auto">
@@ -1046,20 +1124,34 @@ export default function ModernCalendar() {
                     <p className="text-sm text-gray-500">No events today</p>
                   )}
                 </div>
-                
+
                 {/* Upcoming deadlines */}
                 <div>
-                  <h3 className="font-semibold text-gray-800 mb-2">Upcoming Deadlines</h3>
-                  {filteredEvents.filter(e => e.type === "DEADLINE" && new Date(e.start) > new Date()).length > 0 ? (
+                  <h3 className="font-semibold text-gray-800 mb-2">
+                    Upcoming Deadlines
+                  </h3>
+                  {filteredEvents.filter(
+                    (e) =>
+                      e.type === "DEADLINE" && new Date(e.start) > new Date()
+                  ).length > 0 ? (
                     filteredEvents
-                      .filter(e => e.type === "DEADLINE" && new Date(e.start) > new Date())
+                      .filter(
+                        (e) =>
+                          e.type === "DEADLINE" &&
+                          new Date(e.start) > new Date()
+                      )
                       .sort((a, b) => new Date(a.start) - new Date(b.start))
                       .slice(0, 2)
-                      .map(event => (
-                        <div key={event.id} className="flex items-center mb-2 last:mb-0">
+                      .map((event) => (
+                        <div
+                          key={event.id}
+                          className="flex items-center mb-2 last:mb-0"
+                        >
                           <div
                             className="w-3 h-3 rounded-full mr-2"
-                            style={{ backgroundColor: EVENT_TYPES.DEADLINE.color }}
+                            style={{
+                              backgroundColor: EVENT_TYPES.DEADLINE.color,
+                            }}
                           />
                           <span className="text-sm">{event.title}</span>
                           <span className="text-xs text-gray-500 ml-auto">
@@ -1068,7 +1160,9 @@ export default function ModernCalendar() {
                         </div>
                       ))
                   ) : (
-                    <p className="text-sm text-gray-500">No upcoming deadlines</p>
+                    <p className="text-sm text-gray-500">
+                      No upcoming deadlines
+                    </p>
                   )}
                 </div>
               </div>
@@ -1094,9 +1188,13 @@ export default function ModernCalendar() {
                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                   opacity: event.status === "pending" ? 0.7 : 1,
                   borderLeft:
-                    event.status === "pending" ? "4px solid #FF9800" : 
-                    event.status === "approved" ? "4px solid #4CAF50" :
-                    event.status === "rejected" ? "4px solid #F44336" : "none",
+                    event.status === "pending"
+                      ? "4px solid #FF9800"
+                      : event.status === "approved"
+                      ? "4px solid #4CAF50"
+                      : event.status === "rejected"
+                      ? "4px solid #F44336"
+                      : "none",
                 },
               })}
               components={{
@@ -1170,15 +1268,20 @@ export default function ModernCalendar() {
                 </div>
                 <div className="space-y-3">
                   {Object.entries(EVENT_TYPES).map(([type, details]) => {
-                    const count = filteredEvents.filter(e => e.type === type).length;
+                    const count = filteredEvents.filter(
+                      (e) => e.type === type
+                    ).length;
                     if (count === 0) return null;
-                    
+
                     return (
-                      <div key={type} className="flex items-center justify-between">
+                      <div
+                        key={type}
+                        className="flex items-center justify-between"
+                      >
                         <div className="flex items-center">
-                          <div 
-                            className="w-3 h-3 rounded-full mr-2" 
-                            style={{ backgroundColor: details.color }} 
+                          <div
+                            className="w-3 h-3 rounded-full mr-2"
+                            style={{ backgroundColor: details.color }}
                           />
                           <span className="text-sm">{details.label}s</span>
                         </div>
@@ -1189,24 +1292,26 @@ export default function ModernCalendar() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-white">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-medium text-gray-800">Upcoming Schedule</h3>
+                  <h3 className="font-medium text-gray-800">
+                    Upcoming Schedule
+                  </h3>
                   <CalendarIcon className="h-4 w-4 text-gray-400" />
                 </div>
                 <div className="space-y-2">
                   {filteredEvents
-                    .filter(e => new Date(e.start) > new Date())
+                    .filter((e) => new Date(e.start) > new Date())
                     .sort((a, b) => new Date(a.start) - new Date(b.start))
                     .slice(0, 4)
-                    .map(event => (
+                    .map((event) => (
                       <div key={event.id} className="text-sm">
                         <div className="flex items-center">
-                          <div 
-                            className="w-2 h-2 rounded-full mr-2" 
-                            style={{ backgroundColor: event.color }} 
+                          <div
+                            className="w-2 h-2 rounded-full mr-2"
+                            style={{ backgroundColor: event.color }}
                           />
                           <span className="font-medium">{event.title}</span>
                         </div>
@@ -1218,12 +1323,13 @@ export default function ModernCalendar() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-white">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-medium text-gray-800">
-                    {currentUser.role === USER_ROLES.ADMIN || currentUser.role === USER_ROLES.TEACHER
+                    {currentUser.role === USER_ROLES.ADMIN ||
+                    currentUser.role === USER_ROLES.TEACHER
                       ? "Leave Requests"
                       : "My Leaves"}
                   </h3>
@@ -1231,49 +1337,58 @@ export default function ModernCalendar() {
                 </div>
                 <div className="space-y-2">
                   {filteredEvents
-                    .filter(e => e.type === "LEAVE")
+                    .filter((e) => e.type === "LEAVE")
                     .slice(0, 3)
-                    .map(event => (
-                      <div key={event.id} className="text-sm flex items-center justify-between">
+                    .map((event) => (
+                      <div
+                        key={event.id}
+                        className="text-sm flex items-center justify-between"
+                      >
                         <div>
                           <div className="flex items-center">
-                            <Badge 
+                            <Badge
                               className={`mr-2 ${
-                                event.status === "pending" ? "bg-amber-100 text-amber-700 hover:bg-amber-100" :
-                                event.status === "approved" ? "bg-green-100 text-green-700 hover:bg-green-100" :
-                                "bg-red-100 text-red-700 hover:bg-red-100"
+                                event.status === "pending"
+                                  ? "bg-amber-100 text-amber-700 hover:bg-amber-100"
+                                  : event.status === "approved"
+                                  ? "bg-green-100 text-green-700 hover:bg-green-100"
+                                  : "bg-red-100 text-red-700 hover:bg-red-100"
                               }`}
                             >
                               {event.status}
                             </Badge>
-                            <span>{event.requesterName || currentUser.name}</span>
+                            <span>
+                              {event.requesterName || currentUser.name}
+                            </span>
                           </div>
                           <div className="text-xs text-gray-500 mt-0.5">
-                            {format(new Date(event.start), "PP")} - {format(new Date(event.end), "PP")}
+                            {format(new Date(event.start), "PP")} -{" "}
+                            {format(new Date(event.end), "PP")}
                           </div>
                         </div>
-                        
-                        {(currentUser.role === USER_ROLES.ADMIN || currentUser.role === USER_ROLES.TEACHER) && 
-                         event.status === "pending" && (
-                          <div className="flex gap-1">
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-7 w-7 p-0"
-                              onClick={() => handleApproveLeave(event.id)}
-                            >
-                              <CheckCircle2 className="h-4 w-4 text-green-600" />
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-7 w-7 p-0"
-                              onClick={() => handleRejectLeave(event.id)}
-                            >
-                              <XCircle className="h-4 w-4 text-red-600" />
-                            </Button>
-                          </div>
-                        )}
+
+                        {(currentUser.role === USER_ROLES.ADMIN ||
+                          currentUser.role === USER_ROLES.TEACHER) &&
+                          event.status === "pending" && (
+                            <div className="flex gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 w-7 p-0"
+                                onClick={() => handleApproveLeave(event.id)}
+                              >
+                                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 w-7 p-0"
+                                onClick={() => handleRejectLeave(event.id)}
+                              >
+                                <XCircle className="h-4 w-4 text-red-600" />
+                              </Button>
+                            </div>
+                          )}
                       </div>
                     ))}
                 </div>
@@ -1301,6 +1416,6 @@ export default function ModernCalendar() {
           </div>
         </div>
       </div>
-      </div>);
-
-          
+    </div>
+  );
+}
