@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   ChevronLeft,
-  ChevronRight,
   Plus,
   Search,
   MoreHorizontal,
@@ -20,7 +19,6 @@ import {
   Layers,
   ArrowUpRight,
   ArrowDownRight,
-  X,
   Check,
   BarChart4,
   PieChart,
@@ -50,8 +48,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -69,18 +65,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Pagination,
@@ -678,6 +665,7 @@ export default function FinancePage() {
 
               <SelectItem
                 disabled
+                value="income-header"
                 className="text-xs font-semibold text-emerald-600 uppercase"
               >
                 Income Categories
@@ -687,9 +675,9 @@ export default function FinancePage() {
                   {cat}
                 </SelectItem>
               ))}
-
               <SelectItem
                 disabled
+                value="expense-header"
                 className="text-xs font-semibold text-red-600 uppercase"
               >
                 Expense Categories
@@ -895,7 +883,7 @@ export default function FinancePage() {
                     onClick={() =>
                       setCurrentPage((prev) => Math.max(prev - 1, 1))
                     }
-                    disabled={currentPage === 1}
+                    isActive={currentPage === 1}
                   />
                 </PaginationItem>
 
@@ -939,7 +927,7 @@ export default function FinancePage() {
                     onClick={() =>
                       setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                     }
-                    disabled={currentPage === totalPages}
+                    isActive={currentPage === totalPages}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -1136,7 +1124,8 @@ export default function FinancePage() {
                               (acc[tx.paymentMethod] || 0) + 1;
                             return acc;
                           }, {})
-                        ).sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A"}
+                        ).sort((a, b) => Number(b[1]) - Number(a[1]))[0]?.[0] ||
+                          "N/A"}
                       </p>
                     </div>
                   </div>

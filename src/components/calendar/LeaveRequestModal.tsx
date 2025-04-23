@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -18,68 +19,76 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
 import { format } from "date-fns";
+import { Label } from "../ui";
 
 export const LeaveRequestModal = ({
-  open,
-  onOpenChange,
-  leaveData,
-  onLeaveDataChange,
-  onSubmit,
+  showLeaveModal,
+  setShowLeaveModal,
+  leaveRequest,
+  setLeaveRequest,
+  handleSubmitLeave,
+  LEAVE_TYPES,
+}: {
+  showLeaveModal: boolean;
+  setShowLeaveModal: (showLeaveModal: boolean) => void;
+  leaveRequest: any;
+  setLeaveRequest: (leaveRequest: any) => void;
+  handleSubmitLeave: () => void;
+  LEAVE_TYPES: { label: string; value: string }[];
 }) => {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+    <Dialog open={showLeaveModal} onOpenChange={setShowLeaveModal}>
+      <DialogContent className="max-w-md rounded-xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <AlertCircle className="h-5 w-5" />
-            Request Leave
-          </DialogTitle>
+          <DialogTitle>Request Leave</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-sm font-medium pl-3">Leave Type</label>
-              <Select
-                value={leaveData.type}
-                onValueChange={(value) =>
-                  onLeaveDataChange({ ...leaveData, type: value })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sick">Sick Leave</SelectItem>
-                  <SelectItem value="personal">Personal Leave</SelectItem>
-                  <SelectItem value="family">Family Reason</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+
+        <div className="space-y-4 py-4">
+          <div>
+            <Label htmlFor="leave-type">Leave Type</Label>
+            <Select
+              value={leaveRequest.type}
+              onValueChange={(value) =>
+                setLeaveRequest({ ...leaveRequest, type: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select leave type" />
+              </SelectTrigger>
+              <SelectContent>
+                {LEAVE_TYPES.map((type) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-sm font-medium pl-3">Start Date</label>
+            <div>
+              <Label htmlFor="leave-start">From Date</Label>
               <Input
+                id="leave-start"
                 type="date"
-                value={format(leaveData.start, "yyyy-MM-dd")}
+                value={format(new Date(leaveRequest.start), "yyyy-MM-dd")}
                 onChange={(e) =>
-                  onLeaveDataChange({
-                    ...leaveData,
+                  setLeaveRequest({
+                    ...leaveRequest,
                     start: new Date(e.target.value),
                   })
                 }
               />
             </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium pl-3">End Date</label>
+            <div>
+              <Label htmlFor="leave-end">To Date</Label>
               <Input
+                id="leave-end"
                 type="date"
-                value={format(leaveData.end, "yyyy-MM-dd")}
+                value={format(new Date(leaveRequest.end), "yyyy-MM-dd")}
                 onChange={(e) =>
-                  onLeaveDataChange({
-                    ...leaveData,
+                  setLeaveRequest({
+                    ...leaveRequest,
                     end: new Date(e.target.value),
                   })
                 }
@@ -87,29 +96,41 @@ export const LeaveRequestModal = ({
             </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="text-sm font-medium pl-3">Reason</label>
+          <div>
+            <Label htmlFor="leave-reason">Reason</Label>
             <Textarea
-              value={leaveData.reason}
+              id="leave-reason"
+              value={leaveRequest.reason}
               onChange={(e) =>
-                onLeaveDataChange({ ...leaveData, reason: e.target.value })
+                setLeaveRequest({ ...leaveRequest, reason: e.target.value })
               }
-              placeholder="Please provide details for your leave request"
+              placeholder="Enter reason for leave"
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="leave-contact">Emergency Contact Number</Label>
+            <Input
+              id="leave-contact"
+              value={leaveRequest.contactNumber}
+              onChange={(e) =>
+                setLeaveRequest({
+                  ...leaveRequest,
+                  contactNumber: e.target.value,
+                })
+              }
+              placeholder="Enter contact number"
             />
           </div>
         </div>
-        <div className="flex justify-end gap-2">
-          <Button
-            variant="outline"
-            className="rounded-3xl"
-            onClick={() => onOpenChange(false)}
-          >
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setShowLeaveModal(false)}>
             Cancel
           </Button>
-          <Button onClick={onSubmit} className="rounded-3xl">
-            Submit Request
-          </Button>
-        </div>
+          <Button onClick={handleSubmitLeave}>Submit Request</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -44,6 +44,7 @@ import {
   PieChart as PieChartIcon,
   Settings,
 } from "lucide-react";
+import Link from "next/link";
 
 // Sample data for different roles
 const adminData = {
@@ -232,10 +233,12 @@ export default function SchoolDashboard() {
             </p>
           </div>
           <div className="mt-4 md:mt-0">
-            <Button variant="outline" className="rounded-lg">
-              <Calendar className="h-4 w-4 mr-2" />
-              View Calendar
-            </Button>
+            <Link href="/calendar">
+              <Button variant="outline" className="rounded-full">
+                <Calendar className="h-4 w-4 mr-2" />
+                View Calendar
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -264,7 +267,7 @@ function AdminDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-8">
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -289,7 +292,7 @@ function AdminDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -314,7 +317,7 @@ function AdminDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -339,7 +342,7 @@ function AdminDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -370,7 +373,7 @@ function AdminDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Attendance Trend Chart */}
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -426,7 +429,7 @@ function AdminDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
 
         {/* Fee Collection Chart */}
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -476,7 +479,7 @@ function AdminDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
 
       {/* Recent Activity */}
       <Card
-        className={`rounded-xl ${
+        className={`${
           darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
         } shadow-sm`}
       >
@@ -553,7 +556,7 @@ function TeacherDashboard({
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-8">
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -572,7 +575,7 @@ function TeacherDashboard({
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -591,7 +594,7 @@ function TeacherDashboard({
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -610,7 +613,7 @@ function TeacherDashboard({
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -639,7 +642,7 @@ function TeacherDashboard({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Class Schedule */}
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -682,7 +685,7 @@ function TeacherDashboard({
 
         {/* Student Performance */}
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -734,7 +737,7 @@ function TeacherDashboard({
 
       {/* Assignments to Grade */}
       <Card
-        className={`rounded-xl ${
+        className={`${
           darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
         } shadow-sm mb-8`}
       >
@@ -850,7 +853,7 @@ function StudentDashboard({
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-8">
         <Card
-          className={`rounded-xl ${
+          className={` ${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -871,7 +874,7 @@ function StudentDashboard({
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -890,7 +893,7 @@ function StudentDashboard({
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -917,7 +920,7 @@ function StudentDashboard({
 
       {/* Today's Schedule */}
       <Card
-        className={`rounded-xl ${
+        className={`${
           darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
         } shadow-sm mb-8`}
       >
@@ -962,7 +965,7 @@ function StudentDashboard({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Upcoming Assignments */}
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -998,7 +1001,7 @@ function StudentDashboard({
 
         {/* Recent Grades */}
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -1047,7 +1050,7 @@ function ParentDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-8">
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -1066,7 +1069,7 @@ function ParentDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -1091,7 +1094,7 @@ function ParentDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -1110,7 +1113,7 @@ function ParentDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
         </Card>
 
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -1131,7 +1134,7 @@ function ParentDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
 
       {/* Children Information */}
       <Card
-        className={`rounded-xl ${
+        className={`${
           darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
         } shadow-sm mb-8`}
       >
@@ -1194,7 +1197,7 @@ function ParentDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Fee Status */}
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
@@ -1236,7 +1239,7 @@ function ParentDashboard({ darkMode, data }: { darkMode: boolean; data: any }) {
 
         {/* Recent Messages */}
         <Card
-          className={`rounded-xl ${
+          className={`${
             darkMode
               ? "bg-gray-800 border-gray-700"
               : "bg-white border-gray-200"
