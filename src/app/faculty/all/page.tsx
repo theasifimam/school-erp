@@ -809,7 +809,7 @@ export default function TeachersPage() {
                     onClick={() =>
                       setCurrentPage((prev) => Math.max(prev - 1, 1))
                     }
-                    disabled={currentPage === 1}
+                    isActive={currentPage === 1}
                   />
                 </PaginationItem>
 
@@ -852,7 +852,7 @@ export default function TeachersPage() {
                     onClick={() =>
                       setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                     }
-                    disabled={currentPage === totalPages}
+                    isActive={currentPage === totalPages}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -932,9 +932,11 @@ export default function TeachersPage() {
                               onClick={() => {
                                 setDepartmentFilter(dept.department);
                                 setStatusFilter("all");
-                                document
-                                  .querySelector('[data-value="list"]')
-                                  .click();
+                                (
+                                  document.querySelector(
+                                    '[data-value="list"]'
+                                  ) as HTMLElement
+                                ).click();
                               }}
                             >
                               View all {dept.count} teachers

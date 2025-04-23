@@ -69,7 +69,6 @@ export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   // Handle responsive behavior
   useEffect(() => {
@@ -113,7 +112,7 @@ export default function Sidebar() {
         <Button
           variant="outline"
           size="icon"
-          className="bg-white/10 backdrop-blur-md text-slate-100 border-slate-700/30 hover:bg-white/20 shadow-lg rounded-xl"
+          className="bg-white shadow-md text-black border-gray-200 hover:bg-gray-100 rounded-full"
           onClick={() => setIsMobileOpen(true)}
         >
           <Menu size={20} />
@@ -131,35 +130,33 @@ export default function Sidebar() {
       {/* Sidebar Container */}
       <div
         className={cn(
-          "fixed lg:relative h-screen transition-all duration-300 ease-in-out z-40 shadow-2xl",
+          "fixed lg:relative h-screen transition-all duration-300 ease-in-out z-40 shadow-lg",
           isOpen ? "w-72" : "w-20",
           isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          "bg-gradient-to-b from-slate-900/95 via-slate-900 to-slate-950 backdrop-blur-xl text-white rounded-r-2xl"
+          "bg-white text-black rounded-r-3xl"
         )}
       >
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-800/30">
+        <div className="flex items-center justify-between p-4 border-b border-gray-100">
           {isOpen ? (
             <div className="flex items-center gap-2">
-              <div className="bg-gradient-to-br from-sky-400 to-blue-600 p-1.5 rounded-xl shadow-lg">
+              <div className="bg-gradient-to-br from-gray-800 to-black p-1.5 rounded-full shadow-md">
                 <School className="text-white" size={24} />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-white to-sky-200 bg-clip-text text-transparent">
-                EduManage Pro
-              </h1>
+              <h1 className="text-xl font-bold text-gray-800">EduManage Pro</h1>
             </div>
           ) : (
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center justify-center w-full">
-                  <div className="bg-gradient-to-br from-sky-400 to-blue-600 p-1.5 rounded-xl shadow-lg">
+                  <div className="bg-gradient-to-br from-gray-800 to-black p-1.5 rounded-full shadow-md">
                     <School className="text-white" size={24} />
                   </div>
                 </div>
               </TooltipTrigger>
               <TooltipContent
                 side="right"
-                className="bg-slate-800 text-white border-slate-700"
+                className="bg-white text-black border-gray-200"
               >
                 EduManage Pro
               </TooltipContent>
@@ -168,7 +165,7 @@ export default function Sidebar() {
           <Button
             variant="ghost"
             size="icon"
-            className="text-slate-400 hover:text-white hover:bg-white/10 rounded-xl"
+            className="text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
             onClick={() =>
               isMobileOpen ? closeMobileSidebar() : setIsOpen(!isOpen)
             }
@@ -187,11 +184,11 @@ export default function Sidebar() {
         {isOpen && (
           <div className="p-3">
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-sky-400 transition-colors" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-black transition-colors" />
               <Input
                 type="search"
                 placeholder="Search..."
-                className="w-full pl-9 bg-slate-800/30 border-slate-700/30 focus:border-sky-400 text-white placeholder:text-slate-400 rounded-xl transition-all focus:ring-2 focus:ring-sky-400/20"
+                className="w-full pl-9 bg-gray-50 border-gray-200 focus:border-gray-500 text-black placeholder:text-gray-400 rounded-full transition-all focus:ring-2 focus:ring-gray-300"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -200,19 +197,27 @@ export default function Sidebar() {
         )}
 
         {/* Badge for notification count near profile */}
-        {!isOpen && (
+        {/* {!isOpen && (
           <div className="absolute top-20 left-1/2 -translate-x-1/2">
-            <Badge className="bg-rose-500 hover:bg-rose-600 text-xs rounded-full">
+            <Badge className="bg-red-500 hover:bg-red-600 text-white text-xs rounded-full">
               12
             </Badge>
           </div>
-        )}
+        )} */}
 
         {/* Sidebar Navigation */}
-        <nav className="flex flex-col mt-2 px-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent h-[calc(100vh-180px)]">
+        <nav className="flex flex-col mt-2 px-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent h-[calc(100vh-180px)]">
           <SidebarSection title="Main" isOpen={isOpen}>
             <SidebarItem
-              icon={<Home className="text-sky-400" />}
+              icon={
+                <Home
+                  className={
+                    pathname?.startsWith("/")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Dashboard"
               route="/"
               isOpen={isOpen}
@@ -220,7 +225,15 @@ export default function Sidebar() {
             />
 
             <SidebarItem
-              icon={<Megaphone className="text-rose-400" />}
+              icon={
+                <Megaphone
+                  className={
+                    pathname?.startsWith("/announcements")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Announcements"
               route="/announcements"
               isOpen={isOpen}
@@ -229,7 +242,15 @@ export default function Sidebar() {
             />
 
             <SidebarItem
-              icon={<Calendar className="text-violet-400" />}
+              icon={
+                <Calendar
+                  className={
+                    pathname?.startsWith("/calendar")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="School Calendar"
               route="/calendar"
               isOpen={isOpen}
@@ -239,7 +260,15 @@ export default function Sidebar() {
 
           <SidebarSection title="Academic" isOpen={isOpen}>
             <SidebarItem
-              icon={<GraduationCap className="text-amber-400" />}
+              icon={
+                <GraduationCap
+                  className={
+                    pathname?.startsWith("/students")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Students"
               isOpen={isOpen}
               hasSubmenu
@@ -284,44 +313,60 @@ export default function Sidebar() {
             />
 
             <SidebarItem
-              icon={<User className="text-emerald-400" />}
-              label="Teachers"
+              icon={
+                <User
+                  className={
+                    pathname?.startsWith("/faculties")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
+              label="Faculties"
               isOpen={isOpen}
               hasSubmenu
-              isSubmenuOpen={openSubmenu === "teachers"}
-              onSubmenuToggle={() => toggleSubmenu("teachers")}
-              isActive={pathname?.startsWith("/teachers")}
+              isSubmenuOpen={openSubmenu === "faculties"}
+              onSubmenuToggle={() => toggleSubmenu("faculties")}
+              isActive={pathname?.startsWith("/faculties")}
               submenu={[
                 {
-                  label: "All Teachers",
+                  label: "All Faculties",
                   icon: <Users size={16} />,
-                  route: "/teachers/all",
+                  route: "/faculties/all",
                 },
                 {
                   label: "Assign Classes",
                   icon: <BookOpen size={16} />,
-                  route: "/teachers/assign",
+                  route: "/faculties/assign",
                 },
                 {
                   label: "Attendance",
                   icon: <ClipboardList size={16} />,
-                  route: "/teachers/attendance",
+                  route: "/faculties/attendance",
                 },
                 {
                   label: "Performance Review",
                   icon: <FileBarChart size={16} />,
-                  route: "/teachers/performance",
+                  route: "/faculties/performance",
                 },
                 {
                   label: "Professional Development",
                   icon: <BookOpen size={16} />,
-                  route: "/teachers/development",
+                  route: "/faculties/development",
                 },
               ]}
             />
 
             <SidebarItem
-              icon={<BookOpen className="text-blue-400" />}
+              icon={
+                <BookOpen
+                  className={
+                    pathname?.startsWith("/classes")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Classes & Curriculum"
               isOpen={isOpen}
               hasSubmenu
@@ -358,7 +403,15 @@ export default function Sidebar() {
             />
 
             <SidebarItem
-              icon={<Medal className="text-amber-400" />}
+              icon={
+                <Medal
+                  className={
+                    pathname?.startsWith("/exams")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Examinations"
               isOpen={isOpen}
               hasSubmenu
@@ -397,7 +450,15 @@ export default function Sidebar() {
 
           <SidebarSection title="Administration" isOpen={isOpen}>
             <SidebarItem
-              icon={<HeartPulse className="text-rose-400" />}
+              icon={
+                <HeartPulse
+                  className={
+                    pathname?.startsWith("/health")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Health Services"
               isOpen={isOpen}
               hasSubmenu
@@ -430,7 +491,15 @@ export default function Sidebar() {
             />
 
             <SidebarItem
-              icon={<Bus className="text-amber-400" />}
+              icon={
+                <Bus
+                  className={
+                    pathname?.startsWith("/transport")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Transportation"
               isOpen={isOpen}
               hasSubmenu
@@ -462,7 +531,15 @@ export default function Sidebar() {
             />
 
             <SidebarItem
-              icon={<Utensils className="text-green-400" />}
+              icon={
+                <Utensils
+                  className={
+                    pathname?.startsWith("/food")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Food Services"
               isOpen={isOpen}
               hasSubmenu
@@ -491,7 +568,15 @@ export default function Sidebar() {
 
           <SidebarSection title="Finance" isOpen={isOpen}>
             <SidebarItem
-              icon={<DollarSign className="text-emerald-400" />}
+              icon={
+                <DollarSign
+                  className={
+                    pathname?.startsWith("/finance")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Financial Management"
               isOpen={isOpen}
               hasSubmenu
@@ -531,7 +616,15 @@ export default function Sidebar() {
 
           <SidebarSection title="Communication" isOpen={isOpen}>
             <SidebarItem
-              icon={<MessageSquareDot className="text-violet-400" />}
+              icon={
+                <MessageSquareDot
+                  className={
+                    pathname?.startsWith("/communication")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Communication"
               isOpen={isOpen}
               hasSubmenu
@@ -571,7 +664,15 @@ export default function Sidebar() {
             />
 
             <SidebarItem
-              icon={<Image className="text-pink-400" />}
+              icon={
+                <Image
+                  className={
+                    pathname?.startsWith("/media")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
               label="Media Center"
               isOpen={isOpen}
               hasSubmenu
@@ -599,11 +700,19 @@ export default function Sidebar() {
           </SidebarSection>
 
           <div className="mt-4 mb-2">
-            <Separator className="bg-slate-800/50" />
+            <Separator className="bg-gray-200" />
           </div>
 
           <SidebarItem
-            icon={<Building className="text-slate-400" />}
+            icon={
+              <Building
+                className={
+                  pathname?.startsWith("/administration")
+                    ? "text-white-600"
+                    : "text-gray-600"
+                }
+              />
+            }
             label="School Administration"
             isOpen={isOpen}
             hasSubmenu
@@ -635,7 +744,15 @@ export default function Sidebar() {
           />
 
           <SidebarItem
-            icon={<Settings className="text-slate-400" />}
+            icon={
+              <Settings
+                className={
+                  pathname?.startsWith("/settings")
+                    ? "text-white-600"
+                    : "text-gray-600"
+                }
+              />
+            }
             label="System Settings"
             isOpen={isOpen}
             hasSubmenu
@@ -667,7 +784,15 @@ export default function Sidebar() {
           />
 
           <SidebarItem
-            icon={<HelpCircle className="text-slate-400" />}
+            icon={
+              <HelpCircle
+                className={
+                  pathname?.startsWith("/support")
+                    ? "text-white-600"
+                    : "text-gray-600"
+                }
+              />
+            }
             label="Help & Support"
             route="/support"
             isOpen={isOpen}
@@ -676,26 +801,26 @@ export default function Sidebar() {
         </nav>
 
         {/* User Profile & Quick Actions */}
-        <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-slate-800/30 bg-gradient-to-b from-slate-900/50 to-slate-950 backdrop-blur-sm">
+        <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-gray-200 bg-white">
           <div className="flex items-center gap-3">
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="relative">
-                  <Avatar className="cursor-pointer border-2 border-slate-700/50 hover:border-sky-400 transition-colors rounded-xl">
+                  <Avatar className="cursor-pointer border-2 border-gray-200 hover:border-gray-500 transition-colors rounded-full">
                     <AvatarImage
                       src="https://randomuser.me/api/portraits/women/45.jpg"
                       alt="Principal"
                     />
-                    <AvatarFallback className="bg-gradient-to-br from-sky-400 to-blue-600 rounded-xl">
+                    <AvatarFallback className="bg-gradient-to-br from-gray-800 to-black rounded-full text-white">
                       PS
                     </AvatarFallback>
                   </Avatar>
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-slate-950 rounded-full"></div>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                 </div>
               </TooltipTrigger>
               <TooltipContent
                 side="right"
-                className="bg-slate-800 text-white border-slate-700"
+                className="bg-white text-black border-gray-200"
               >
                 User Profile
               </TooltipContent>
@@ -705,11 +830,11 @@ export default function Sidebar() {
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col truncate">
-                    <span className="font-semibold truncate text-white">
-                      Dr. Emily Smith
+                    <span className="font-semibold truncate text-black">
+                      Asif Imam
                     </span>
-                    <span className="text-xs text-slate-400 truncate">
-                      principal@edumanage.edu
+                    <span className="text-xs text-gray-500 truncate">
+                      asifimam@hustleCode.dev
                     </span>
                   </div>
                   <div className="flex items-center gap-1 ml-2">
@@ -718,10 +843,10 @@ export default function Sidebar() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-slate-400 hover:text-white hover:bg-white/10 relative rounded-xl"
+                          className="h-8 w-8 text-gray-500 hover:text-black hover:bg-gray-100 relative rounded-full"
                         >
                           <Bell size={16} />
-                          <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-xs rounded-full flex items-center justify-center">
+                          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                             4
                           </span>
                           <span className="sr-only">Notifications</span>
@@ -729,7 +854,7 @@ export default function Sidebar() {
                       </TooltipTrigger>
                       <TooltipContent
                         side="top"
-                        className="bg-slate-800 text-white border-slate-700"
+                        className="bg-white text-black border-gray-200"
                       >
                         Notifications
                       </TooltipContent>
@@ -739,7 +864,7 @@ export default function Sidebar() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl"
+                          className="h-8 w-8 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
                         >
                           <MessageSquare size={16} />
                           <span className="sr-only">Messages</span>
@@ -747,7 +872,7 @@ export default function Sidebar() {
                       </TooltipTrigger>
                       <TooltipContent
                         side="top"
-                        className="bg-slate-800 text-white border-slate-700"
+                        className="bg-white text-black border-gray-200"
                       >
                         Messages
                       </TooltipContent>
@@ -757,7 +882,7 @@ export default function Sidebar() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl"
+                          className="h-8 w-8 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
                           onClick={() => router.push("/logout")}
                         >
                           <LogOut size={16} />
@@ -766,7 +891,7 @@ export default function Sidebar() {
                       </TooltipTrigger>
                       <TooltipContent
                         side="top"
-                        className="bg-slate-800 text-white border-slate-700"
+                        className="bg-white text-black border-gray-200"
                       >
                         Logout
                       </TooltipContent>
@@ -796,7 +921,7 @@ function SidebarSection({
     <div className="mt-2 mb-1">
       {isOpen && (
         <div className="px-3 py-1.5">
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
             {title}
           </h2>
         </div>
@@ -852,15 +977,15 @@ function SidebarItem({
           <Link href={route || "#"} passHref>
             <div
               className={cn(
-                "flex items-center justify-center p-3 mx-1 my-1.5 rounded-xl relative transition-all duration-200",
+                "flex items-center justify-center p-3 mx-1 my-1.5 rounded-full relative transition-all duration-200",
                 isActive
-                  ? "bg-gradient-to-r from-sky-500/20 to-blue-500/20 text-white shadow-lg ring-1 ring-white/10"
-                  : "text-slate-400 hover:bg-white/5 hover:text-white"
+                  ? "bg-gray-800 text-white shadow-lg"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-black"
               )}
             >
               <div className="w-5 h-5">{icon}</div>
               {badge && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-rose-500 hover:bg-rose-600 rounded-full">
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 hover:bg-red-600 text-white rounded-full">
                   {badge}
                 </Badge>
               )}
@@ -869,7 +994,7 @@ function SidebarItem({
         </TooltipTrigger>
         <TooltipContent
           side="right"
-          className="bg-slate-800 text-white border-slate-700"
+          className="bg-white text-black border-gray-200"
         >
           {label}
         </TooltipContent>
@@ -884,16 +1009,16 @@ function SidebarItem({
         <TooltipTrigger asChild>
           <div
             className={cn(
-              "flex items-center justify-center p-3 mx-1 my-1.5 rounded-xl relative cursor-pointer transition-all duration-200",
+              "flex items-center justify-center p-3 mx-1 my-1.5 rounded-full relative cursor-pointer transition-all duration-200",
               isActive
-                ? "bg-gradient-to-r from-sky-500/20 to-blue-500/20 text-white shadow-lg ring-1 ring-white/10"
-                : "text-slate-400 hover:bg-white/5 hover:text-white"
+                ? "bg-gray-800 text-white shadow-lg"
+                : "text-gray-600 hover:bg-gray-100 hover:text-black"
             )}
             onClick={onSubmenuToggle}
           >
             <div className="w-5 h-5">{icon}</div>
             {badge && (
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-rose-500 hover:bg-rose-600 rounded-full">
+              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 hover:bg-red-600 text-white rounded-full">
                 {badge}
               </Badge>
             )}
@@ -901,20 +1026,20 @@ function SidebarItem({
         </TooltipTrigger>
         <TooltipContent
           side="right"
-          className="p-0 bg-slate-800 border-slate-700 overflow-hidden rounded-xl"
+          className="p-0 bg-white border-gray-200 overflow-hidden rounded-xl"
         >
           <div className="py-1.5 px-2">
-            <p className="font-semibold text-white border-b border-slate-700/50 pb-1.5">
+            <p className="font-semibold text-black border-b border-gray-200 pb-1.5">
               {label}
             </p>
             <div className="space-y-1 mt-1.5">
               {submenu.map((item, index) => (
                 <Link href={item.route} key={index} passHref>
-                  <div className="flex items-center gap-2 py-1.5 px-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                  <div className="flex items-center gap-2 py-1.5 px-2 text-sm text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
                     {item.icon}
                     <span>{item.label}</span>
                     {item.badge && (
-                      <Badge className="h-5 ml-auto bg-rose-500 hover:bg-rose-600">
+                      <Badge className="h-5 ml-auto bg-red-500 hover:bg-red-600 text-white">
                         {item.badge}
                       </Badge>
                     )}
@@ -928,65 +1053,97 @@ function SidebarItem({
     );
   }
 
-  // Expanded sidebar item view
+  // Expanded sidebar view
   return (
-    <div className="mb-1">
-      <Link
-        href={hasSubmenu ? "#" : route || "#"}
-        passHref
+    <div className="mb-0.5">
+      {/* Main Item */}
+      <div
+        className={cn(
+          "relative flex items-center gap-3 px-3 py-2.5 mx-1.5 my-0.5 rounded-full cursor-pointer group transition-all duration-200",
+          isActive
+            ? "bg-gray-800 text-white shadow-md"
+            : "text-gray-700 hover:bg-gray-100 hover:text-black"
+        )}
         onClick={handleItemClick}
       >
-        <div
-          className={cn(
-            "flex items-center justify-between px-3 py-2.5 mx-1 rounded-xl transition-all duration-200 group",
-            isActive
-              ? "bg-gradient-to-r from-sky-500/20 to-blue-500/20 text-white shadow-lg"
-              : "text-slate-300 hover:bg-white/5 hover:text-white"
-          )}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-5 h-5">{icon}</div>
-            <span className="font-medium text-sm">{label}</span>
-            {badge && (
-              <Badge className="bg-rose-500 hover:bg-rose-600">{badge}</Badge>
-            )}
-          </div>
-          {hasSubmenu && (
+        {route && !hasSubmenu ? (
+          <Link href={route} className="flex items-center gap-3 w-full">
             <div
               className={cn(
-                "transition-transform duration-200",
-                isSubmenuOpen ? "rotate-90" : ""
+                "w-6 h-6 flex-shrink-0",
+                isActive ? "text-white" : "text-gray-600 group-hover:text-black"
               )}
             >
-              <ChevronRight size={16} className="text-slate-400" />
+              {icon}
             </div>
-          )}
-        </div>
-      </Link>
+            <span className="text-sm font-medium">{label}</span>
+          </Link>
+        ) : (
+          <>
+            <div
+              className={cn(
+                "w-6 h-6 flex-shrink-0",
+                isActive ? "text-white" : "text-gray-600 group-hover:text-black"
+              )}
+            >
+              {icon}
+            </div>
+            <span className="text-sm font-medium flex-1">{label}</span>
+            {hasSubmenu && (
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  isSubmenuOpen && "transform rotate-180",
+                  isActive
+                    ? "text-white"
+                    : "text-gray-500 group-hover:text-black"
+                )}
+              />
+            )}
+          </>
+        )}
+        {badge && (
+          <Badge
+            className={cn(
+              "ml-auto",
+              isActive
+                ? "bg-white text-gray-800"
+                : "bg-red-500 hover:bg-red-600 text-white"
+            )}
+          >
+            {badge}
+          </Badge>
+        )}
+      </div>
 
       {/* Submenu */}
       {hasSubmenu && isSubmenuOpen && (
-        <div className="mt-1 ml-4 pl-4 border-l border-slate-800/50 space-y-1">
-          {submenu.map((item, index) => (
-            <Link href={item.route} key={index} passHref>
-              <div
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors",
-                  pathname === item.route
-                    ? "bg-sky-500/10 text-sky-400"
-                    : "text-slate-400 hover:bg-white/5 hover:text-white"
-                )}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-                {item.badge && (
-                  <Badge className="ml-auto bg-rose-500 hover:bg-rose-600">
-                    {item.badge}
-                  </Badge>
-                )}
-              </div>
-            </Link>
-          ))}
+        <div className="mt-1 ml-4 pl-4 border-l border-gray-200 space-y-0.5">
+          {submenu.map((item, index) => {
+            const isItemActive = pathname === item.route;
+            return (
+              <Link href={item.route} key={index} passHref>
+                <div
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-2 rounded-full text-sm group transition-colors",
+                    isItemActive
+                      ? "bg-gray-100 text-black font-medium"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-black"
+                  )}
+                >
+                  <div className="w-4 h-4 text-gray-500 group-hover:text-black">
+                    {item.icon}
+                  </div>
+                  <span>{item.label}</span>
+                  {item.badge && (
+                    <Badge className="ml-auto bg-red-500 hover:bg-red-600 text-white">
+                      {item.badge}
+                    </Badge>
+                  )}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>
