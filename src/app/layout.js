@@ -41,9 +41,10 @@ export default function RootLayout({ children }) {
           <>{children}</>
         )}
         <Toaster
+          position="top-right"
           toastOptions={{
             className:
-              "!rounded-full bg-white shadow-xl border border-gray-200 text-sm text-gray-800",
+              "!rounded-3xl bg-white shadow-xl border border-gray-200 text-lg text-gray-800",
             duration: 3000, // optional: auto dismiss after 3s
           }}
         />

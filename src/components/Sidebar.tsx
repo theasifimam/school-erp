@@ -206,7 +206,7 @@ export default function Sidebar() {
         )} */}
 
         {/* Sidebar Navigation */}
-        <nav className="flex flex-col mt-2 px-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent h-[calc(100vh-180px)]">
+        <nav className="flex flex-col mt-2 px-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 scrollbar-track-transparent h-[calc(100vh-180px)]">
           <SidebarSection title="Main" isOpen={isOpen}>
             <SidebarItem
               icon={

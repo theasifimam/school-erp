@@ -31,7 +31,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/layout.js"  ],
+, "src/app/layout.js", "src/app/students/attendance/page.jsx", "src/app/students/behavior/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]
