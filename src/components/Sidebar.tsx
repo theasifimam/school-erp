@@ -316,7 +316,7 @@ export default function Sidebar() {
               icon={
                 <User
                   className={
-                    pathname?.startsWith("/faculties")
+                    pathname?.startsWith("/faculty")
                       ? "text-white-600"
                       : "text-gray-600"
                   }
@@ -325,34 +325,34 @@ export default function Sidebar() {
               label="Faculties"
               isOpen={isOpen}
               hasSubmenu
-              isSubmenuOpen={openSubmenu === "faculties"}
-              onSubmenuToggle={() => toggleSubmenu("faculties")}
-              isActive={pathname?.startsWith("/faculties")}
+              isSubmenuOpen={openSubmenu === "faculty"}
+              onSubmenuToggle={() => toggleSubmenu("faculty")}
+              isActive={pathname?.startsWith("/faculty")}
               submenu={[
                 {
-                  label: "All Faculties",
+                  label: "All Faculty",
                   icon: <Users size={16} />,
-                  route: "/faculties/all",
+                  route: "/faculty/all",
                 },
                 {
                   label: "Assign Classes",
                   icon: <BookOpen size={16} />,
-                  route: "/faculties/assign",
+                  route: "/faculty/assign",
                 },
                 {
                   label: "Attendance",
                   icon: <ClipboardList size={16} />,
-                  route: "/faculties/attendance",
+                  route: "/faculty/attendance",
                 },
                 {
                   label: "Performance Review",
                   icon: <FileBarChart size={16} />,
-                  route: "/faculties/performance",
+                  route: "/faculty/performance",
                 },
                 {
                   label: "Professional Development",
                   icon: <BookOpen size={16} />,
-                  route: "/faculties/development",
+                  route: "/faculty/development",
                 },
               ]}
             />

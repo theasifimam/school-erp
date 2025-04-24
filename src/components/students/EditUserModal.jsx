@@ -75,7 +75,7 @@ export default function EditUserModal({ isOpen, onClose, user }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl p-0 rounded-2xl overflow-hidden h-[85vh] flex flex-col">
+      <DialogContent className="max-w-2xl p-0 rounded-3xl overflow-hidden h-[85vh] flex flex-col">
         <DialogHeader className="border-b px-6 py-4">
           <DialogTitle className="text-lg font-semibold">
             Edit User Profile
