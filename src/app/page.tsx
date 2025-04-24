@@ -657,11 +657,11 @@ function TeacherDashboard({
               {data.classSchedule.map((cls: any, index: number) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 border rounded-lg"
+                  className="flex items-center justify-between p-3 pr-6 border rounded-full"
                 >
                   <div className="flex items-center space-x-3">
                     <div
-                      className={`p-2 rounded-lg ${
+                      className={`p-3 rounded-full ${
                         darkMode ? "bg-gray-700" : "bg-gray-100"
                       }`}
                     >
@@ -674,7 +674,7 @@ function TeacherDashboard({
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" className="rounded-full" size="sm">
                     View Class
                   </Button>
                 </div>
@@ -720,14 +720,14 @@ function TeacherDashboard({
                   contentStyle={{
                     backgroundColor: darkMode ? "#1F2937" : "#FFFFFF",
                     borderColor: darkMode ? "#374151" : "#E5E7EB",
-                    borderRadius: "0.5rem",
+                    borderRadius: "1rem",
                   }}
                 />
                 <Bar
                   dataKey="students"
                   name="Students"
-                  fill="#4F46E5"
-                  radius={[4, 4, 0, 0]}
+                  fill="#000000" // bar color changed to black
+                  radius={[26, 26, 0, 0]}
                 />
               </BarChart>
             </ResponsiveContainer>
