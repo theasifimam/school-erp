@@ -1,8 +1,189 @@
-"use client";
-
+// First, let's create a new store for admission-related state
+// /src/lib/state/stores/admissionStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { useState } from "react";
+import { Student } from "../../types";
+
+export interface AdmissionFormData {
+  // Personal Info
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  preferredName?: string;
+  gender?: string;
+  dob?: string;
+  photoUrl?: string;
+  bloodGroup?: string;
+  medicalConditions?: string;
+
+  // Contact Info
+  email: string;
+  phone: string;
+  alternatePhone?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  emergencyRelation?: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  zipCode: string;
+
+  // Family Info
+  fatherName?: string;
+  fatherOccupation?: string;
+  fatherPhone?: string;
+  fatherEmail?: string;
+  motherName?: string;
+  motherOccupation?: string;
+  motherPhone?: string;
+  motherEmail?: string;
+  siblings?: number;
+  siblingsAtSchool?: boolean;
+  familyNotes?: string;
+
+  // Academic Info
+  appliedClass: string;
+  session: string;
+  admissionType: string;
+  board?: string;
+  previousSchool?: string;
+  schoolAddress?: string;
+  lastClass?: string;
+  lastGrade?: string;
+  transferCertificate?: boolean;
+  stream?: string;
+  achievements?: string;
+
+  // Additional Info
+  languages?: string;
+  transport?: boolean;
+  hostel?: boolean;
+  activities?: string;
+  specialNeeds?: boolean;
+  hearAbout?: string;
+  additionalInfo?: string;
+  termsAccepted: boolean;
+}
+
+interface AdmissionState {
+  formData: Partial<AdmissionFormData>;
+  activeTab: string;
+  isComplete: boolean;
+  referenceNumber: string | null;
+  updateFormData: (data: Partial<AdmissionFormData>) => void;
+  setActiveTab: (tabId: string) => void;
+  resetForm: () => void;
+  setReferenceNumber: (number: string) => void;
+}
+
+export const useAdmissionStore = create<AdmissionState>()(
+  persist(
+    (set) => ({
+      formData: {},
+      activeTab: "personalInfo",
+      isComplete: false,
+      referenceNumber: null,
+
+      updateFormData: (data) =>
+        set((state) => ({
+          formData: { ...state.formData, ...data },
+        })),
+
+      setActiveTab: (tabId) => set({ activeTab: tabId }),
+
+      resetForm: () =>
+        set({
+          formData: {},
+          activeTab: "personalInfo",
+          isComplete: false,
+          referenceNumber: null,
+        }),
+
+      setReferenceNumber: (number) =>
+        set({
+          referenceNumber: number,
+          isComplete: true,
+        }),
+    }),
+    {
+      name: "erp-admission-storage",
+      partialize: (state) => ({
+        formData: state.formData,
+        activeTab: state.activeTab,
+      }),
+    }
+  )
+);
+
+// Now let's create API endpoints for admissions
+// /src/lib/api/endpoints.ts (add the following to your existing endpoints file)
+
+export const admissionApi = {
+  submit: (formData: Partial<AdmissionFormData>) =>
+    fetcher<{ success: boolean; referenceNumber: string }>("/admissions", {
+      method: "POST",
+      body: JSON.stringify(formData),
+    }),
+
+  getStatus: (referenceNumber: string) =>
+    fetcher<{ status: string; stage: string; nextSteps: string }>(
+      `/admissions/${referenceNumber}/status`
+    ),
+
+  uploadDocument: (
+    referenceNumber: string,
+    documentType: string,
+    file: File
+  ) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    return fetcher<{ success: boolean; fileUrl: string }>(
+      `/admissions/${referenceNumber}/documents/${documentType}`,
+      {
+        method: "POST",
+        body: formData,
+        headers: {}, // Let the browser set the content type for FormData
+      }
+    );
+  },
+};
+
+// Let's create query hooks for admission
+// /src/lib/state/queries/useAdmission.ts
+("use client");
+
+import { useMutation } from "@tanstack/react-query";
+import { admissionApi } from "../../api/endpoints";
+import { AdmissionFormData } from "../stores/admissionStore";
+
+export function useSubmitAdmission() {
+  return useMutation({
+    mutationFn: (formData: Partial<AdmissionFormData>) =>
+      admissionApi.submit(formData),
+  });
+}
+
+export function useUploadDocument() {
+  return useMutation({
+    mutationFn: ({
+      referenceNumber,
+      documentType,
+      file,
+    }: {
+      referenceNumber: string;
+      documentType: string;
+      file: File;
+    }) => admissionApi.uploadDocument(referenceNumber, documentType, file),
+  });
+}
+
+// Now let's modify the admission form component to use our state management
+// /src/app/admission/page.tsx (or wherever your form component is located)
+("use client");
+
+import { useState, useRef, ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -42,30 +223,99 @@ import {
   ImagePlus,
   Calendar,
   HeartPulse,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 
+// Import our store and hooks
+import {
+  useAdmissionStore,
+  AdmissionFormData,
+} from "@/lib/state/stores/admissionStore";
+import {
+  useSubmitAdmission,
+  useUploadDocument,
+} from "@/lib/state/queries/useAdmission";
+
 export default function ModernAdmissionForm() {
-  const [activeTab, setActiveTab] = useState("personalInfo");
+  // Replace useState with our Zustand store
+  const {
+    formData,
+    activeTab,
+    referenceNumber,
+    updateFormData,
+    setActiveTab,
+    setReferenceNumber,
+  } = useAdmissionStore();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleInputChange = (e) => {
+  // Use TanStack Query mutations
+  const submitAdmission = useSubmitAdmission();
+  const uploadDocument = useUploadDocument();
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    updateFormData({ [id]: value });
   };
 
-  const handleSelectChange = (id, value) => {
-    setFormData((prev) => ({ ...prev, [id]: value }));
+  const handleSelectChange = (id: string, value: string) => {
+    updateFormData({ [id]: value });
   };
 
-  const handleSubmit = () => {
-    toast.success("Application Submitted Successfully", {
-      description:
-        "Your reference number: ADM-" +
-        Math.floor(100000 + Math.random() * 900000),
-      duration: 5000,
-    });
+  const handleSwitchChange = (id: string, checked: boolean) => {
+    updateFormData({ [id]: checked });
+  };
+
+  const handlePhotoUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Create object URL for preview
+    const objectUrl = URL.createObjectURL(file);
+    updateFormData({ photoUrl: objectUrl });
+
+    // We'll handle the actual upload when the form is submitted
+    // For now just store the file reference
+    setPhotoFile(file);
+  };
+
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+
+  const handleSubmit = async () => {
+    try {
+      // Submit the form data
+      const result = await submitAdmission.mutateAsync(
+        formData as AdmissionFormData
+      );
+
+      // Store the reference number
+      setReferenceNumber(result.referenceNumber);
+
+      // If we have a photo to upload, do that now
+      if (photoFile && result.referenceNumber) {
+        await uploadDocument.mutateAsync({
+          referenceNumber: result.referenceNumber,
+          documentType: "photo",
+          file: photoFile,
+        });
+      }
+
+      toast.success("Application Submitted Successfully", {
+        description: `Your reference number: ${result.referenceNumber}`,
+        duration: 5000,
+      });
+
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error("Failed to submit application", {
+        description: "Please try again later or contact support",
+        duration: 5000,
+      });
+    }
   };
 
   const formSections = [
@@ -83,6 +333,7 @@ export default function ModernAdmissionForm() {
               id="firstName"
               placeholder="John"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.firstName || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -94,6 +345,7 @@ export default function ModernAdmissionForm() {
               id="middleName"
               placeholder="William"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.middleName || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -105,6 +357,7 @@ export default function ModernAdmissionForm() {
               id="lastName"
               placeholder="Doe"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.lastName || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -116,6 +369,7 @@ export default function ModernAdmissionForm() {
               id="preferredName"
               placeholder="Johnny"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.preferredName || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -124,6 +378,7 @@ export default function ModernAdmissionForm() {
               Gender*
             </Label>
             <Select
+              value={formData.gender || ""}
               onValueChange={(value) => handleSelectChange("gender", value)}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
@@ -148,6 +403,7 @@ export default function ModernAdmissionForm() {
               id="dob"
               type="date"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.dob || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -162,19 +418,38 @@ export default function ModernAdmissionForm() {
               </span>
             </Label>
             <div className="mt-1 flex items-center">
+              <input
+                type="file"
+                id="photo"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/jpeg,image/png"
+                onChange={handlePhotoUpload}
+              />
               <Button
                 variant="outline"
                 className="border-dashed border-gray-300 bg-white hover:bg-gray-50 rounded-full w-full flex items-center justify-center py-5"
+                onClick={() => fileInputRef.current?.click()}
               >
                 <ImagePlus className="mr-2 h-4 w-4" /> Upload Photo
               </Button>
             </div>
+            {formData.photoUrl && (
+              <div className="mt-2 relative w-16 h-16 rounded-full overflow-hidden">
+                <img
+                  src={formData.photoUrl}
+                  alt="Student Photo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
           </div>
           <div>
             <Label htmlFor="bloodGroup" className="text-sm font-medium">
               Blood Group
             </Label>
             <Select
+              value={formData.bloodGroup || ""}
               onValueChange={(value) => handleSelectChange("bloodGroup", value)}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
@@ -200,6 +475,7 @@ export default function ModernAdmissionForm() {
               id="medicalConditions"
               placeholder="Please list any medical conditions, allergies, or special needs"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
+              value={formData.medicalConditions || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -221,6 +497,7 @@ export default function ModernAdmissionForm() {
               type="email"
               placeholder="student@example.com"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.email || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -233,9 +510,11 @@ export default function ModernAdmissionForm() {
               type="tel"
               placeholder="(123) 456-7890"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.phone || ""}
               onChange={handleInputChange}
             />
           </div>
+          {/* Remaining contact fields */}
           <div>
             <Label htmlFor="alternatePhone" className="text-sm font-medium">
               Alternate Phone Number
@@ -245,6 +524,7 @@ export default function ModernAdmissionForm() {
               type="tel"
               placeholder="(123) 456-7890"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.alternatePhone || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -259,35 +539,11 @@ export default function ModernAdmissionForm() {
               id="emergencyContactName"
               placeholder="Jane Doe"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.emergencyContactName || ""}
               onChange={handleInputChange}
             />
           </div>
-          <div>
-            <Label
-              htmlFor="emergencyContactPhone"
-              className="text-sm font-medium"
-            >
-              Emergency Contact Phone
-            </Label>
-            <Input
-              id="emergencyContactPhone"
-              type="tel"
-              placeholder="(123) 456-7890"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="emergencyRelation" className="text-sm font-medium">
-              Relationship to Student
-            </Label>
-            <Input
-              id="emergencyRelation"
-              placeholder="Parent/Guardian/Relative"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
+          {/* More contact fields omitted for brevity - add all fields from original form */}
           <div className="md:col-span-2">
             <Label htmlFor="address" className="text-sm font-medium">
               Current Address*
@@ -296,6 +552,7 @@ export default function ModernAdmissionForm() {
               id="address"
               placeholder="123 Main St"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.address || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -307,6 +564,7 @@ export default function ModernAdmissionForm() {
               id="city"
               placeholder="New York"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.city || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -318,172 +576,17 @@ export default function ModernAdmissionForm() {
               id="state"
               placeholder="NY"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              value={formData.state || ""}
               onChange={handleInputChange}
             />
           </div>
-          <div>
-            <Label htmlFor="country" className="text-sm font-medium">
-              Country*
-            </Label>
-            <Input
-              id="country"
-              placeholder="United States"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="zipCode" className="text-sm font-medium">
-              Zip/Postal Code*
-            </Label>
-            <Input
-              id="zipCode"
-              placeholder="10001"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
+          {/* Additional fields would be added here following the same pattern */}
         </div>
       ),
     },
-    {
-      id: "familyInfo",
-      label: "Family",
-      icon: <Home className="mr-2 h-4 w-4" />,
-      fields: (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="fatherName" className="text-sm font-medium">
-              Father&apos;s/Guardian 1 Full Name
-            </Label>
-            <Input
-              id="fatherName"
-              placeholder="John Doe Sr."
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="fatherOccupation" className="text-sm font-medium">
-              Occupation
-            </Label>
-            <Input
-              id="fatherOccupation"
-              placeholder="Engineer"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="fatherPhone" className="text-sm font-medium">
-              Phone Number
-            </Label>
-            <Input
-              id="fatherPhone"
-              type="tel"
-              placeholder="(123) 456-7890"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="fatherEmail" className="text-sm font-medium">
-              Email Address
-            </Label>
-            <Input
-              id="fatherEmail"
-              type="email"
-              placeholder="father@example.com"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="h-px bg-gray-200 md:col-span-2 my-2" />
-          <div>
-            <Label htmlFor="motherName" className="text-sm font-medium">
-              Mother&apos;s/Guardian 2 Full Name
-            </Label>
-            <Input
-              id="motherName"
-              placeholder="Jane Doe"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="motherOccupation" className="text-sm font-medium">
-              Occupation
-            </Label>
-            <Input
-              id="motherOccupation"
-              placeholder="Doctor"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="motherPhone" className="text-sm font-medium">
-              Phone Number
-            </Label>
-            <Input
-              id="motherPhone"
-              type="tel"
-              placeholder="(123) 456-7890"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="motherEmail" className="text-sm font-medium">
-              Email Address
-            </Label>
-            <Input
-              id="motherEmail"
-              type="email"
-              placeholder="mother@example.com"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="h-px bg-gray-200 md:col-span-2 my-2" />
-          <div>
-            <Label htmlFor="siblings" className="text-sm font-medium">
-              Number of Siblings
-            </Label>
-            <Input
-              id="siblings"
-              type="number"
-              placeholder="0"
-              min="0"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="siblingsAtSchool" className="text-sm font-medium">
-              Siblings at this School
-            </Label>
-            <div className="flex items-center space-x-2 mt-3">
-              <Switch id="siblingsAtSchool" />
-              <Label htmlFor="siblingsAtSchool" className="text-sm">
-                Yes
-              </Label>
-            </div>
-          </div>
-          <div className="md:col-span-2">
-            <Label htmlFor="familyNotes" className="text-sm font-medium">
-              Additional Family Information
-            </Label>
-            <Textarea
-              id="familyNotes"
-              placeholder="Any additional information about family circumstances that the school should be aware of"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
-      ),
-    },
+    // Include other sections similar to the original, but updating to use our state management
+    // Family, Academic, Additional sections
+    // I'll show one more example section:
     {
       id: "academicInfo",
       label: "Academic",
@@ -495,6 +598,7 @@ export default function ModernAdmissionForm() {
               Applying for Class*
             </Label>
             <Select
+              value={formData.appliedClass || ""}
               onValueChange={(value) =>
                 handleSelectChange("appliedClass", value)
               }
@@ -520,11 +624,13 @@ export default function ModernAdmissionForm() {
               </SelectContent>
             </Select>
           </div>
+
           <div>
             <Label htmlFor="session" className="text-sm font-medium">
               Academic Session*
             </Label>
             <Select
+              value={formData.session || ""}
               onValueChange={(value) => handleSelectChange("session", value)}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
@@ -537,249 +643,11 @@ export default function ModernAdmissionForm() {
               </SelectContent>
             </Select>
           </div>
-          <div>
-            <Label htmlFor="admissionType" className="text-sm font-medium">
-              Admission Type*
-            </Label>
-            <Select
-              onValueChange={(value) =>
-                handleSelectChange("admissionType", value)
-              }
-            >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
-                <SelectValue placeholder="Select Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="new">New Admission</SelectItem>
-                <SelectItem value="transfer">Transfer</SelectItem>
-                <SelectItem value="readmission">Re-Admission</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="board" className="text-sm font-medium">
-              Board/Curriculum Preference
-            </Label>
-            <Select
-              onValueChange={(value) => handleSelectChange("board", value)}
-            >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
-                <SelectValue placeholder="Select Board" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="cbse">CBSE</SelectItem>
-                <SelectItem value="icse">ICSE</SelectItem>
-                <SelectItem value="state">State Board</SelectItem>
-                <SelectItem value="ib">International Baccalaureate</SelectItem>
-                <SelectItem value="igcse">Cambridge IGCSE</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="previousSchool" className="text-sm font-medium">
-              Previous School (if any)
-            </Label>
-            <Input
-              id="previousSchool"
-              placeholder="ABC School"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="schoolAddress" className="text-sm font-medium">
-              Previous School Address
-            </Label>
-            <Input
-              id="schoolAddress"
-              placeholder="123 School St, City"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="lastClass" className="text-sm font-medium">
-              Last Class Attended
-            </Label>
-            <Input
-              id="lastClass"
-              placeholder="e.g. Class 5"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="lastGrade" className="text-sm font-medium">
-              Last Grade/Percentage
-            </Label>
-            <Input
-              id="lastGrade"
-              placeholder="e.g. A / 85%"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label
-              htmlFor="transferCertificate"
-              className="text-sm font-medium"
-            >
-              Transfer Certificate Available
-            </Label>
-            <div className="flex items-center space-x-2 mt-3">
-              <Switch id="transferCertificate" />
-              <Label htmlFor="transferCertificate" className="text-sm">
-                Yes
-              </Label>
-            </div>
-          </div>
-          <div>
-            <Label htmlFor="stream" className="text-sm font-medium">
-              Stream (for Class 11-12)
-            </Label>
-            <Select
-              onValueChange={(value) => handleSelectChange("stream", value)}
-            >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
-                <SelectValue placeholder="Select Stream" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="science">Science</SelectItem>
-                <SelectItem value="commerce">Commerce</SelectItem>
-                <SelectItem value="arts">Arts/Humanities</SelectItem>
-                <SelectItem value="na">Not Applicable</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="md:col-span-2">
-            <Label htmlFor="achievements" className="text-sm font-medium">
-              Academic/Extra-curricular Achievements
-            </Label>
-            <Textarea
-              id="achievements"
-              placeholder="List any notable achievements or awards"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
-              onChange={handleInputChange}
-            />
-          </div>
+          {/* Add other fields similarly */}
         </div>
       ),
     },
-    {
-      id: "additionalInfo",
-      label: "Additional",
-      icon: <FileText className="mr-2 h-4 w-4" />,
-      fields: (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="languages" className="text-sm font-medium">
-              Languages Known
-            </Label>
-            <Input
-              id="languages"
-              placeholder="e.g. English, Spanish, Hindi"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor="transport" className="text-sm font-medium">
-              Transportation Required
-            </Label>
-            <div className="flex items-center space-x-2 mt-3">
-              <Switch id="transport" />
-              <Label htmlFor="transport" className="text-sm">
-                Yes
-              </Label>
-            </div>
-          </div>
-          <div>
-            <Label htmlFor="hostel" className="text-sm font-medium">
-              Hostel Accommodation Required
-            </Label>
-            <div className="flex items-center space-x-2 mt-3">
-              <Switch id="hostel" />
-              <Label htmlFor="hostel" className="text-sm">
-                Yes
-              </Label>
-            </div>
-          </div>
-          <div>
-            <Label htmlFor="activities" className="text-sm font-medium">
-              Extra-curricular Interests
-            </Label>
-            <Select
-              onValueChange={(value) => handleSelectChange("activities", value)}
-            >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
-                <SelectValue placeholder="Select Interests" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="sports">Sports</SelectItem>
-                <SelectItem value="music">Music</SelectItem>
-                <SelectItem value="dance">Dance</SelectItem>
-                <SelectItem value="art">Art & Craft</SelectItem>
-                <SelectItem value="debate">Debate & Speech</SelectItem>
-                <SelectItem value="science">Science Club</SelectItem>
-                <SelectItem value="coding">Coding & Robotics</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="specialNeeds" className="text-sm font-medium">
-              Special Educational Needs
-            </Label>
-            <div className="flex items-center space-x-2 mt-3">
-              <Switch id="specialNeeds" />
-              <Label htmlFor="specialNeeds" className="text-sm">
-                Yes
-              </Label>
-            </div>
-          </div>
-          <div>
-            <Label htmlFor="hearAbout" className="text-sm font-medium">
-              How did you hear about us?
-            </Label>
-            <Select
-              onValueChange={(value) => handleSelectChange("hearAbout", value)}
-            >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
-                <SelectValue placeholder="Select" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="website">School Website</SelectItem>
-                <SelectItem value="social">Social Media</SelectItem>
-                <SelectItem value="newspaper">Newspaper/Magazine</SelectItem>
-                <SelectItem value="friend">Friend/Family</SelectItem>
-                <SelectItem value="event">School Event</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="md:col-span-2">
-            <Label htmlFor="additionalInfo" className="text-sm font-medium">
-              Any Additional Information
-            </Label>
-            <Textarea
-              id="additionalInfo"
-              placeholder="Share any additional information that might be relevant to your application"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="md:col-span-2 mt-2">
-            <div className="flex items-center space-x-2">
-              <Switch id="termsAccepted" />
-              <Label htmlFor="termsAccepted" className="text-sm">
-                I confirm that all information provided is accurate and
-                complete. I agree to the school's terms and conditions.
-              </Label>
-            </div>
-          </div>
-        </div>
-      ),
-    },
+    // Add other sections from the original form, following the same pattern
   ];
 
   const nextTab = () => {
@@ -792,7 +660,7 @@ export default function ModernAdmissionForm() {
   };
 
   // Page Version
-  const PageVersion = () => (
+  return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-full mx-auto">
         <Card className="overflow-hidden border border-gray-100 pt-0 shadow-md rounded-3xl">
@@ -806,7 +674,7 @@ export default function ModernAdmissionForm() {
             </CardDescription>
           </CardHeader>
 
-          {/* Fixed navigation bar - removed form fields from here */}
+          {/* Fixed navigation bar */}
           <div className="flex bg-white border-b border-gray-100 p-4 overflow-x-auto">
             {formSections.map((section, index) => (
               <div
@@ -932,22 +800,61 @@ export default function ModernAdmissionForm() {
               variant="outline"
               onClick={() => setIsModalOpen(false)}
               className="flex-1 rounded-full border-gray-300"
+              disabled={submitAdmission.isPending}
             >
               Go Back
             </Button>
             <Button
-              onClick={() => {
-                handleSubmit();
-                setIsModalOpen(false);
-              }}
+              onClick={handleSubmit}
               className="flex-1 rounded-full bg-black text-white hover:bg-gray-800"
+              disabled={submitAdmission.isPending}
             >
-              Confirm & Submit
+              {submitAdmission.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                  Processing...
+                </>
+              ) : (
+                "Confirm & Submit"
+              )}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Success Dialog - could be shown after successful submission */}
+      {referenceNumber && (
+        <Dialog open={!!referenceNumber} onOpenChange={() => {}}>
+          <DialogContent className="sm:max-w-md rounded-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-center text-xl font-semibold">
+                Application Submitted!
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4 text-center">
+              <Check className="mx-auto h-12 w-12 text-green-500" />
+              <p className="font-medium">
+                Your application has been submitted successfully.
+              </p>
+              <p>
+                Your reference number:{" "}
+                <span className="font-bold">{referenceNumber}</span>
+              </p>
+              <p className="text-sm text-gray-500">
+                Please save this reference number for future correspondence.
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <Button
+                className="rounded-full bg-black text-white hover:bg-gray-800"
+                onClick={() => (window.location.href = "/dashboard")}
+              >
+                Return to Dashboard
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
-  return <PageVersion />;
 }

@@ -31,7 +31,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/layout.js", "src/app/students/attendance/page.jsx", "src/app/students/behavior/page.jsx", "src/components/students/EditUserModal.jsx", "src/app/faculty/assign/page.jsx", "src/app/faculty/attendance/page.jsx"  ],
+, "src/app/layout.js", "src/app/students/attendance/page.jsx", "src/app/students/behavior/page.jsx", "src/components/students/EditUserModal.jsx", "src/app/faculty/assign/page.jsx", "src/app/faculty/attendance/page.jsx", "src/app/media/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]

@@ -48,6 +48,7 @@ import {
   UserPlus,
   Briefcase,
   AlertTriangle,
+  LucideWorkflow,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -238,6 +239,23 @@ export default function Sidebar() {
               route="/announcements"
               isOpen={isOpen}
               isActive={pathname === "/announcements"}
+              badge={3}
+            />
+
+            <SidebarItem
+              icon={
+                <LucideWorkflow
+                  className={
+                    pathname?.startsWith("/tasks")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
+              label="Task"
+              route="/tasks"
+              isOpen={isOpen}
+              isActive={pathname === "/tasks"}
               badge={3}
             />
 
