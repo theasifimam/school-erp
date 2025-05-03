@@ -1,6 +1,5 @@
 "use client";
 
-import { Message } from "../_types/conversations";
 import { cn } from "@/lib/utils";
 import { CheckCheck, Clock } from "lucide-react";
 import { useMemo } from "react";

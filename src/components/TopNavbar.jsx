@@ -1,39 +1,30 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import {
   School,
   Search,
-  Bell,
-  ChevronDown,
-  User,
-  LogOut,
-  Settings,
-  LayoutDashboard,
-  BookOpen,
-  Users,
-  Calendar,
-  ClipboardList,
-  GraduationCap,
-  FileText,
-  DollarSign,
-  Bus,
-  Library,
-  Award,
   CheckSquare,
   X,
   Plus,
   Edit,
   Trash2,
   GripVertical,
-  Info,
+  ChevronRight,
+  Menu,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import AvatarDropdown from "./navbar/AvatarDropdown";
+import NotificationsDropdown from "./navbar/NotificationsDropdown";
+import { Button } from "@/components/ui/button";
 
-export default function TopNavbar() {
+export default function TopNavbar({
+  isMobileOpen,
+  setIsMobileOpen,
+  isOpen,
+  setIsOpen,
+}) {
   // To-Do List State
   const [todoOpen, setTodoOpen] = useState(false);
   const [todos, setTodos] = useState([
@@ -154,12 +145,38 @@ export default function TopNavbar() {
     };
   }, [todoOpen, notifOpen, quickLinksOpen]);
 
+  // Toggle sidebar function
+  const toggleSidebar = () => {
+    if (window.innerWidth < 1024) {
+      // lg breakpoint
+      setIsMobileOpen(!isMobileOpen);
+    } else {
+      setIsOpen(!isOpen);
+    }
+  };
+
   return (
     <div className="flex flex-col">
       {/* Main Navigation Bar */}
       <nav className="bg-white text-gray-800 px-4 flex justify-between items-center h-16 border-b border-gray-100 sticky top-0 z-50 shadow-sm">
         {/* Left side - Logo/Brand and Main Nav Links */}
         <div className="flex items-center gap-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
+            onClick={toggleSidebar}
+          >
+            {isMobileOpen ? (
+              <X size={20} />
+            ) : window.innerWidth < 1024 ? (
+              <Menu size={20} />
+            ) : isOpen ? (
+              <ChevronRight size={20} />
+            ) : (
+              <ChevronRight size={20} className="rotate-180" />
+            )}
+          </Button>
           <div className="flex items-center gap-2">
             <School className="text-indigo-600 w-6 h-6" />
             <h1 className="text-xl font-semibold hidden md:block">EduManage</h1>
@@ -193,9 +210,9 @@ export default function TopNavbar() {
             {/* Todo List Dropdown */}
             {todoOpen && (
               <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-3xl border border-gray-200 w-80 z-50 max-h-96 overflow-hidden flex flex-col">
-                <div className="p-3 border-b border-gray-100 flex justify-between items-center bg-indigo-50">
-                  <h3 className="font-medium text-indigo-700">My Tasks</h3>
-                  <Badge className="bg-amber-500">
+                <div className="p-3 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                  <h3 className="font-medium text-gray-700">My Tasks</h3>
+                  <Badge className="bg-amber-500 rounded-3xl pb-1">
                     {todos.filter((t) => !t.completed).length} pending
                   </Badge>
                 </div>
@@ -214,7 +231,7 @@ export default function TopNavbar() {
                   />
                   <button
                     type="submit"
-                    className="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700"
+                    className="bg-gray-600 text-white p-2 rounded-3xl hover:bg-gray-700"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -305,211 +322,19 @@ export default function TopNavbar() {
                     </div>
                   )}
                 </div>
-
-                <div className="p-2 border-t border-gray-100 bg-gray-50">
-                  <a
-                    href="/tasks"
-                    className="text-xs text-indigo-600 hover:text-indigo-800 text-center block"
-                  >
-                    View all tasks
-                  </a>
-                </div>
               </div>
             )}
           </div>
 
           {/* Notifications */}
-          <div className="relative notif-container">
-            <button
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors relative"
-              onClick={() => setNotifOpen(!notifOpen)}
-            >
-              <Bell className="w-5 h-5 text-gray-600" />
-              <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs p-0">
-                {notifications.length}
-              </Badge>
-            </button>
+          <NotificationsDropdown
+            {...{ notifications, setNotifications, setNotifOpen, notifOpen }}
+          />
 
-            {/* Notifications Dropdown */}
-            {notifOpen && (
-              <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg border border-gray-200 w-80 z-50">
-                <div className="p-3 border-b border-gray-100 flex justify-between items-center bg-blue-50">
-                  <h3 className="font-medium text-blue-700">Notifications</h3>
-                  <Badge className="bg-blue-500">
-                    {notifications.length} new
-                  </Badge>
-                </div>
-
-                <div className="max-h-80 overflow-y-auto">
-                  {notifications.map((notif) => (
-                    <div
-                      key={notif.id}
-                      className="p-3 border-b border-gray-100 hover:bg-gray-50"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className={`rounded-full p-2 ${
-                            notif.type === "info"
-                              ? "bg-blue-100 text-blue-600"
-                              : notif.type === "alert"
-                              ? "bg-red-100 text-red-600"
-                              : "bg-amber-100 text-amber-600"
-                          }`}
-                        >
-                          <Info className="w-4 h-4" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm">{notif.text}</p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {notif.time}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="p-2 border-t border-gray-100 bg-gray-50">
-                  <a
-                    href="/notifications"
-                    className="text-xs text-blue-600 hover:text-blue-800 text-center block"
-                  >
-                    View all notifications
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Avatar Dropdown Menu */}
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger asChild>
-              <button className="flex items-center gap-2 focus:outline-none group pl-2">
-                <div className="hidden md:block text-right">
-                  <p className="text-sm font-medium">Principal Smith</p>
-                  <p className="text-xs text-gray-500">Administrator</p>
-                </div>
-                <Avatar className="w-9 h-9 cursor-pointer border-2 border-transparent group-hover:border-indigo-300 transition-all">
-                  <AvatarImage src="/admin-avatar.jpg" alt="Admin" />
-                  <AvatarFallback className="bg-indigo-100 text-indigo-600 font-medium">
-                    PS
-                  </AvatarFallback>
-                </Avatar>
-                <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors hidden md:block" />
-              </button>
-            </DropdownMenu.Trigger>
-
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content
-                className="bg-white shadow-lg rounded-xl w-64 p-2 border border-gray-200 will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
-                align="end"
-                sideOffset={8}
-              >
-                {/* Profile Section */}
-                <DropdownMenu.Item className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center gap-3 focus:outline-none">
-                  <Avatar className="w-10 h-10">
-                    <AvatarImage src="/admin-avatar.jpg" alt="Admin" />
-                    <AvatarFallback className="bg-indigo-100 text-indigo-600 font-medium">
-                      PS
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium">Principal Smith</p>
-                    <p className="text-xs text-gray-500">
-                      principal@edumanage.edu
-                    </p>
-                  </div>
-                </DropdownMenu.Item>
-
-                <DropdownMenu.Separator className="h-px bg-gray-100 my-1" />
-
-                {/* Essential Menu Items */}
-                <DropdownMenu.Group>
-                  <DropdownMenu.Item asChild>
-                    <a
-                      href="/dashboard"
-                      className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
-                    >
-                      <LayoutDashboard className="w-4 h-4 text-indigo-500" />
-                      <span>Dashboard</span>
-                    </a>
-                  </DropdownMenu.Item>
-
-                  <DropdownMenu.Item asChild>
-                    <a
-                      href="/profile"
-                      className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
-                    >
-                      <User className="w-4 h-4 text-indigo-500" />
-                      <span>My Profile</span>
-                    </a>
-                  </DropdownMenu.Item>
-
-                  <DropdownMenu.Item asChild>
-                    <a
-                      href="/settings"
-                      className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
-                    >
-                      <Settings className="w-4 h-4 text-indigo-500" />
-                      <span>Settings</span>
-                    </a>
-                  </DropdownMenu.Item>
-                </DropdownMenu.Group>
-
-                <DropdownMenu.Separator className="h-px bg-gray-100 my-1" />
-
-                <DropdownMenu.Item asChild>
-                  <a
-                    href="/logout"
-                    className="p-3 hover:bg-red-50 rounded-lg cursor-pointer flex items-center text-red-500 gap-3 focus:outline-none text-sm"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Logout</span>
-                  </a>
-                </DropdownMenu.Item>
-
-                <DropdownMenu.Arrow className="fill-white" />
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </DropdownMenu.Root>
+          {/* Avatar Dropdown */}
+          <AvatarDropdown />
         </div>
       </nav>
-
-      {/* Secondary Navigation - Mobile only */}
-      <div className="lg:hidden flex overflow-x-auto bg-indigo-50 px-4 py-2 gap-4 text-sm font-medium text-gray-700 border-b border-indigo-100">
-        <a
-          href="/dashboard"
-          className="whitespace-nowrap flex items-center gap-1"
-        >
-          <LayoutDashboard className="w-4 h-4 text-indigo-500" />
-          <span>Dashboard</span>
-        </a>
-        <a
-          href="/students"
-          className="whitespace-nowrap flex items-center gap-1"
-        >
-          <Users className="w-4 h-4 text-indigo-500" />
-          <span>Students</span>
-        </a>
-        <a
-          href="/academics"
-          className="whitespace-nowrap flex items-center gap-1"
-        >
-          <BookOpen className="w-4 h-4 text-indigo-500" />
-          <span>Academics</span>
-        </a>
-        <a
-          href="/calendar"
-          className="whitespace-nowrap flex items-center gap-1"
-        >
-          <Calendar className="w-4 h-4 text-indigo-500" />
-          <span>Calendar</span>
-        </a>
-        <a href="/more" className="whitespace-nowrap flex items-center gap-1">
-          <ChevronDown className="w-4 h-4 text-indigo-500" />
-          <span>More</span>
-        </a>
-      </div>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { Conversation } from "../_types/conversations";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {

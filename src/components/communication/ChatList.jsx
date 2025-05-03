@@ -3,7 +3,6 @@ import { Search, Edit, ChevronLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Chat } from "@/types/chat";
 
 export default function ChatList({
   chats,

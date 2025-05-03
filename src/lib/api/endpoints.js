@@ -1,11 +1,10 @@
 import { fetcher } from "./apiClient";
-import { User, Student, Teacher, Class } from "../types";
 
 export const authApi = {
-  login: (email, password) =>
+  login: (username, password) =>
     fetcher("/auth/login", {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ username, password }),
     }),
   logout: () =>
     fetcher("/auth/logout", {

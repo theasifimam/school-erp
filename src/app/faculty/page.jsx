@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   ChevronLeft,
-  ChevronRight,
   Plus,
   Search,
   MoreHorizontal,
@@ -18,7 +17,6 @@ import {
   Briefcase,
   Calendar,
   User,
-  X,
   Check,
   ExternalLink,
   AlertCircle,

@@ -1,0 +1,108 @@
+"use client";
+
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import {
+  ChevronDown,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  User,
+} from "lucide-react";
+import { useAuthStore } from "@/lib/state/stores/authStore";
+
+export default function AvatarDropdown() {
+  const { logout } = useAuthStore();
+
+  return (
+    <div>
+      {/* Avatar Dropdown Menu */}
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger asChild>
+          <button className="flex items-center gap-2 focus:outline-none group pl-2">
+            <div className="hidden md:block text-right">
+              <p className="text-sm font-medium">Principal Smith</p>
+              <p className="text-xs text-gray-500">Administrator</p>
+            </div>
+            <Avatar className="w-9 h-9 cursor-pointer border-2 border-transparent group-hover:border-indigo-300 transition-all">
+              <AvatarImage src="/admin-avatar.jpg" alt="Admin" />
+              <AvatarFallback className="bg-indigo-100 text-indigo-600 font-medium">
+                PS
+              </AvatarFallback>
+            </Avatar>
+            <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors hidden md:block" />
+          </button>
+        </DropdownMenu.Trigger>
+
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content
+            className="bg-white shadow-lg rounded-xl w-64 p-2 border border-gray-200 will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
+            align="end"
+            sideOffset={8}
+          >
+            {/* Profile Section */}
+            <DropdownMenu.Item className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center gap-3 focus:outline-none">
+              <Avatar className="w-10 h-10">
+                <AvatarImage src="/admin-avatar.jpg" alt="Admin" />
+                <AvatarFallback className="bg-indigo-100 text-indigo-600 font-medium">
+                  PS
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium">Principal Smith</p>
+                <p className="text-xs text-gray-500">principal@edumanage.edu</p>
+              </div>
+            </DropdownMenu.Item>
+
+            <DropdownMenu.Separator className="h-px bg-gray-100 my-1" />
+
+            {/* Essential Menu Items */}
+            <DropdownMenu.Group>
+              <DropdownMenu.Item asChild>
+                <a
+                  href="/dashboard"
+                  className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
+                >
+                  <LayoutDashboard className="w-4 h-4 text-indigo-500" />
+                  <span>Dashboard</span>
+                </a>
+              </DropdownMenu.Item>
+
+              <DropdownMenu.Item asChild>
+                <a
+                  href="/profile"
+                  className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
+                >
+                  <User className="w-4 h-4 text-indigo-500" />
+                  <span>My Profile</span>
+                </a>
+              </DropdownMenu.Item>
+
+              <DropdownMenu.Item asChild>
+                <a
+                  href="/settings"
+                  className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
+                >
+                  <Settings className="w-4 h-4 text-indigo-500" />
+                  <span>Settings</span>
+                </a>
+              </DropdownMenu.Item>
+            </DropdownMenu.Group>
+
+            <DropdownMenu.Separator className="h-px bg-gray-100 my-1" />
+
+            <DropdownMenu.Item asChild>
+              <button
+                onClick={logout}
+                className="p-3 hover:bg-red-50 rounded-lg cursor-pointer flex items-center text-red-500 gap-3 focus:outline-none text-sm"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </button>
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
+    </div>
+  );
+}

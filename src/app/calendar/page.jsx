@@ -9,7 +9,6 @@ import {
   getDay,
   isSameDay,
   addDays,
-  subDays,
 } from "date-fns";
 import { enUS } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -26,20 +25,14 @@ import { LeaveRequestModal } from "@/components/calendar/LeaveRequestModal";
 import { CalendarHeader } from "@/components/calendar/CalendarHeader";
 import {
   USER_ROLES,
-  EVENT_TYPES,
-  LEAVE_TYPES,
   currentUser,
   classes,
   locations,
   subjects,
   eventsData,
   notificationsData,
-  Event,
-  Notification,
-  User,
-  NewEvent,
-  LeaveRequest,
-  Filters,
+  EVENT_TYPES,
+  LEAVE_TYPES,
 } from "./data";
 
 // Setup the localizer with date-fns
@@ -70,25 +63,22 @@ export default function ModernSchoolCalendar() {
     subjects: subjects.map((s) => s.id),
   });
 
-  const [newEvent, setNewEvent] =
-    useState <
-    NewEvent >
-    {
-      id: undefined,
-      title: "",
-      type: "CLASS",
-      start: new Date(),
-      end: new Date(new Date().getTime() + 60 * 60 * 1000),
-      description: "",
-      location: "",
-      class: currentUser.class,
-      subject: currentUser.subjects?.[0],
-      recurring: false,
-      recurrencePattern: "weekly",
-      recurrenceEndDate: addDays(new Date(), 30),
-      notifyStudents: true,
-      attachments: [],
-    };
+  const [newEvent, setNewEvent] = useState({
+    id: undefined,
+    title: "",
+    type: "CLASS",
+    start: new Date(),
+    end: new Date(new Date().getTime() + 60 * 60 * 1000),
+    description: "",
+    location: "",
+    class: currentUser.class,
+    subject: currentUser.subjects?.[0],
+    recurring: false,
+    recurrencePattern: "weekly",
+    recurrenceEndDate: addDays(new Date(), 30),
+    notifyStudents: true,
+    attachments: [],
+  });
 
   const [leaveRequest, setLeaveRequest] = useState({
     type: "sick",

@@ -9,7 +9,6 @@ import { Toaster } from "sonner";
 import ChatList from "@/components/communication/ChatList";
 import MessageView from "@/components/communication/MessageView";
 import EmptyState from "@/components/communication/EmptyState";
-import { Chat } from "@/types/chat";
 
 export default function MessagesPage() {
   const router = useRouter();

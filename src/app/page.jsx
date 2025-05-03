@@ -9,11 +9,9 @@ import TeacherDashboard from "@/components/dashboard/TeacherDashboard";
 import StudentDashboard from "@/components/dashboard/StudentDashboard";
 import ParentDashboard from "@/components/dashboard/ParentDashboard";
 
-type UserRole = "admin" | "teacher" | "student" | "parent";
-
 export default function SchoolDashboard() {
   const [darkMode, setDarkMode] = useState(false);
-  const [currentRole, setCurrentRole] = useState<UserRole>("admin"); // Change this to test different roles
+  const [currentRole, setCurrentRole] = useState("admin"); // Default role is "admin"; // Change this to test different roles
 
   // Toggle between roles for demo purposes
   // const switchRole = () => {

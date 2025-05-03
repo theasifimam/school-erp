@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Chat, ChatMessage } from "@/types/chat";
 import MessageBubble from "@/components/communication/MessageBubble";
 
 export default function MessageView({ chat, onSendMessage, onBack }) {

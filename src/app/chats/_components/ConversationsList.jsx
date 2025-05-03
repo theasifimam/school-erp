@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Conversation } from "../_types/conversations";
 import { Input } from "@/components/ui/input";
 import {
   Search,

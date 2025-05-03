@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import {
   Card,
   CardHeader,
@@ -36,7 +36,6 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Bell,
   BellOff,
-  Calendar as CalendarIcon,
   CheckCircle2,
   Loader2,
   Mail,
@@ -120,8 +119,7 @@ export default function AnnouncementsPage() {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] =
-    (useState < "all") | "active" | ("expired" > "all");
+  const [filter, setFilter] = useState("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newAnnouncement, setNewAnnouncement] = useState({
     title: "",

@@ -6,48 +6,29 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   ChevronDown,
-  ChevronRight,
   Home,
   User,
   Settings,
   LogOut,
   Menu,
   X,
-  FileText,
-  Users,
-  BarChart,
-  Plus,
   Search,
   Bell,
   MessageSquare,
   HelpCircle,
-  Lock,
   BookOpen,
   GraduationCap,
   School,
   Calendar,
-  ClipboardList,
-  Library,
-  Bookmark,
-  Clock,
   DollarSign,
-  Shield,
-  CreditCard,
   Bus,
   Utensils,
   Medal,
   HeartPulse,
   MessageSquareDot,
-  Coffee,
   Building,
-  FileBarChart,
   Megaphone,
   Image,
-  Video,
-  Mail,
-  UserPlus,
-  Briefcase,
-  AlertTriangle,
   LucideWorkflow,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -60,36 +41,31 @@ import {
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { useTheme } from "next-themes";
+import {
+  classSubmenu,
+  communicationSubmenu,
+  examSubmenu,
+  facultySubmenu,
+  financeSubmenu,
+  foodSubmenu,
+  healthSubmenu,
+  mediaSubmenu,
+  schoolAdminSubmenu,
+  settingsSubmenu,
+  studentSubmenu,
+  transportationSubmenu,
+} from "./navbar/navData";
 
-export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(true);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [openSubmenu, setOpenSubmenu] = (useState < string) | (null > null);
+export default function Sidebar({
+  isOpen,
+  setIsOpen,
+  isMobileOpen,
+  setIsMobileOpen,
+}) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [openSubmenu, setOpenSubmenu] = useState(null);
   const router = useRouter();
   const pathname = usePathname();
-  const { theme } = useTheme();
-
-  // Handle responsive behavior
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsOpen(false);
-      } else if (window.innerWidth >= 1280) {
-        setIsOpen(true);
-      }
-    };
-
-    handleResize(); // Set initial state
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Close mobile sidebar on navigation
-  useEffect(() => {
-    setIsMobileOpen(false);
-  }, [pathname]);
 
   // Close submenus when sidebar collapses
   useEffect(() => {
@@ -163,22 +139,18 @@ export default function Sidebar() {
               </TooltipContent>
             </Tooltip>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
-            onClick={() =>
-              isMobileOpen ? closeMobileSidebar() : setIsOpen(!isOpen)
-            }
-          >
-            {isMobileOpen ? (
+
+          {/* Mobile close button */}
+          {isOpen && isMobileOpen && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
+              onClick={() => setIsMobileOpen(false)}
+            >
               <X size={20} />
-            ) : isOpen ? (
-              <ChevronRight size={20} />
-            ) : (
-              <ChevronRight size={20} className="rotate-180" />
-            )}
-          </Button>
+            </Button>
+          )}
         </div>
 
         {/* Search Bar */}
@@ -197,15 +169,6 @@ export default function Sidebar() {
           </div>
         )}
 
-        {/* Badge for notification count near profile */}
-        {/* {!isOpen && (
-          <div className="absolute top-20 left-1/2 -translate-x-1/2">
-            <Badge className="bg-red-500 hover:bg-red-600 text-white text-xs rounded-full">
-              12
-            </Badge>
-          </div>
-        )} */}
-
         {/* Sidebar Navigation */}
         <nav className="flex flex-col mt-2 px-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 scrollbar-track-transparent h-[calc(100vh-180px)]">
           <SidebarSection title="Main" isOpen={isOpen}>
@@ -213,9 +176,7 @@ export default function Sidebar() {
               icon={
                 <Home
                   className={
-                    pathname?.startsWith("/")
-                      ? "text-white-600"
-                      : "text-gray-600"
+                    pathname === "/" ? "text-white-600" : "text-gray-600"
                   }
                 />
               }
@@ -294,40 +255,7 @@ export default function Sidebar() {
               onSubmenuToggle={() => toggleSubmenu("students")}
               isActive={pathname?.startsWith("/students")}
               badge={12}
-              submenu={[
-                {
-                  label: "All Students",
-                  icon: <Users size={16} />,
-                  route: "/students/all",
-                },
-                {
-                  label: "New Admissions",
-                  icon: <UserPlus size={16} />,
-                  route: "/students/admissions",
-                  badge: 5,
-                },
-                {
-                  label: "Attendance",
-                  icon: <ClipboardList size={16} />,
-                  route: "/students/attendance",
-                },
-                {
-                  label: "Performance",
-                  icon: <BarChart size={16} />,
-                  route: "/students/performance",
-                },
-                {
-                  label: "Behavior Record",
-                  icon: <AlertTriangle size={16} />,
-                  route: "/students/behavior",
-                  badge: 2,
-                },
-                {
-                  label: "Student Portfolios",
-                  icon: <Briefcase size={16} />,
-                  route: "/students/portfolios",
-                },
-              ]}
+              submenu={studentSubmenu}
             />
 
             <SidebarItem
@@ -346,33 +274,7 @@ export default function Sidebar() {
               isSubmenuOpen={openSubmenu === "faculty"}
               onSubmenuToggle={() => toggleSubmenu("faculty")}
               isActive={pathname?.startsWith("/faculty")}
-              submenu={[
-                {
-                  label: "All Faculty",
-                  icon: <Users size={16} />,
-                  route: "/faculty/all",
-                },
-                {
-                  label: "Assign Classes",
-                  icon: <BookOpen size={16} />,
-                  route: "/faculty/assign",
-                },
-                {
-                  label: "Attendance",
-                  icon: <ClipboardList size={16} />,
-                  route: "/faculty/attendance",
-                },
-                {
-                  label: "Performance Review",
-                  icon: <FileBarChart size={16} />,
-                  route: "/faculty/performance",
-                },
-                {
-                  label: "Professional Development",
-                  icon: <BookOpen size={16} />,
-                  route: "/faculty/development",
-                },
-              ]}
+              submenu={facultySubmenu}
             />
 
             <SidebarItem
@@ -391,33 +293,7 @@ export default function Sidebar() {
               isSubmenuOpen={openSubmenu === "classes"}
               onSubmenuToggle={() => toggleSubmenu("classes")}
               isActive={pathname?.startsWith("/classes")}
-              submenu={[
-                {
-                  label: "All Classes",
-                  icon: <BookOpen size={16} />,
-                  route: "/classes/all",
-                },
-                {
-                  label: "Timetable",
-                  icon: <Clock size={16} />,
-                  route: "/classes/timetable",
-                },
-                {
-                  label: "Subjects",
-                  icon: <Library size={16} />,
-                  route: "/classes/subjects",
-                },
-                {
-                  label: "Lesson Plans",
-                  icon: <FileText size={16} />,
-                  route: "/classes/lessons",
-                },
-                {
-                  label: "Curriculum Builder",
-                  icon: <BookOpen size={16} />,
-                  route: "/classes/curriculum",
-                },
-              ]}
+              submenu={classSubmenu}
             />
 
             <SidebarItem
@@ -436,33 +312,7 @@ export default function Sidebar() {
               isSubmenuOpen={openSubmenu === "exams"}
               onSubmenuToggle={() => toggleSubmenu("exams")}
               isActive={pathname?.startsWith("/exams")}
-              submenu={[
-                {
-                  label: "Exam Schedule",
-                  icon: <Calendar size={16} />,
-                  route: "/exams/schedule",
-                },
-                {
-                  label: "Results",
-                  icon: <FileBarChart size={16} />,
-                  route: "/exams/results",
-                },
-                {
-                  label: "Grade Reports",
-                  icon: <FileText size={16} />,
-                  route: "/exams/grades",
-                },
-                {
-                  label: "Question Banks",
-                  icon: <Library size={16} />,
-                  route: "/exams/question-banks",
-                },
-                {
-                  label: "Online Tests",
-                  icon: <BookOpen size={16} />,
-                  route: "/exams/online-tests",
-                },
-              ]}
+              submenu={examSubmenu}
             />
           </SidebarSection>
 
@@ -483,29 +333,7 @@ export default function Sidebar() {
               isSubmenuOpen={openSubmenu === "health"}
               onSubmenuToggle={() => toggleSubmenu("health")}
               isActive={pathname?.startsWith("/health")}
-              submenu={[
-                {
-                  label: "Medical Records",
-                  icon: <FileText size={16} />,
-                  route: "/health/records",
-                },
-                {
-                  label: "Nurse Schedule",
-                  icon: <Calendar size={16} />,
-                  route: "/health/schedule",
-                },
-                {
-                  label: "Incidents",
-                  icon: <AlertTriangle size={16} />,
-                  route: "/health/incidents",
-                  badge: 1,
-                },
-                {
-                  label: "Vaccinations",
-                  icon: <Shield size={16} />,
-                  route: "/health/vaccinations",
-                },
-              ]}
+              submenu={healthSubmenu}
             />
 
             <SidebarItem
@@ -524,28 +352,7 @@ export default function Sidebar() {
               isSubmenuOpen={openSubmenu === "transport"}
               onSubmenuToggle={() => toggleSubmenu("transport")}
               isActive={pathname?.startsWith("/transport")}
-              submenu={[
-                {
-                  label: "Bus Routes",
-                  icon: <FileText size={16} />,
-                  route: "/transport/routes",
-                },
-                {
-                  label: "Drivers",
-                  icon: <User size={16} />,
-                  route: "/transport/drivers",
-                },
-                {
-                  label: "Vehicle Maintenance",
-                  icon: <Settings size={16} />,
-                  route: "/transport/maintenance",
-                },
-                {
-                  label: "Transport Tracking",
-                  icon: <Search size={16} />,
-                  route: "/transport/tracking",
-                },
-              ]}
+              submenu={transportationSubmenu}
             />
 
             <SidebarItem
@@ -564,23 +371,7 @@ export default function Sidebar() {
               isSubmenuOpen={openSubmenu === "food"}
               onSubmenuToggle={() => toggleSubmenu("food")}
               isActive={pathname?.startsWith("/food")}
-              submenu={[
-                {
-                  label: "Cafeteria Menu",
-                  icon: <FileText size={16} />,
-                  route: "/food/menu",
-                },
-                {
-                  label: "Dietary Information",
-                  icon: <HeartPulse size={16} />,
-                  route: "/food/dietary",
-                },
-                {
-                  label: "Meal Payments",
-                  icon: <CreditCard size={16} />,
-                  route: "/food/payments",
-                },
-              ]}
+              submenu={foodSubmenu}
             />
           </SidebarSection>
 
@@ -601,34 +392,7 @@ export default function Sidebar() {
               isSubmenuOpen={openSubmenu === "finance"}
               onSubmenuToggle={() => toggleSubmenu("finance")}
               isActive={pathname?.startsWith("/finance")}
-              submenu={[
-                {
-                  label: "Student Fees",
-                  icon: <CreditCard size={16} />,
-                  route: "/finance/fees",
-                  badge: 8,
-                },
-                {
-                  label: "Payments",
-                  icon: <DollarSign size={16} />,
-                  route: "/finance/payments",
-                },
-                {
-                  label: "Financial Reports",
-                  icon: <FileBarChart size={16} />,
-                  route: "/finance/reports",
-                },
-                {
-                  label: "Budget Planning",
-                  icon: <FileText size={16} />,
-                  route: "/finance/budget",
-                },
-                {
-                  label: "Scholarships",
-                  icon: <Medal size={16} />,
-                  route: "/finance/scholarships",
-                },
-              ]}
+              submenu={financeSubmenu}
             />
           </SidebarSection>
 
@@ -650,35 +414,7 @@ export default function Sidebar() {
               onSubmenuToggle={() => toggleSubmenu("communication")}
               isActive={pathname?.startsWith("/communication")}
               badge={5}
-              submenu={[
-                {
-                  label: "Messages",
-                  icon: <MessageSquare size={16} />,
-                  route: "/communication/messages",
-                  badge: 3,
-                },
-                {
-                  label: "Email",
-                  icon: <Mail size={16} />,
-                  route: "/communication/email",
-                  badge: 2,
-                },
-                {
-                  label: "Parent Portal",
-                  icon: <Users size={16} />,
-                  route: "/communication/parent-portal",
-                },
-                {
-                  label: "Announcements",
-                  icon: <Megaphone size={16} />,
-                  route: "/communication/announcements",
-                },
-                {
-                  label: "School Events",
-                  icon: <Calendar size={16} />,
-                  route: "/communication/events",
-                },
-              ]}
+              submenu={communicationSubmenu}
             />
 
             <SidebarItem
@@ -697,23 +433,7 @@ export default function Sidebar() {
               isSubmenuOpen={openSubmenu === "media"}
               onSubmenuToggle={() => toggleSubmenu("media")}
               isActive={pathname?.startsWith("/media")}
-              submenu={[
-                {
-                  label: "Photo Gallery",
-                  icon: <Image size={16} />,
-                  route: "/media/photos",
-                },
-                {
-                  label: "Video Library",
-                  icon: <Video size={16} />,
-                  route: "/media/videos",
-                },
-                {
-                  label: "School Publications",
-                  icon: <FileText size={16} />,
-                  route: "/media/publications",
-                },
-              ]}
+              submenu={mediaSubmenu}
             />
           </SidebarSection>
 
@@ -737,28 +457,7 @@ export default function Sidebar() {
             isSubmenuOpen={openSubmenu === "administration"}
             onSubmenuToggle={() => toggleSubmenu("administration")}
             isActive={pathname?.startsWith("/administration")}
-            submenu={[
-              {
-                label: "School Profile",
-                icon: <School size={16} />,
-                route: "/administration/profile",
-              },
-              {
-                label: "Staff Directory",
-                icon: <Users size={16} />,
-                route: "/administration/staff",
-              },
-              {
-                label: "Facilities Management",
-                icon: <Building size={16} />,
-                route: "/administration/facilities",
-              },
-              {
-                label: "Resource Allocation",
-                icon: <Briefcase size={16} />,
-                route: "/administration/resources",
-              },
-            ]}
+            submenu={schoolAdminSubmenu}
           />
 
           <SidebarItem
@@ -777,28 +476,7 @@ export default function Sidebar() {
             isSubmenuOpen={openSubmenu === "settings"}
             onSubmenuToggle={() => toggleSubmenu("settings")}
             isActive={pathname?.startsWith("/settings")}
-            submenu={[
-              {
-                label: "User Management",
-                icon: <Users size={16} />,
-                route: "/settings/users",
-              },
-              {
-                label: "Security Settings",
-                icon: <Shield size={16} />,
-                route: "/settings/security",
-              },
-              {
-                label: "System Preferences",
-                icon: <Settings size={16} />,
-                route: "/settings/preferences",
-              },
-              {
-                label: "Customization",
-                icon: <Briefcase size={16} />,
-                route: "/settings/customization",
-              },
-            ]}
+            submenu={settingsSubmenu}
           />
 
           <SidebarItem

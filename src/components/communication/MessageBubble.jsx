@@ -1,6 +1,5 @@
 // src/components/messages/MessageBubble.tsx
 import { forwardRef } from "react";
-import { ChatMessage } from "@/types/chat";
 
 // Helper function to format timestamp
 const formatTime = (timestamp) => {

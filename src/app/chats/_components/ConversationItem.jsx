@@ -1,4 +1,3 @@
-import { Conversation } from "../_types/conversations";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function ConversationItem({ conversation, isActive, onClick }) {

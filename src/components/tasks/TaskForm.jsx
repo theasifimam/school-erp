@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Task } from "./KanbanTasksPage";
 
 export default function TaskForm({
   task,
