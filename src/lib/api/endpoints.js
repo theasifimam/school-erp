@@ -27,17 +27,25 @@ export const studentsApi = {
       body: JSON.stringify(data),
     }),
   delete: (id) =>
-    fetcher <
-    { success: boolean } >
-    (`/students/${id}`,
-    {
+    fetcher(`/students/${id}`, {
       method: "DELETE",
     }),
 };
 
-export const teachersApi = {
-  getAll: () => fetcher("/teachers"),
-  getById: (id) => fetcher(`/teachers/${id}`),
+export const facultyApi = {
+  getAll: () => fetcher("/faculty"),
+  add: () => fetcher(`/faculty`),
+  getById: (id) => fetcher(`/faculty/${id}`),
+  update: (id) => fetcher(`/faculty/${id}`),
+  delete: (id) => fetcher(`/faculty/${id}`),
+};
+
+export const classApi = {
+  getAll: () => fetcher("/class"),
+  add: () => fetcher(`/class`),
+  getById: (id) => fetcher(`/class/${id}`),
+  update: (id) => fetcher(`/class/${id}`),
+  delete: (id) => fetcher(`/class/${id}`),
 };
 
 export const classesApi = {

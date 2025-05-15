@@ -15,9 +15,9 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import AvatarDropdown from "./navbar/AvatarDropdown";
-import NotificationsDropdown from "./navbar/NotificationsDropdown";
+import NotificationsDropdown from "../navbar/NotificationsDropdown";
 import { Button } from "@/components/ui/button";
+import AvatarDropdown from "../navbar/AvatarDropdown";
 
 export default function TopNavbar({
   isMobileOpen,

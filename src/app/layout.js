@@ -2,13 +2,13 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import { useState, useEffect, useCallback } from "react";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/common/Sidebar";
 import "./globals.css";
-import TopNavbar from "@/components/TopNavbar";
 import { Toaster } from "sonner";
 import { AppProviders } from "@/providers/AppProviders";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/state/stores/authStore";
+import TopNavbar from "@/components/common/TopNavbar";
 
 // Font optimization - preload fonts
 const geistSans = Geist({

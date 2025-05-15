@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import ViewUserModal from "@/components/students/ViewUserModal";
 import EditUserModal from "@/components/students/EditUserModal";
+import {
+  useStudentError,
+  useStudentLoading,
+  useStudents,
+  useStudentStore,
+} from "@/lib/state/stores/studentStore";
 
 export default function UserManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -29,6 +35,20 @@ export default function UserManagement() {
   const [roleFilter, setRoleFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+
+  const fetchStudents = useStudentStore((state) => state.fetchStudents);
+  const students = useStudents();
+  const isLoading = useStudentLoading();
+  const error = useStudentError();
+
+  useEffect(() => {
+    fetchStudents();
+  }, [fetchStudents]);
+
+  console.log(students.data);
+
+  if (isLoading) return <div>Loading students...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   const users = [
     {
@@ -47,11 +67,11 @@ export default function UserManagement() {
     },
   ];
 
-  const filteredUsers = users.filter(
+  const filteredUsers = students?.data?.filter(
     (user) =>
       (roleFilter === "All" || user.role === roleFilter) &&
       (searchQuery === "" ||
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.email.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
@@ -135,7 +155,7 @@ export default function UserManagement() {
       )}
 
       {/* Users Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -166,7 +186,7 @@ export default function UserManagement() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {filteredUsers.map((user) => (
+              {filteredUsers?.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
                     <input
@@ -180,9 +200,11 @@ export default function UserManagement() {
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={user.avatar} />
-                        <AvatarFallback>{user.name[0]}</AvatarFallback>
+                        <AvatarFallback>{user.firstName[0]}</AvatarFallback>
                       </Avatar>
-                      <span className="font-medium">{user.name}</span>
+                      <span className="font-medium">
+                        {user.firstName + " " + user.lastName}
+                      </span>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">
@@ -193,7 +215,7 @@ export default function UserManagement() {
                       variant={user.role === "Admin" ? "default" : "outline"}
                       className="rounded-full text-xs"
                     >
-                      {user.role}
+                      {user.role || "Student"}
                     </Badge>
                   </td>
                   <td className="px-4 py-3 text-right">

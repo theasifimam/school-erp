@@ -2,81 +2,15 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { authApi } from "../../api/endpoints";
 
-// Cookie utility functions
-const setCookie = (name, value, days = 7, secure = true, httpOnly = false) => {
-  const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() + days);
-
-  let cookieString = `${name}=${encodeURIComponent(
-    value
-  )}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Strict`;
-
-  if (secure) cookieString += "; Secure";
-  // Note: httpOnly can only be set by the server
-
-  document.cookie = cookieString;
-};
-
-const getCookie = (name) => {
-  const nameEQ = name + "=";
-  const cookies = document.cookie.split(";");
-
-  for (let i = 0; i < cookies.length; i++) {
-    let cookie = cookies[i].trim();
-    if (cookie.indexOf(nameEQ) === 0) {
-      return decodeURIComponent(cookie.substring(nameEQ.length));
-    }
-  }
-  return null;
-};
-
-const removeCookie = (name) => {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-};
-
-// Custom storage adapter using cookies for sensitive data (token)
-// and localStorage for non-sensitive data
-const customStorage = {
-  getItem: (name) => {
-    const localData = localStorage.getItem(name);
-    if (!localData) return null;
-
-    const parsedData = JSON.parse(localData);
-
-    // Get token from cookie if available
-    const token = getCookie("auth-token");
-    if (token) {
-      parsedData.state.token = token;
-    }
-
-    return localData;
-  },
-
-  setItem: (name, value) => {
-    const parsedValue = JSON.parse(value);
-
-    // Store token in HttpOnly cookie instead of localStorage
-    if (parsedValue.state.token) {
-      setCookie("auth-token", parsedValue.state.token);
-      // Remove token from what gets stored in localStorage
-      const { token, ...rest } = parsedValue.state;
-      parsedValue.state = rest;
-    }
-
-    localStorage.setItem(name, JSON.stringify(parsedValue));
-  },
-
-  removeItem: (name) => {
-    removeCookie("auth-token");
-    localStorage.removeItem(name);
-  },
-};
+// This store uses a split authentication approach:
+// 1. The auth token is never stored in the frontend for security
+// 2. Only non-sensitive user data is kept in localStorage
+// 3. The token is handled by HttpOnly cookies set by the server
 
 export const useAuthStore = create(
   persist(
     (set, get) => ({
       user: null,
-      token: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -84,18 +18,16 @@ export const useAuthStore = create(
       login: async (username, password) => {
         set({ isLoading: true, error: null });
         try {
+          // Modified API call - backend should set HttpOnly cookie with token
+          // We expect this endpoint to set the auth token as an HttpOnly cookie on successful login
           const response = await authApi.login(username, password);
 
-          if (!response.user || !response.token) {
+          if (!response.user) {
             throw new Error("Invalid response from server");
           }
 
-          // Set token in cookie
-          setCookie("auth-token", response.token);
-
           set({
             user: response.user,
-            token: response.token,
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -115,16 +47,13 @@ export const useAuthStore = create(
       logout: async () => {
         set({ isLoading: true });
         try {
+          // This API call should clear the HttpOnly cookie on the server
           await authApi.logout();
         } catch (error) {
           console.error("Logout error:", error);
         } finally {
-          // Clear token cookie
-          removeCookie("auth-token");
-
           set({
             user: null,
-            token: null,
             isAuthenticated: false,
             isLoading: false,
           });
@@ -132,30 +61,20 @@ export const useAuthStore = create(
       },
 
       checkAuth: async () => {
-        // Try to get token from cookie first
-        const cookieToken = getCookie("auth-token");
-        const { token } = get();
-
-        const authToken = cookieToken || token;
-        if (!authToken) return;
-
+        // No need to check for token in localStorage - the browser will automatically
+        // send the HttpOnly cookie with requests to your domain
         set({ isLoading: true });
         try {
-          // Use the token from cookie for API calls
-          const user = await authApi.me(authToken);
+          // The cookie is automatically sent with this request
+          const user = await authApi.me();
           set({
             user,
-            token: authToken,
             isAuthenticated: true,
             isLoading: false,
           });
         } catch (error) {
-          // Clear token cookie on auth failure
-          removeCookie("auth-token");
-
           set({
             user: null,
-            token: null,
             isAuthenticated: false,
             isLoading: false,
           });
@@ -164,9 +83,9 @@ export const useAuthStore = create(
     }),
     {
       name: "erp-auth-storage",
-      storage: createJSONStorage(() => customStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        // Token is handled by cookie system
+        // No token stored in localStorage at all
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),

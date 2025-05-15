@@ -23,50 +23,193 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Check,
   ChevronRight,
   User,
   BookOpen,
   Home,
   Phone,
-  Briefcase,
   FileText,
-  Medal,
   ImagePlus,
   Calendar,
-  HeartPulse,
 } from "lucide-react";
 import { toast } from "sonner";
 import ConfirmAddStudentModal from "@/components/students/ConfirmAddStudentModal";
+import useAdmissionStore from "@/lib/state/stores/admissionStore";
 
 export default function ModernAdmissionForm() {
-  const [activeTab, setActiveTab] = useState("personalInfo");
+  // const [activeTab, setActiveTab] = useState("personalInfo");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [siblingsAtSchool, setSiblingsAtSchool] = useState(false);
+  const [isTCAvailable, setIsTCAvailable] = useState(false);
+  const [transportRequired, setTransportRequired] = useState(false);
+  const [hostelRequired, setHostelRequired] = useState(false);
+  const [specialEducationNeed, setSpecialEducationNeed] = useState(false);
+  const [acceptTC, setAcceptTC] = useState(false);
+  // const [formData, setFormData] = useState({});
 
+  // Use the store
+  const {
+    formData,
+    activeTab: storeActiveTab,
+    setActiveTab,
+    updateFormField,
+    submitApplication,
+    saveDraft,
+    loadDraft,
+  } = useAdmissionStore();
+
+  // We'll keep local activeTab for UI, but sync with store
+  const [activeTab, setLocalActiveTab] = useState("personalInfo");
+
+  // Update both local state and store when tab changes
+  const handleTabChange = (tab) => {
+    setLocalActiveTab(tab);
+    setActiveTab(tab);
+  };
+
+  // Handler for input changes
   const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    const { id, value, type, checked } = e.target;
+
+    // Determine which section this field belongs to
+    const section = getSectionFromFieldId(id);
+
+    // Update the field in the store
+    updateFormField(section, id, type === "checkbox" ? checked : value);
   };
 
+  const handleSwitchChange = (id, checked) => {
+    const section = getSectionFromFieldId(id);
+    updateFormField(section, id, checked);
+  };
+
+  // Helper to determine which section a field belongs to
+  const getSectionFromFieldId = (id) => {
+    // This is a simplified example - you'll need to map all fields to their sections
+    if (
+      [
+        "fatherName",
+        "fatherOccupation",
+        "fatherPhone",
+        "fatherEmail",
+        "motherName",
+        "motherOccupation",
+        "motherPhone",
+        "motherEmail",
+        "siblings",
+        "siblingsAtSchool",
+        "familyNotes",
+      ].includes(id)
+    )
+      return "familyInfo";
+    if (
+      [
+        "email",
+        "phone",
+        "alternatePhone",
+        "address",
+        "city",
+        "state",
+        "country",
+        "zipCode",
+        "emergencyContactName",
+        "emergencyContactPhone",
+        "emergencyRelation",
+      ].includes(id)
+    )
+      return "contactInfo";
+    if (
+      [
+        "appliedClass",
+        "session",
+        "admissionType",
+        "board",
+        "previousSchool",
+        "schoolAddress",
+        "lastClass",
+        "lastGrade",
+        "transferCertificate",
+        "stream",
+        "achievements",
+      ].includes(id)
+    )
+      return "academicInfo";
+    if (
+      [
+        "languages",
+        "transport",
+        "hostel",
+        "activities",
+        "specialNeeds",
+        "hearAbout",
+        "additionalInfo",
+        "termsAccepted",
+      ].includes(id)
+    )
+      return "additionalInfo";
+
+    // Default to personalInfo
+    return "personalInfo";
+  };
+
+  // Handle select changes
   const handleSelectChange = (id, value) => {
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    const section = getSectionFromFieldId(id);
+    updateFormField(section, id, value);
   };
 
-  const handleSubmit = () => {
-    toast.success("Application Submitted Successfully", {
-      description:
-        "Your reference number: ADM-" +
-        Math.floor(100000 + Math.random() * 900000),
-      duration: 5000,
-    });
+  // Handle form submission
+  const handleSubmit = async () => {
+    const result = await submitApplication();
+
+    if (result.success) {
+      toast.success("Application Submitted Successfully", {
+        description: `Your reference number: ${result.referenceNumber}`,
+        duration: 5000,
+      });
+    } else {
+      toast.error("Submission Failed", {
+        description: result.message,
+        duration: 5000,
+      });
+    }
+
+    setIsModalOpen(false);
+  };
+
+  // Save current progress as draft
+  const handleSaveDraft = async () => {
+    const result = await saveDraft();
+
+    if (result.success) {
+      toast.success("Draft Saved", {
+        description: "You can continue this application later",
+        duration: 3000,
+      });
+    } else {
+      toast.error("Failed to Save Draft", {
+        description: result.message,
+        duration: 3000,
+      });
+    }
+  };
+
+  // Add this somewhere in your UI
+  const handleLoadDraft = async (draftId) => {
+    const result = await loadDraft(draftId);
+
+    if (result.success) {
+      toast.success("Draft Loaded", {
+        description: "Continue your application",
+        duration: 3000,
+      });
+    } else {
+      toast.error("Failed to Load Draft", {
+        description: result.message,
+        duration: 3000,
+      });
+    }
   };
 
   const formSections = [
@@ -82,9 +225,10 @@ export default function ModernAdmissionForm() {
             </Label>
             <Input
               id="firstName"
-              placeholder="John"
+              placeholder="First name"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.personalInfo.firstName}
             />
           </div>
           <div>
@@ -93,9 +237,10 @@ export default function ModernAdmissionForm() {
             </Label>
             <Input
               id="middleName"
-              placeholder="William"
+              placeholder="Middle name"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.personalInfo.middleName}
             />
           </div>
           <div>
@@ -107,6 +252,7 @@ export default function ModernAdmissionForm() {
               placeholder="Doe"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.personalInfo.lastName}
             />
           </div>
           <div>
@@ -118,6 +264,7 @@ export default function ModernAdmissionForm() {
               placeholder="Johnny"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.personalInfo.preferredName}
             />
           </div>
           <div>
@@ -126,6 +273,7 @@ export default function ModernAdmissionForm() {
             </Label>
             <Select
               onValueChange={(value) => handleSelectChange("gender", value)}
+              value={formData.personalInfo.gender}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
                 <SelectValue placeholder="Select Gender" />
@@ -150,6 +298,7 @@ export default function ModernAdmissionForm() {
               type="date"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.personalInfo.dob}
             />
           </div>
           <div>
@@ -177,6 +326,7 @@ export default function ModernAdmissionForm() {
             </Label>
             <Select
               onValueChange={(value) => handleSelectChange("bloodGroup", value)}
+              value={formData.personalInfo.bloodGroup}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
                 <SelectValue placeholder="Select Blood Group" />
@@ -202,6 +352,7 @@ export default function ModernAdmissionForm() {
               placeholder="Please list any medical conditions, allergies, or special needs"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
               onChange={handleInputChange}
+              value={formData.personalInfo.medicalConditions}
             />
           </div>
         </div>
@@ -223,6 +374,7 @@ export default function ModernAdmissionForm() {
               placeholder="student@example.com"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.email}
             />
           </div>
           <div>
@@ -235,6 +387,7 @@ export default function ModernAdmissionForm() {
               placeholder="(123) 456-7890"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.phone}
             />
           </div>
           <div>
@@ -247,6 +400,7 @@ export default function ModernAdmissionForm() {
               placeholder="(123) 456-7890"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.alternatePhone}
             />
           </div>
           <div>
@@ -261,6 +415,7 @@ export default function ModernAdmissionForm() {
               placeholder="Jane Doe"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.emergencyContactName}
             />
           </div>
           <div>
@@ -276,6 +431,7 @@ export default function ModernAdmissionForm() {
               placeholder="(123) 456-7890"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.emergencyContactPhone}
             />
           </div>
           <div>
@@ -287,6 +443,7 @@ export default function ModernAdmissionForm() {
               placeholder="Parent/Guardian/Relative"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.emergencyRelation}
             />
           </div>
           <div className="md:col-span-2">
@@ -298,6 +455,7 @@ export default function ModernAdmissionForm() {
               placeholder="123 Main St"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.address}
             />
           </div>
           <div>
@@ -309,6 +467,7 @@ export default function ModernAdmissionForm() {
               placeholder="New York"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.city}
             />
           </div>
           <div>
@@ -320,6 +479,7 @@ export default function ModernAdmissionForm() {
               placeholder="NY"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.state}
             />
           </div>
           <div>
@@ -331,6 +491,7 @@ export default function ModernAdmissionForm() {
               placeholder="United States"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.country}
             />
           </div>
           <div>
@@ -342,6 +503,7 @@ export default function ModernAdmissionForm() {
               placeholder="10001"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.zipCode}
             />
           </div>
         </div>
@@ -362,6 +524,7 @@ export default function ModernAdmissionForm() {
               placeholder="John Doe Sr."
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.familyInfo.fatherName}
             />
           </div>
           <div>
@@ -373,6 +536,7 @@ export default function ModernAdmissionForm() {
               placeholder="Engineer"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.familyInfo.fatherOccupation}
             />
           </div>
           <div>
@@ -385,6 +549,7 @@ export default function ModernAdmissionForm() {
               placeholder="(123) 456-7890"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.familyInfo.fatherPhone}
             />
           </div>
           <div>
@@ -397,6 +562,7 @@ export default function ModernAdmissionForm() {
               placeholder="father@example.com"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.familyInfo.fatherEmail}
             />
           </div>
           <div className="h-px bg-gray-200 md:col-span-2 my-2" />
@@ -409,6 +575,7 @@ export default function ModernAdmissionForm() {
               placeholder="Jane Doe"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.familyInfo.motherName}
             />
           </div>
           <div>
@@ -420,6 +587,7 @@ export default function ModernAdmissionForm() {
               placeholder="Doctor"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.familyInfo.motherOccupation}
             />
           </div>
           <div>
@@ -432,6 +600,7 @@ export default function ModernAdmissionForm() {
               placeholder="(123) 456-7890"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.familyInfo.motherPhone}
             />
           </div>
           <div>
@@ -444,6 +613,7 @@ export default function ModernAdmissionForm() {
               placeholder="mother@example.com"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.familyInfo.motherEmail}
             />
           </div>
           <div className="h-px bg-gray-200 md:col-span-2 my-2" />
@@ -458,6 +628,7 @@ export default function ModernAdmissionForm() {
               min="0"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.familyInfo.siblings}
             />
           </div>
           <div>
@@ -465,7 +636,13 @@ export default function ModernAdmissionForm() {
               Siblings at this School
             </Label>
             <div className="flex items-center space-x-2 mt-3">
-              <Switch id="siblingsAtSchool" />
+              <Switch
+                id="siblingsAtSchool"
+                checked={formData.familyInfo.siblingsAtSchool}
+                onCheckedChange={(checked) =>
+                  handleSwitchChange("siblingsAtSchool", checked)
+                }
+              />
               <Label htmlFor="siblingsAtSchool" className="text-sm">
                 Yes
               </Label>
@@ -480,6 +657,7 @@ export default function ModernAdmissionForm() {
               placeholder="Any additional information about family circumstances that the school should be aware of"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
               onChange={handleInputChange}
+              value={formData.familyInfo.familyNotes}
             />
           </div>
         </div>
@@ -499,6 +677,7 @@ export default function ModernAdmissionForm() {
               onValueChange={(value) =>
                 handleSelectChange("appliedClass", value)
               }
+              value={formData.academicInfo.appliedClass}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
                 <SelectValue placeholder="Select Class" />
@@ -527,6 +706,7 @@ export default function ModernAdmissionForm() {
             </Label>
             <Select
               onValueChange={(value) => handleSelectChange("session", value)}
+              value={formData.academicInfo.session}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
                 <SelectValue placeholder="Select Session" />
@@ -546,6 +726,7 @@ export default function ModernAdmissionForm() {
               onValueChange={(value) =>
                 handleSelectChange("admissionType", value)
               }
+              value={formData.academicInfo.admissionType}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
                 <SelectValue placeholder="Select Type" />
@@ -563,6 +744,7 @@ export default function ModernAdmissionForm() {
             </Label>
             <Select
               onValueChange={(value) => handleSelectChange("board", value)}
+              value={formData.academicInfo.board}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
                 <SelectValue placeholder="Select Board" />
@@ -585,6 +767,7 @@ export default function ModernAdmissionForm() {
               placeholder="ABC School"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.medicalConditions}
             />
           </div>
           <div>
@@ -596,6 +779,7 @@ export default function ModernAdmissionForm() {
               placeholder="123 School St, City"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.medicalConditions}
             />
           </div>
           <div>
@@ -607,6 +791,7 @@ export default function ModernAdmissionForm() {
               placeholder="e.g. Class 5"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.medicalConditions}
             />
           </div>
           <div>
@@ -618,6 +803,7 @@ export default function ModernAdmissionForm() {
               placeholder="e.g. A / 85%"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.contactInfo.medicalConditions}
             />
           </div>
           <div>
@@ -628,7 +814,13 @@ export default function ModernAdmissionForm() {
               Transfer Certificate Available
             </Label>
             <div className="flex items-center space-x-2 mt-3">
-              <Switch id="transferCertificate" />
+              <Switch
+                id="transferCertificate"
+                checked={formData.contactInfo.transferCertificate}
+                onCheckedChange={(checked) =>
+                  handleSwitchChange("transferCertificate", checked)
+                }
+              />
               <Label htmlFor="transferCertificate" className="text-sm">
                 Yes
               </Label>
@@ -640,6 +832,7 @@ export default function ModernAdmissionForm() {
             </Label>
             <Select
               onValueChange={(value) => handleSelectChange("stream", value)}
+              value={formData.academicInfo.stream}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
                 <SelectValue placeholder="Select Stream" />
@@ -661,6 +854,7 @@ export default function ModernAdmissionForm() {
               placeholder="List any notable achievements or awards"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
               onChange={handleInputChange}
+              value={formData.contactInfo.medicalConditions}
             />
           </div>
         </div>
@@ -681,6 +875,7 @@ export default function ModernAdmissionForm() {
               placeholder="e.g. English, Spanish, Hindi"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
               onChange={handleInputChange}
+              value={formData.additionalInfo.languages}
             />
           </div>
           <div>
@@ -688,7 +883,13 @@ export default function ModernAdmissionForm() {
               Transportation Required
             </Label>
             <div className="flex items-center space-x-2 mt-3">
-              <Switch id="transport" />
+              <Switch
+                id="transport"
+                checked={formData.additionalInfo.transport}
+                onCheckedChange={(checked) =>
+                  handleSwitchChange("transport", checked)
+                }
+              />
               <Label htmlFor="transport" className="text-sm">
                 Yes
               </Label>
@@ -699,7 +900,13 @@ export default function ModernAdmissionForm() {
               Hostel Accommodation Required
             </Label>
             <div className="flex items-center space-x-2 mt-3">
-              <Switch id="hostel" />
+              <Switch
+                id="hostel"
+                checked={formData.additionalInfo.hostel}
+                onCheckedChange={(checked) =>
+                  handleSwitchChange("hostel", checked)
+                }
+              />
               <Label htmlFor="hostel" className="text-sm">
                 Yes
               </Label>
@@ -711,6 +918,7 @@ export default function ModernAdmissionForm() {
             </Label>
             <Select
               onValueChange={(value) => handleSelectChange("activities", value)}
+              value={formData.academicInfo.activities}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
                 <SelectValue placeholder="Select Interests" />
@@ -732,7 +940,13 @@ export default function ModernAdmissionForm() {
               Special Educational Needs
             </Label>
             <div className="flex items-center space-x-2 mt-3">
-              <Switch id="specialNeeds" />
+              <Switch
+                id="specialNeeds"
+                checked={formData.academicInfo.specialNeeds}
+                onCheckedChange={(checked) =>
+                  handleSwitchChange("specialNeeds", checked)
+                }
+              />
               <Label htmlFor="specialNeeds" className="text-sm">
                 Yes
               </Label>
@@ -744,6 +958,7 @@ export default function ModernAdmissionForm() {
             </Label>
             <Select
               onValueChange={(value) => handleSelectChange("hearAbout", value)}
+              value={formData.additionalInfo.hearAbout}
             >
               <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
                 <SelectValue placeholder="Select" />
@@ -767,11 +982,18 @@ export default function ModernAdmissionForm() {
               placeholder="Share any additional information that might be relevant to your application"
               className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
               onChange={handleInputChange}
+              value={formData.additionalInfo.medicalConditions}
             />
           </div>
           <div className="md:col-span-2 mt-2">
             <div className="flex items-center space-x-2">
-              <Switch id="termsAccepted" />
+              <Switch
+                id="termsAccepted"
+                checked={formData.additionalInfo.termsAccepted}
+                onCheckedChange={(checked) =>
+                  handleSwitchChange("termsAccepted", checked)
+                }
+              />
               <Label htmlFor="termsAccepted" className="text-sm">
                 I confirm that all information provided is accurate and
                 complete. I agree to the school's terms and conditions.
@@ -788,11 +1010,10 @@ export default function ModernAdmissionForm() {
       (section) => section.id === activeTab
     );
     if (currentIndex < formSections.length - 1) {
+      setLocalActiveTab(formSections[currentIndex + 1].id);
       setActiveTab(formSections[currentIndex + 1].id);
     }
   };
-
-  // Page Version
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-10 px-4 sm:px-6 lg:px-8">
@@ -882,13 +1103,23 @@ export default function ModernAdmissionForm() {
                         &larr; Previous
                       </Button>
                     )}
+
                     {activeTab !== formSections[formSections.length - 1].id ? (
-                      <Button
-                        onClick={nextTab}
-                        className="ml-auto rounded-full bg-black text-white hover:bg-gray-800"
-                      >
-                        Next &rarr;
-                      </Button>
+                      <>
+                        <Button
+                          variant="outline"
+                          className="ml-auto rounded-full border-gray-300 text-gray-600 hover:bg-gray-50 mr-2"
+                          onClick={handleSaveDraft}
+                        >
+                          Save draft
+                        </Button>
+                        <Button
+                          onClick={nextTab}
+                          className="rounded-full bg-black text-white hover:bg-gray-800"
+                        >
+                          Next &rarr;
+                        </Button>
+                      </>
                     ) : (
                       <Button
                         onClick={() => setIsModalOpen(true)}
@@ -906,7 +1137,10 @@ export default function ModernAdmissionForm() {
       </div>
 
       <ConfirmAddStudentModal
-        {...{ isModalOpen, setIsModalOpen, handleSubmit }}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        handleSubmit={handleSubmit}
+        formData={formData}
       />
     </div>
   );

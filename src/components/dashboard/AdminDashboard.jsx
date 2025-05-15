@@ -64,7 +64,7 @@ export default function AdminDashboard({ darkMode }) {
             <CardTitle className="text-sm font-medium text-gray-500">
               Total Students
             </CardTitle>
-            <Users className="h-5 w-5 text-indigo-500" />
+            <Users className="h-5 w-5 text-gray-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data.students}</div>
@@ -89,7 +89,7 @@ export default function AdminDashboard({ darkMode }) {
             <CardTitle className="text-sm font-medium text-gray-500">
               Total Teachers
             </CardTitle>
-            <GraduationCap className="h-5 w-5 text-indigo-500" />
+            <GraduationCap className="h-5 w-5 text-gray-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data.teachers}</div>
@@ -114,7 +114,7 @@ export default function AdminDashboard({ darkMode }) {
             <CardTitle className="text-sm font-medium text-gray-500">
               Total Classes
             </CardTitle>
-            <BookOpen className="h-5 w-5 text-indigo-500" />
+            <BookOpen className="h-5 w-5 text-gray-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data.classes}</div>
@@ -139,7 +139,7 @@ export default function AdminDashboard({ darkMode }) {
             <CardTitle className="text-sm font-medium text-gray-500">
               Total Revenue
             </CardTitle>
-            <CreditCard className="h-5 w-5 text-indigo-500" />
+            <CreditCard className="h-5 w-5 text-gray-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -314,7 +314,7 @@ export default function AdminDashboard({ darkMode }) {
                     darkMode ? "bg-gray-700" : "bg-gray-100"
                   }`}
                 >
-                  <FileText className="h-5 w-5 text-indigo-500" />
+                  <FileText className="h-5 w-5 text-gray-500" />
                 </div>
                 <div className="flex-1">
                   <p className="font-medium">{activity.action}</p>

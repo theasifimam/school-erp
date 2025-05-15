@@ -48,7 +48,6 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       await login(data.username, data.password);
       // toast.success("Login successful!");

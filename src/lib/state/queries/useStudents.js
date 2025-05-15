@@ -2,7 +2,6 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { studentsApi } from "../../api/endpoints";
-import { Student } from "../../types";
 
 export function useStudents(filters) {
   return useQuery({

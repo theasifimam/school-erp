@@ -1,5 +1,5 @@
 import { HeartPulse, Medal } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui";
 
 export default function ConfirmAddStudentModal({
