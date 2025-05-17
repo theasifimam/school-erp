@@ -16,7 +16,9 @@ export const useStudentStore = create(
         set({ isLoading: true, error: null });
         try {
           const data = await studentsApi.getAll();
-          set({ students: data, isLoading: false });
+          console.log("Fetched students:", data);
+
+          set({ students: data.data, isLoading: false });
         } catch (error) {
           if (error.status === 401) {
             // Handle unauthorized (token expired or invalid)

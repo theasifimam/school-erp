@@ -95,7 +95,7 @@ export const classSubmenu = [
   {
     label: "All Classes",
     icon: <BookOpen size={16} />,
-    route: "/classes/all",
+    route: "/classes",
   },
   {
     label: "Timetable",

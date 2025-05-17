@@ -434,9 +434,9 @@ export default function TeachersPage() {
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
+        <h1 className="text-xl font-bold flex items-center gap-2">
           <Briefcase className="h-6 w-6 text-indigo-600" />
-          Teachers Management
+          Faculty Management
         </h1>
         <p className="text-gray-500">Manage faculty information and records</p>
       </div>

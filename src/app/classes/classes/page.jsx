@@ -219,6 +219,11 @@ export default function ClassesPage() {
         </CardContent>
 
         <CardFooter className="flex flex-col sm:flex-row justify-between gap-4">
+          <div className="text-sm text-gray-500">
+            Showing {indexOfFirstItem + 1}-
+            {Math.min(indexOfLastItem, filteredClasses.length)} of{" "}
+            {filteredClasses.length} classes
+          </div>
           <Pagination
             currentPage={currentPage}
             totalItems={filteredClasses.length}

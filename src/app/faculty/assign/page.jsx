@@ -377,7 +377,7 @@ export default function ClassAssignment() {
   return (
     <div className="space-y-6 bg-white text-black dark:bg-black dark:text-white">
       <Tabs defaultValue="assignments" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 rounded-full mb-4">
+        <TabsList className="grid grid-cols-2 rounded-full mb-4">
           <TabsTrigger value="assignments" className="rounded-full">
             Assignments
           </TabsTrigger>
@@ -484,11 +484,12 @@ export default function ClassAssignment() {
                       <Select
                         value={selectedSubject}
                         onValueChange={setSelectedSubject}
+                        className="w-full"
                       >
                         <SelectTrigger className="rounded-full">
                           <SelectValue placeholder="Select Subject" />
                         </SelectTrigger>
-                        <SelectContent className="rounded-lg">
+                        <SelectContent className="rounded-full">
                           {subjects.map((subject) => (
                             <SelectItem
                               key={subject.id}

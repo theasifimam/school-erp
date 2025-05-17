@@ -6,7 +6,7 @@ import Sidebar from "@/components/common/Sidebar";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { AppProviders } from "@/providers/AppProviders";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/state/stores/authStore";
 import TopNavbar from "@/components/common/TopNavbar";
 
@@ -31,20 +31,6 @@ export default function RootLayout({ children }) {
   const [isOpen, setIsOpen] = useState(false); // Start closed on mobile, will adjust in effect
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-
-  // Handle authentication routing with debounce to prevent redirect loops
-  useEffect(() => {
-    const currentPath = window?.location?.pathname || "";
-    const isAuthPage = AUTH_ROUTES.includes(currentPath);
-
-    // Avoid unnecessary redirects - only redirect if on wrong page type
-    if (isAuthenticated && isAuthPage) {
-      router.replace("/");
-    } else if (!isAuthenticated && !isAuthPage) {
-      router.replace("/login");
-    }
-  }, [isAuthenticated, router]);
 
   // Responsive sidebar handler - memoized for performance
   const handleResize = useCallback(() => {

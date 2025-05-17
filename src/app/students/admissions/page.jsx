@@ -1016,21 +1016,21 @@ export default function ModernAdmissionForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-full mx-auto">
-        <Card className="overflow-hidden border border-gray-100 pt-0 shadow-md rounded-3xl">
-          <CardHeader className="border-b border-gray-100 bg-black text-white p-6 rounded-t-3xl">
-            <CardTitle className="flex items-center text-2xl">
+    <div className="min-h-screen">
+      <div className="max-w-full">
+        <div className="">
+          <div className="">
+            <div className="flex items-center font-semibold text-xl">
               <Calendar className="mr-2 h-6 w-6" /> Student Admission
               Application
-            </CardTitle>
-            <CardDescription className="text-gray-300">
+            </div>
+            <div className="text-gray-500">
               Complete all sections to apply for admission to our institution
-            </CardDescription>
-          </CardHeader>
+            </div>
+          </div>
 
           {/* Fixed navigation bar - removed form fields from here */}
-          <div className="flex bg-white border-b border-gray-100 p-4 overflow-x-auto">
+          <div className="flex bg-white border-b border-gray-100 py-4 overflow-x-auto">
             {formSections.map((section, index) => (
               <div
                 key={section.id}
@@ -1067,7 +1067,7 @@ export default function ModernAdmissionForm() {
             ))}
           </div>
 
-          <div className="p-6">
+          <div>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="hidden">
                 {formSections.map((section) => (
@@ -1133,7 +1133,7 @@ export default function ModernAdmissionForm() {
               ))}
             </Tabs>
           </div>
-        </Card>
+        </div>
       </div>
 
       <ConfirmAddStudentModal

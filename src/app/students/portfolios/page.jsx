@@ -487,11 +487,11 @@ export default function StudentPortfoliosPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-10 space-y-6">
+    <div className="container mx-auto space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Student Portfolios</h1>
-          <p className="text-gray-600">
+          <h1 className="text-xl font-semibold">Student Portfolios</h1>
+          <p className="text-gray-500">
             Showcase of student achievements and academic progress
           </p>
         </div>
