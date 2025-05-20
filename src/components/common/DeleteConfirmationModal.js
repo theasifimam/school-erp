@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Trash, Trash2Icon } from "lucide-react";
 
 export function DeleteConfirmationModal({
   isOpen,
@@ -21,9 +22,10 @@ export function DeleteConfirmationModal({
 }) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent className="p-5">
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
+          <Trash2Icon className="h-26 w-26 text-red-500 mx-auto" />
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

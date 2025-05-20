@@ -62,12 +62,12 @@ import {
   useStudents,
   useStudentStore,
 } from "@/lib/state/stores/studentStore";
-import { useQueryState } from "next-usequerystate";
 import StudentFormModal from "@/components/students/StudentFormModal";
 import { Input } from "@/components/ui";
 import { DeleteConfirmationModal } from "@/components/common/DeleteConfirmationModal";
 import { Pagination } from "@/components/common/Pagination";
 import { StatsCards } from "@/components/students/StatsCards";
+import useQueryState from "@/lib/hooks/useQueryState";
 
 export default function StudentManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -80,9 +80,7 @@ export default function StudentManagement() {
   const [statusFilter, setStatusFilter] = useQueryState("role", {
     defaultValue: "all",
   });
-  const [searchQuery, setSearchQuery] = useQueryState("search", {
-    defaultValue: "",
-  });
+  const [searchQuery, setSearchQuery] = useQueryState("search", "");
   const [gradeFilter, setGradeFilter] = useQueryState("grade", {
     defaultValue: "all",
   });
@@ -131,8 +129,6 @@ export default function StudentManagement() {
   if (!students || students.length === 0)
     return <div className="p-10 text-center">No students found.</div>;
 
-  console.log(students);
-
   // Filter logic for students based on multiple criteria
   const filteredUsers = students.filter((user) => {
     const statusMatch = statusFilter === "all" || user.status === statusFilter;
@@ -141,11 +137,11 @@ export default function StudentManagement() {
     const searchMatch =
       searchQuery === "" ||
       (user.firstName &&
-        user.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        user.firstName.toLowerCase().includes(searchQuery?.toLowerCase())) ||
       (user.lastName &&
-        user.lastName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        user.lastName.toLowerCase().includes(searchQuery?.toLowerCase())) ||
       (user.email &&
-        user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        user.email.toLowerCase().includes(searchQuery?.toLowerCase())) ||
       (user.id && user.id.toString().includes(searchQuery));
 
     // Additional filters (mocked since we don't have this data in original students)

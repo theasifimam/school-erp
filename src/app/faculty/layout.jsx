@@ -98,7 +98,7 @@ export default function ClassesCurriculumLayout({ children }) {
             key={tab.path}
             href={tab.path}
             className={cn(
-              "px-4 py-2 flex items-center font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-500",
+              "px-4 py-2 flex items-center font-medium text-sm transition-colors focus:outline-none ",
               isActiveTab(tab.path)
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-600 hover:text-blue-600"

@@ -21,12 +21,12 @@ export default function AvatarDropdown() {
         <DropdownMenu.Trigger asChild>
           <button className="flex items-center gap-2 focus:outline-none group pl-2">
             <div className="hidden md:block text-right">
-              <p className="text-sm font-medium">Principal Smith</p>
+              <p className="text-lg font-medium">Asif Imam</p>
               <p className="text-xs text-gray-500">Administrator</p>
             </div>
             <Avatar className="w-9 h-9 cursor-pointer border-2 border-transparent group-hover:border-indigo-300 transition-all">
               <AvatarImage src="/admin-avatar.jpg" alt="Admin" />
-              <AvatarFallback className="bg-indigo-100 text-indigo-600 font-medium">
+              <AvatarFallback className="text-gray-600 font-medium">
                 PS
               </AvatarFallback>
             </Avatar>
@@ -36,17 +36,15 @@ export default function AvatarDropdown() {
 
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className="bg-white shadow-lg rounded-xl w-64 p-2 border border-gray-200 will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
+            className="bg-white z-88 shadow-lg rounded-3xl w-64 p-2 border border-gray-200 will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
             align="end"
             sideOffset={8}
           >
             {/* Profile Section */}
-            <DropdownMenu.Item className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center gap-3 focus:outline-none">
+            <DropdownMenu.Item className="p-3 hover:bg-gray-50 rounded-full cursor-pointer flex items-center gap-3 focus:outline-none">
               <Avatar className="w-10 h-10">
                 <AvatarImage src="/admin-avatar.jpg" alt="Admin" />
-                <AvatarFallback className="bg-indigo-100 text-indigo-600 font-medium">
-                  PS
-                </AvatarFallback>
+                <AvatarFallback className="font-medium">PS</AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-sm font-medium">Principal Smith</p>
@@ -61,30 +59,30 @@ export default function AvatarDropdown() {
               <DropdownMenu.Item asChild>
                 <a
                   href="/dashboard"
-                  className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
+                  className="p-3 hover:bg-gray-50 rounded-full cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
                 >
-                  <LayoutDashboard className="w-4 h-4 text-indigo-500" />
-                  <span>Dashboard</span>
+                  <LayoutDashboard className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-500">Dashboard</span>
                 </a>
               </DropdownMenu.Item>
 
               <DropdownMenu.Item asChild>
                 <a
                   href="/profile"
-                  className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
+                  className="p-3 hover:bg-gray-50 rounded-full cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
                 >
-                  <User className="w-4 h-4 text-indigo-500" />
-                  <span>My Profile</span>
+                  <User className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-500">My Profile</span>
                 </a>
               </DropdownMenu.Item>
 
               <DropdownMenu.Item asChild>
                 <a
                   href="/settings"
-                  className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
+                  className="p-3 hover:bg-gray-50 rounded-full cursor-pointer flex items-center text-gray-700 gap-3 focus:outline-none text-sm"
                 >
-                  <Settings className="w-4 h-4 text-indigo-500" />
-                  <span>Settings</span>
+                  <Settings className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-500">Settings</span>
                 </a>
               </DropdownMenu.Item>
             </DropdownMenu.Group>
@@ -94,7 +92,7 @@ export default function AvatarDropdown() {
             <DropdownMenu.Item asChild>
               <button
                 onClick={logout}
-                className="p-3 hover:bg-red-50 rounded-lg cursor-pointer flex items-center text-red-500 gap-3 focus:outline-none text-sm"
+                className="p-3 hover:bg-red-50 rounded-full w-full cursor-pointer flex items-center text-red-500 gap-3 focus:outline-none text-sm"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Logout</span>

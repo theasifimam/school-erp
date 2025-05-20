@@ -316,6 +316,25 @@ export default function Sidebar({
               isActive={pathname?.startsWith("/exams")}
               submenu={examSubmenu}
             />
+
+            <SidebarItem
+              icon={
+                <Medal
+                  className={
+                    pathname?.startsWith("/library")
+                      ? "text-white-600"
+                      : "text-gray-600"
+                  }
+                />
+              }
+              label="Library Management"
+              isOpen={isOpen}
+              isActive={pathname?.startsWith("/exams")}
+              // hasSubmenu
+              // isSubmenuOpen={openSubmenu === "exams"}
+              // onSubmenuToggle={() => toggleSubmenu("exams")}
+              // submenu={examSubmenu}
+            />
           </SidebarSection>
 
           <SidebarSection title="Administration" isOpen={isOpen}>

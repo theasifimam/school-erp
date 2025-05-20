@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Input, Label, Switch } from "../ui";
 import {
   Dialog,
@@ -17,89 +17,193 @@ import {
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { cn } from "../../lib/utils";
-import { z } from "zod";
+import { User, Upload } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { MultiSelect } from "../ui/MultiSelect";
 
-export default function AddFacultyModal({
-  isCreateDialogOpen,
-  setIsCreateDialogOpen,
+export default function FacultyFormModal({
+  isDialogOpen,
+  setIsDialogOpen,
   formData,
   setFormData,
-  handleInputChange,
-  departments,
-  handleAddTeacher,
+  departments = [
+    "Science",
+    "Humanities",
+    "Languages",
+    "Arts",
+    "Sports",
+    "Mathematics",
+    "Computer Science",
+  ],
+  classes = [
+    { value: "1", label: "Class 1" },
+    { value: "2", label: "Class 2" },
+    { value: "3", label: "Class 3" },
+    { value: "4", label: "Class 4" },
+    { value: "5", label: "Class 5" },
+    { value: "6", label: "Class 6" },
+    { value: "7", label: "Class 7" },
+    { value: "8", label: "Class 8" },
+    { value: "9", label: "Class 9" },
+    { value: "10", label: "Class 10" },
+    { value: "11", label: "Class 11" },
+    { value: "12", label: "Class 12" },
+  ],
+  subjects = [
+    { value: "math", label: "Mathematics" },
+    { value: "science", label: "Science" },
+    { value: "english", label: "English" },
+    { value: "history", label: "History" },
+  ],
+  isEditing = false,
+  handleSave,
 }) {
   const [errors, setErrors] = useState({});
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
 
-  // Define validation schema with Zod
-  const facultySchema = z.object({
-    employeeId: z.string().min(1, "Employee ID is required"),
-    firstName: z.string().min(1, "First name is required"),
-    middleName: z.string().optional(),
-    lastName: z.string().min(1, "Last name is required"),
-    gender: z.enum(["male", "female", "other"], {
-      errorMap: () => ({ message: "Please select a gender" }),
-    }),
-    dateOfBirth: z.date({
-      required_error: "Date of birth is required",
-      invalid_type_error: "Invalid date format",
-    }),
-    joiningDate: z.date({
-      required_error: "Joining date is required",
-      invalid_type_error: "Invalid date format",
-    }),
-    qualification: z.string().min(1, "Qualification is required"),
-    experience: z.number().nonnegative().optional().default(0),
-    contactNumber: z
-      .string()
-      .min(1, "Contact number is required")
-      .regex(/^\+?[0-9\s()-]{10,15}$/, "Invalid contact number format"),
-    email: z.string().min(1, "Email is required").email("Invalid email format"),
-    address: z.string().optional(),
-    designation: z.string().min(1, "Designation is required"),
-    department: z.string().optional(),
-    salary: z.number().nonnegative().optional(),
-    isClassTeacher: z.boolean().default(false),
-    isActive: z.boolean().default(true),
-  });
+  useEffect(() => {
+    // Set preview URL if formData has profilePicture
+    if (
+      formData.profilePicture &&
+      typeof formData.profilePicture === "string"
+    ) {
+      setPreviewUrl(formData.profilePicture);
+    }
+  }, [formData.profilePicture]);
+
+  // File input change handler
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePicture(file);
+      setFormData((prev) => ({ ...prev, profilePicture: file }));
+
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const validateForm = () => {
-    try {
-      facultySchema.parse(formData);
-      setErrors({});
-      return true;
-    } catch (error) {
-      const zodErrors = {};
-      if (error instanceof z.ZodError) {
-        error.errors.forEach((err) => {
-          const path = err.path[0];
-          zodErrors[path] = err.message;
-        });
+    const newErrors = {};
+
+    // Required fields validation
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "gender",
+      "dateOfBirth",
+      "joiningDate",
+      "qualification",
+      "contactNumber",
+      "email",
+      "designation",
+    ];
+
+    requiredFields.forEach((field) => {
+      if (!formData[field]) {
+        newErrors[field] = `${
+          field?.charAt(0)?.toUpperCase() +
+          field?.slice(1).replace(/([A-Z])/g, " $1")
+        } is required`;
       }
-      setErrors(zodErrors);
-      return false;
+    });
+
+    // Email validation
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Invalid email format";
     }
+
+    // Contact number validation
+    if (
+      formData.contactNumber &&
+      !/^\+?[0-9\s()-]{10,15}$/.test(formData.contactNumber)
+    ) {
+      newErrors.contactNumber = "Invalid contact number format";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = () => {
     if (validateForm()) {
-      handleAddTeacher();
-    }
+      const formDataWithFile = new FormData();
 
-    console.log("Form Data:", formData);
+      // Append all form data
+      Object.keys(formData).forEach((key) => {
+        if (
+          key !== "profilePicture" ||
+          (key === "profilePicture" && typeof formData[key] !== "string")
+        ) {
+          formDataWithFile.append(key, formData[key]);
+        }
+      });
+
+      // Append file if exists
+      if (profilePicture) {
+        formDataWithFile.append("profilePicture", profilePicture);
+      }
+
+      handleSave(formDataWithFile);
+    }
   };
 
   return (
-    <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-      <DialogContent>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogContent className="sm:max-w-[600px] rounded-3xl">
         <DialogHeader>
-          <DialogTitle>Add New Faculty Member</DialogTitle>
+          <DialogTitle>
+            {isEditing ? "Edit Faculty Member" : "Add New Faculty Member"}
+          </DialogTitle>
           <DialogDescription>
-            Enter the details of the new faculty member according to the
-            required fields.
+            {isEditing
+              ? "Update the details of the faculty member below."
+              : "Enter the details of the new faculty member according to the required fields."}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4 sm:max-w-[800px] max-h-[60vh] overflow-y-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4 max-h-[70vh] overflow-y-auto">
+          {/* Profile Picture Upload */}
+          <div className="col-span-1 md:col-span-2 flex flex-col items-center space-y-4">
+            <div className="relative">
+              <Avatar className="h-24 w-24">
+                {previewUrl ? (
+                  <AvatarImage src={previewUrl} alt="Profile" />
+                ) : (
+                  <AvatarFallback>
+                    <User className="h-12 w-12 text-gray-400" />
+                  </AvatarFallback>
+                )}
+              </Avatar>
+              <label
+                htmlFor="profilePicture"
+                className="absolute bottom-0 right-0 bg-primary text-white rounded-full p-1 cursor-pointer"
+              >
+                <Upload className="h-4 w-4" />
+              </label>
+              <input
+                type="file"
+                id="profilePicture"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </div>
+            <p className="text-sm text-gray-500">
+              Upload faculty profile picture
+            </p>
+          </div>
+
           <div className="space-y-4">
             {/* Left Column */}
             <div className="space-y-2">
@@ -212,7 +316,7 @@ export default function AddFacultyModal({
               >
                 <SelectTrigger
                   className={cn(
-                    "w-full rounded-md",
+                    "w-full",
                     errors.gender ? "border-red-500" : ""
                   )}
                 >
@@ -230,6 +334,7 @@ export default function AddFacultyModal({
             </div>
           </div>
 
+          {/*  Date of Birth */}
           <div className="space-y-4">
             {/* Right Column */}
             <div className="space-y-2">
@@ -240,7 +345,11 @@ export default function AddFacultyModal({
                 id="dateOfBirth"
                 name="dateOfBirth"
                 type="date"
-                value={formData.dateOfBirth || ""}
+                value={
+                  formData.dateOfBirth
+                    ? formData.dateOfBirth.substring(0, 10)
+                    : ""
+                }
                 onChange={handleInputChange}
                 className={errors.dateOfBirth ? "border-red-500" : ""}
               />
@@ -249,6 +358,7 @@ export default function AddFacultyModal({
               )}
             </div>
 
+            {/* Joining Date */}
             <div className="space-y-2">
               <Label htmlFor="joiningDate">
                 Joining Date<span className="text-red-500">*</span>
@@ -257,7 +367,11 @@ export default function AddFacultyModal({
                 id="joiningDate"
                 name="joiningDate"
                 type="date"
-                value={formData.joiningDate || ""}
+                value={
+                  formData.joiningDate
+                    ? formData.joiningDate.substring(0, 10)
+                    : ""
+                }
                 onChange={handleInputChange}
                 className={errors.joiningDate ? "border-red-500" : ""}
               />
@@ -266,6 +380,7 @@ export default function AddFacultyModal({
               )}
             </div>
 
+            {/* Qualification */}
             <div className="space-y-2">
               <Label htmlFor="qualification">
                 Qualification<span className="text-red-500">*</span>
@@ -283,12 +398,14 @@ export default function AddFacultyModal({
               )}
             </div>
 
+            {/* experience */}
             <div className="space-y-2">
               <Label htmlFor="experience">Experience (Years)</Label>
               <Input
                 id="experience"
                 name="experience"
                 type="number"
+                min="0"
                 value={formData.experience || 0}
                 onChange={(e) =>
                   setFormData((prev) => ({
@@ -300,6 +417,7 @@ export default function AddFacultyModal({
               />
             </div>
 
+            {/* Department */}
             <div className="space-y-2">
               <Label htmlFor="department">Department</Label>
               <Select
@@ -309,7 +427,7 @@ export default function AddFacultyModal({
                   setFormData((prev) => ({ ...prev, department: value }))
                 }
               >
-                <SelectTrigger className="w-full rounded-md">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select department" />
                 </SelectTrigger>
                 <SelectContent>
@@ -322,6 +440,7 @@ export default function AddFacultyModal({
               </Select>
             </div>
 
+            {/* Designation */}
             <div className="space-y-2">
               <Label htmlFor="designation">
                 Designation<span className="text-red-500">*</span>
@@ -339,12 +458,14 @@ export default function AddFacultyModal({
               )}
             </div>
 
+            {/* Salary */}
             <div className="space-y-2">
               <Label htmlFor="salary">Salary</Label>
               <Input
                 id="salary"
                 name="salary"
                 type="number"
+                min="0"
                 value={formData.salary || ""}
                 onChange={(e) =>
                   setFormData((prev) => ({
@@ -355,6 +476,32 @@ export default function AddFacultyModal({
                 placeholder="70000"
               />
             </div>
+          </div>
+
+          {/* Subjects */}
+          <div className="col-span-2 md:col-span-2 space-y-2">
+            <Label htmlFor="subjects">Subjects</Label>
+            <MultiSelect
+              options={subjects}
+              selected={formData.subjects || []}
+              onChange={(values) =>
+                setFormData((prev) => ({ ...prev, subjects: values }))
+              }
+              placeholder="Select subjects..."
+            />
+          </div>
+
+          {/* Classes */}
+          <div className="col-span-1 md:col-span-2 space-y-2">
+            <Label htmlFor="classes">Classes</Label>
+            <MultiSelect
+              options={classes}
+              selected={formData.classes || []}
+              onChange={(values) =>
+                setFormData((prev) => ({ ...prev, classes: values }))
+              }
+              placeholder="Select classes..."
+            />
           </div>
 
           <div className="col-span-1 md:col-span-2 space-y-2">
@@ -380,6 +527,31 @@ export default function AddFacultyModal({
             <Label htmlFor="isClassTeacher">Is Class Teacher</Label>
           </div>
 
+          {formData.isClassTeacher && (
+            <div className="col-span-1 md:col-span-2 space-y-2">
+              <Label htmlFor="classTeacherOf">Class Teacher Of</Label>
+              <Select
+                name="classTeacherOf"
+                value={formData.classTeacherOf || ""}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, classTeacherOf: value }))
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select class" />
+                </SelectTrigger>
+                <SelectContent>
+                  {classes &&
+                    classes.map((cls) => (
+                      <SelectItem key={cls._id} value={cls._id}>
+                        {cls.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="col-span-1 md:col-span-2 flex items-center space-x-2">
             <Switch
               id="isActive"
@@ -395,13 +567,13 @@ export default function AddFacultyModal({
         <DialogFooter>
           <Button
             variant="outline"
-            onClick={() => setIsCreateDialogOpen(false)}
+            onClick={() => setIsDialogOpen(false)}
             className="rounded-full"
           >
             Cancel
           </Button>
           <Button onClick={handleSubmit} className="rounded-full">
-            Add Faculty
+            {isEditing ? "Update Faculty" : "Add Faculty"}
           </Button>
         </DialogFooter>
       </DialogContent>

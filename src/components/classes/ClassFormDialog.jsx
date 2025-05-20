@@ -22,28 +22,35 @@ import { Loader2, PlusCircle, X } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useClassStore } from "@/lib/state/stores/classStore";
+import { useFacultyStore } from "@/lib/state/stores/facultyStore";
+import { gradeList, sectionsList } from "@/assets/data/data";
 
-export function ClassFormDialog({
-  open,
-  onOpenChange,
-  classData,
-  onSuccess,
-  teachers = [],
-}) {
+export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
   const isEditMode = Boolean(classData);
+  const {
+    classes,
+    currentClass,
+    isLoading,
+    error,
+    successMessage,
+    createClass,
+    updateClass,
+  } = useClassStore();
+
+  const { fetchFaculties, faculties } = useFacultyStore();
 
   // Initialize with default values or existing class data
   const defaultFormData = {
     name: "",
     grade: "",
-    teacher: "",
+    classTeacher: "",
     capacity: 30,
-    sections: ["A"],
+    section: "",
     description: "",
   };
 
   const [formData, setFormData] = useState(classData || defaultFormData);
-  const [sectionInput, setSectionInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -54,21 +61,14 @@ export function ClassFormDialog({
       setFormData(classData || defaultFormData);
       setErrors({});
       setTouched({});
-      setSectionInput("");
     }
   }, [open, classData]);
 
-  // Use sample teachers if none provided
-  const availableTeachers =
-    teachers.length > 0
-      ? teachers
-      : [
-          { id: "t1", name: "John Smith" },
-          { id: "t2", name: "Emma Johnson" },
-          { id: "t3", name: "Michael Brown" },
-          { id: "t4", name: "Sarah Davis" },
-        ];
+  useEffect(() => {
+    fetchFaculties();
+  }, []);
 
+  // Fixed validation function to match actual form field names
   const validateField = (name, value) => {
     switch (name) {
       case "name":
@@ -77,14 +77,14 @@ export function ClassFormDialog({
           : "";
       case "grade":
         return !value ? "Please select a grade level." : "";
-      case "teacher":
+      case "classTeacher": // Changed from "teacher" to "classTeacher"
         return !value ? "Please select a teacher." : "";
       case "capacity":
         return value < 1 || value > 50
           ? "Capacity must be between 1 and 50."
           : "";
-      case "sections":
-        return value.length < 1 ? "At least one section is required." : "";
+      case "section":
+        return !value ? "Please, Enter section is required." : "";
       default:
         return "";
     }
@@ -92,7 +92,8 @@ export function ClassFormDialog({
 
   const validateForm = () => {
     const newErrors = {};
-    const fields = ["name", "grade", "teacher", "capacity", "sections"];
+    // Updated field names to match the actual form data
+    const fields = ["name", "grade", "classTeacher", "capacity", "section"];
 
     fields.forEach((field) => {
       const error = validateField(field, formData[field]);
@@ -108,27 +109,32 @@ export function ClassFormDialog({
 
     // Mark all fields as touched for validation
     const allTouched = {};
-    ["name", "grade", "teacher", "capacity", "sections"].forEach((field) => {
-      allTouched[field] = true;
-    });
+    ["name", "grade", "classTeacher", "capacity", "section"].forEach(
+      (field) => {
+        allTouched[field] = true;
+      }
+    );
     setTouched(allTouched);
 
     if (!validateForm()) {
+      console.log("Form validation failed:", errors);
       return;
     }
 
     setIsSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (isEditMode) {
+        await updateClass(formData._id, formData);
+      } else {
+        await createClass(formData);
+      }
 
-      toast.success(
-        isEditMode ? "Class updated successfully" : "Class created successfully"
-      );
-      onSuccess(formData);
+      // Modified success handling to not depend on successMessage
+      onSuccess({ formData });
       onOpenChange(false);
     } catch (error) {
       toast.error("An error occurred. Please try again.");
+      console.error("Form submission error:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -178,90 +184,22 @@ export function ClassFormDialog({
     });
   };
 
-  const addSection = () => {
-    if (!sectionInput.trim()) return;
-
-    const normalizedInput = sectionInput.trim().toUpperCase();
-
-    if (!formData.sections.includes(normalizedInput)) {
-      const newSections = [...formData.sections, normalizedInput];
-      setFormData({
-        ...formData,
-        sections: newSections,
-      });
-
-      // Clear any sections error
-      if (errors.sections) {
-        setErrors({
-          ...errors,
-          sections: "",
-        });
-      }
-    } else {
-      toast.error(`Section ${normalizedInput} already exists`);
-    }
-
-    setSectionInput("");
-  };
-
-  const removeSection = (sectionToRemove) => {
-    const newSections = formData.sections.filter(
-      (section) => section !== sectionToRemove
-    );
-
-    setFormData({
-      ...formData,
-      sections: newSections,
-    });
-
-    // Validate sections after removal
-    if (newSections.length === 0) {
-      setErrors({
-        ...errors,
-        sections: "At least one section is required.",
-      });
-    }
-  };
-
-  const handleSectionInputKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addSection();
-    }
-  };
-
-  const gradeOptions = [
-    "Kindergarten",
-    "Grade 1",
-    "Grade 2",
-    "Grade 3",
-    "Grade 4",
-    "Grade 5",
-    "Grade 6",
-    "Grade 7",
-    "Grade 8",
-    "Grade 9",
-    "Grade 10",
-    "Grade 11",
-    "Grade 12",
-  ];
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh]">
-        <ScrollArea className="max-h-[80vh] pr-4">
-          <DialogHeader>
-            <DialogTitle>
-              {isEditMode ? "Edit Class" : "Add New Class"}
-            </DialogTitle>
-            <DialogDescription>
-              {isEditMode
-                ? "Update the class information below."
-                : "Fill in the details to create a new class."}
-            </DialogDescription>
-          </DialogHeader>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>
+            {isEditMode ? "Edit Class" : "Add New Class"}
+          </DialogTitle>
+          <DialogDescription>
+            {isEditMode
+              ? "Update the class information below."
+              : "Fill in the details to create a new class."}
+          </DialogDescription>
+        </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-4 py-4 ">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-1 max-h-[50vh] overflow-y-auto ">
             <div>
               <Label htmlFor="name" className="mb-1 block">
                 Class Name
@@ -269,7 +207,7 @@ export function ClassFormDialog({
               <Input
                 id="name"
                 name="name"
-                placeholder="e.g., Mathematics 101"
+                placeholder="e.g., Class 1-A or Grade 3-B"
                 value={formData.name}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
@@ -301,7 +239,7 @@ export function ClassFormDialog({
                     <SelectValue placeholder="Select grade" />
                   </SelectTrigger>
                   <SelectContent>
-                    {gradeOptions.map((grade) => (
+                    {gradeList.map((grade) => (
                       <SelectItem key={grade} value={grade}>
                         {grade}
                       </SelectItem>
@@ -316,39 +254,40 @@ export function ClassFormDialog({
               </div>
 
               <div className="col-span-2 sm:col-span-1">
-                <Label htmlFor="teacher" className="mb-1 block">
+                <Label htmlFor="classTeacher" className="mb-1 block">
                   Class Teacher
                 </Label>
                 <Select
-                  value={formData.teacher}
+                  value={formData.classTeacher}
                   onValueChange={(value) =>
-                    handleSelectChange("teacher", value)
+                    handleSelectChange("classTeacher", value)
                   }
                 >
                   <SelectTrigger
-                    id="teacher"
-                    aria-invalid={errors.teacher ? "true" : "false"}
+                    id="classTeacher"
+                    aria-invalid={errors.classTeacher ? "true" : "false"}
                     aria-describedby={
-                      errors.teacher ? "teacher-error" : undefined
+                      errors.classTeacher ? "classTeacher-error" : undefined
                     }
                     className="w-full"
                   >
                     <SelectValue placeholder="Select teacher" />
                   </SelectTrigger>
                   <SelectContent>
-                    {availableTeachers.map((teacher) => (
-                      <SelectItem key={teacher.id} value={teacher.name}>
-                        {teacher.name}
+                    {faculties.map((teacher) => (
+                      <SelectItem key={teacher._id} value={teacher._id}>
+                        {teacher.firstName} {teacher.lastName}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.teacher && (
+
+                {errors.classTeacher && (
                   <p
-                    id="teacher-error"
+                    id="classTeacher-error"
                     className="text-sm text-destructive mt-1"
                   >
-                    {errors.teacher}
+                    {errors.classTeacher}
                   </p>
                 )}
               </div>
@@ -395,82 +334,59 @@ export function ClassFormDialog({
             </div>
 
             <div>
-              <Label htmlFor="section-input" className="mb-1 block">
-                Sections
+              <Label htmlFor="section" className="mb-1 block">
+                Section
               </Label>
-              <div className="flex gap-2 mt-2">
-                <Input
-                  id="section-input"
-                  value={sectionInput}
-                  onChange={(e) => setSectionInput(e.target.value)}
-                  onKeyDown={handleSectionInputKeyDown}
-                  placeholder="Add section (e.g., B)"
-                  className="flex-1"
-                  maxLength={3}
-                  aria-invalid={errors.sections ? "true" : "false"}
-                  aria-describedby={
-                    errors.sections ? "sections-error" : undefined
+              <div className="flex gap-2 mt-2 w-full">
+                <Select
+                  value={formData.section}
+                  onValueChange={(value) =>
+                    handleSelectChange("section", value)
                   }
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={addSection}
-                  disabled={!sectionInput.trim()}
-                  aria-label="Add section"
                 >
-                  <PlusCircle className="h-4 w-4 mr-1" /> Add
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-2" id="sections-list">
-                {formData.sections?.map((section) => (
-                  <Badge
-                    key={section}
-                    variant="secondary"
-                    className="flex items-center"
+                  <SelectTrigger
+                    id="section"
+                    name="section"
+                    aria-invalid={errors.section ? "true" : "false"}
+                    aria-describedby={
+                      errors.section ? "section-error" : undefined
+                    }
+                    className="w-full"
                   >
-                    <span>Section {section}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeSection(section)}
-                      className="ml-1 hover:text-destructive focus:outline-none focus:ring-2 focus:ring-offset-1 rounded-full"
-                      aria-label={`Remove Section ${section}`}
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
+                    <SelectValue placeholder="Select section" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sectionsList.map((section) => (
+                      <SelectItem key={section} value={section}>
+                        {section}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              {errors.sections && (
-                <p
-                  id="sections-error"
-                  className="text-sm text-destructive mt-1"
-                >
-                  {errors.sections}
+              {errors.section && (
+                <p id="section-error" className="text-sm text-destructive mt-1">
+                  {errors.section}
                 </p>
               )}
-              <p className="text-xs text-muted-foreground mt-1">
-                Press Enter to quickly add a section
-              </p>
             </div>
-
-            <div className="flex justify-end gap-2 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                )}
-                {isEditMode ? "Save Changes" : "Create Class"}
-              </Button>
-            </div>
-          </form>
-        </ScrollArea>
+          </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              {isEditMode ? "Save Changes" : "Create Class"}
+            </Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

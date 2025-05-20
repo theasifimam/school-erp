@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Plus, Edit, Trash2, Users, BookOpen } from "lucide-react";
+import { Search, Plus, Edit, Trash2, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ClassFormDialog } from "@/components/classes/ClassFormDialog";
 import { Pagination } from "@/components/common/Pagination";
@@ -95,17 +95,6 @@ export default function ClassesPage() {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-              <Users className="h-5 w-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Total Classes</p>
-              <h3 className="text-xl font-bold">{classes.length}</h3>
-            </div>
-          </CardContent>
-        </Card>
         {/* Add more stat cards as needed */}
       </div>
 

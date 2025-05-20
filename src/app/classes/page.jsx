@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -29,6 +29,8 @@ import { Search, Plus, Edit, Trash2, Users, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ClassFormDialog } from "@/components/classes/ClassFormDialog";
 import { Pagination } from "@/components/common/Pagination";
+import { useClassStore } from "@/lib/state/stores/classStore";
+import { gradeList } from "@/assets/data/data";
 
 export default function ClassesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,36 +40,13 @@ export default function ClassesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
 
-  // Sample data with sections
-  const classes = [
-    {
-      id: "cl-1",
-      name: "Class 1-A",
-      grade: "Grade 1",
-      teacher: "John Smith",
-      students: 25,
-      subjects: 6,
-      sections: ["A", "B"],
-      capacity: 30,
-    },
-    {
-      id: "cl-2",
-      name: "Class 2-B",
-      grade: "Grade 2",
-      teacher: "Emma Johnson",
-      students: 28,
-      subjects: 7,
-      sections: ["A", "B", "C"],
-      capacity: 30,
-    },
-    // ... more classes
-  ];
+  const { classes, fetchClasses, isLoading } = useClassStore();
 
   // Filter classes
   const filteredClasses = classes.filter((cls) => {
-    const matchesSearch =
-      cls.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      cls.teacher.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = cls.name
+      .toLowerCase()
+      .includes(searchTerm?.toLowerCase());
     const matchesGrade = gradeFilter === "all" || cls.grade === gradeFilter;
     return matchesSearch && matchesGrade;
   });
@@ -82,7 +61,12 @@ export default function ClassesPage() {
   const totalPages = Math.ceil(filteredClasses.length / itemsPerPage);
 
   const handleEdit = (cls) => {
-    setSelectedClass(cls);
+    console.log("Editing class:", cls);
+    setSelectedClass({
+      ...cls,
+      id: cls._id,
+      classTeacher: cls?.classTeacher?._id,
+    });
     setIsDialogOpen(true);
   };
 
@@ -91,24 +75,12 @@ export default function ClassesPage() {
     setIsDialogOpen(true);
   };
 
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-              <Users className="h-5 w-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Total Classes</p>
-              <h3 className="text-xl font-bold">{classes.length}</h3>
-            </div>
-          </CardContent>
-        </Card>
-        {/* Add more stat cards as needed */}
-      </div>
-
       {/* Main Classes Table */}
       <Card>
         <CardHeader>
@@ -130,9 +102,12 @@ export default function ClassesPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Grades</SelectItem>
-                  <SelectItem value="Grade 1">Grade 1</SelectItem>
-                  <SelectItem value="Grade 2">Grade 2</SelectItem>
                   {/* Add more grades */}
+                  {gradeList.map((grade) => (
+                    <SelectItem key={grade} value={grade}>
+                      {grade}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <Button className="w-full sm:w-auto" onClick={handleAddNew}>
@@ -157,19 +132,20 @@ export default function ClassesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentClasses.length > 0 ? (
-                currentClasses.map((cls) => (
+              {currentClasses?.length > 0 ? (
+                currentClasses?.map((cls) => (
                   <TableRow key={cls.id}>
                     <TableCell className="font-medium">{cls.name}</TableCell>
                     <TableCell>{cls.grade}</TableCell>
-                    <TableCell>{cls.teacher}</TableCell>
+                    <TableCell>
+                      {cls?.classTeacher?.firstName}{" "}
+                      {cls?.classTeacher?.lastName}{" "}
+                    </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        {cls.sections.map((section) => (
-                          <Badge key={section} variant="outline">
-                            Section {section}
-                          </Badge>
-                        ))}
+                        <Badge key={cls.section} variant="outline">
+                          Section {cls.section}
+                        </Badge>
                       </div>
                     </TableCell>
                     <TableCell>

@@ -297,7 +297,7 @@ export default function StudentFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[800px] p-0 rounded-3xl overflow-hidden h-[90vh] flex flex-col">
+      <DialogContent className="max-w-[800px] p-0 rounded-4xl w-[700px] overflow-hidden h-[90vh] flex flex-col">
         <DialogHeader className="px-6 py-4 bg-black text-white">
           <DialogTitle className="text-lg font-semibold flex items-center">
             <Calendar className="mr-2 h-5 w-5" />

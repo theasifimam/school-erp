@@ -64,10 +64,18 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { toast } from "sonner";
-import AddFacultyModal from "@/components/faculty/AddFacultyModal";
-import UpdateFacultyModal from "@/components/faculty/UpdateFacultyModal";
 import ViewFacultyModal from "@/components/faculty/ViewFacultyModal";
 import DeleteFacultyModal from "@/components/faculty/DeleteFacultyModal";
+import {
+  useFaculties,
+  useFacultyError,
+  useFacultyLoading,
+  useFacultyStore,
+} from "@/lib/state/stores/facultyStore";
+import FacultyFormModal from "@/components/faculty/FacultyFormModal";
+import useQueryState from "@/lib/hooks/useQueryState";
+import { create } from "zustand";
+import { set } from "date-fns";
 
 // Mock data for teachers
 const initialTeachers = [
@@ -190,11 +198,13 @@ const departments = [
 
 export default function TeachersPage() {
   const router = useRouter();
-  const [teachers, setTeachers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [departmentFilter, setDepartmentFilter] = useState("all");
+  const [teachers, setFaculties] = useState([]);
+  const [searchQuery, setSearchQuery] = useQueryState("search", "");
+  const [statusFilter, setStatusFilter] = useQueryState("status", "all");
+  const [departmentFilter, setDepartmentFilter] = useQueryState(
+    "department",
+    "all"
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [notification, setNotification] = useState(null);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
@@ -217,8 +227,18 @@ export default function TeachersPage() {
     salary: 0,
     image: "/api/placeholder/128/128",
   });
-
   const itemsPerPage = 5;
+
+  const fetchFaculties = useFacultyStore((state) => state.fetchFaculties);
+  const faculties = useFaculties();
+  const isLoading = useFacultyLoading();
+  const error = useFacultyError();
+  const createFaculty = useFacultyStore((state) => state.createFaculty);
+  const updateFaculty = useFacultyStore((state) => state.updateFaculty);
+  const deleteFaculty = useFacultyStore((state) => state.deleteFaculty);
+  const clearCurrentFaculty = useFacultyStore(
+    (state) => state.clearCurrentFaculty
+  );
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -230,7 +250,7 @@ export default function TeachersPage() {
   };
 
   // Add new teacher
-  const handleAddTeacher = () => {
+  const handleAddFaculty = () => {
     // Generate a new ID
     const newId = `t-${String(teachers.length + 1).padStart(3, "0")}`;
 
@@ -243,7 +263,7 @@ export default function TeachersPage() {
     };
 
     // Add to teachers list
-    setTeachers((prev) => [...prev, newTeacher]);
+    setFaculties((prev) => [...prev, newTeacher]);
 
     // Reset form and close dialog
     setFormData({
@@ -262,20 +282,16 @@ export default function TeachersPage() {
       image: "/api/placeholder/128/128",
     });
 
+    createFaculty(newTeacher);
     setIsCreateDialogOpen(false);
-    showNotification("Teacher added successfully!");
   };
 
   // Load teachers data (simulating API call)
   useEffect(() => {
-    setIsLoading(true);
-
     // Simulate API call with timeout
-    setTimeout(() => {
-      setTeachers(initialTeachers);
-      setIsLoading(false);
-    }, 800);
-  }, []);
+    fetchFaculties();
+  }, [searchQuery, statusFilter, departmentFilter]);
+  console.log(faculties);
 
   // Show notification
   const showNotification = (message, type = "success") => {
@@ -287,29 +303,23 @@ export default function TeachersPage() {
 
   // Update existing teacher
   const handleUpdateTeacher = () => {
-    setTeachers((prev) =>
-      prev.map((teacher) =>
-        teacher.id === formData.id ? { ...formData } : teacher
-      )
-    );
+    // setFaculties((prev) =>
+    //   prev.map((teacher) =>
+    //     teacher.id === formData.id ? { ...formData } : teacher
+    //   )
+    // );
 
-    setIsEditDialogOpen(false);
-    toast("Teacher information updated!", {
-      description: "Sunday, December 03, 2023 at 9:00 AM",
-      action: {
-        label: "X",
-        onClick: () => console.log("remove"),
-      },
-    });
+    updateFaculty(formData._id, formData);
+    // setIsEditDialogOpen(false);
   };
 
   // Delete teacher
   const handleDeleteTeacher = () => {
-    setTeachers((prev) =>
+    setFaculties((prev) =>
       prev.filter((teacher) => teacher.id !== selectedTeacher.id)
     );
     setIsDeleteDialogOpen(false);
-    toast("Teacher removed successfully", {
+    toast("Faculty removed successfully", {
       description: "Sunday, December 03, 2023 at 9:00 AM",
       action: {
         label: "X",
@@ -319,18 +329,24 @@ export default function TeachersPage() {
   };
 
   // Filter teachers based on search query and filters
-  const filteredTeachers = teachers.filter((teacher) => {
+  const filteredTeachers = faculties.filter((teacher) => {
+    // Skip teachers missing required fields
+    if (!teacher.firstName || !teacher.email) {
+      return false;
+    }
+
+    const searchLower = searchQuery?.toLowerCase() || "";
+
     const matchesSearch =
-      teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      teacher.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      teacher.subject.toLowerCase().includes(searchQuery.toLowerCase());
+      teacher.firstName.toLowerCase().includes(searchLower) ||
+      teacher.email.toLowerCase().includes(searchLower) ||
+      (teacher.subject && teacher.subject.toLowerCase().includes(searchLower));
 
     const matchesStatus =
       statusFilter === "all" || teacher.status === statusFilter;
 
     const matchesDepartment =
       departmentFilter === "all" || teacher.department === departmentFilter;
-
     return matchesSearch && matchesStatus && matchesDepartment;
   });
 
@@ -431,14 +447,14 @@ export default function TeachersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div className="min-h-screen">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-bold flex items-center gap-2">
-          <Briefcase className="h-6 w-6 text-indigo-600" />
+          <Briefcase className="h-6 w-6 text-gray-600" />
           Faculty Management
         </h1>
-        <p className="text-gray-500">Manage faculty information and records</p>
+        <p className="text-gray-400">Manage faculty information and records</p>
       </div>
 
       {/* Notification Alert */}
@@ -595,7 +611,7 @@ export default function TeachersPage() {
         {/* Action Buttons */}
         <div className="flex gap-2">
           <Button
-            onClick={openCreateDialog}
+            onClick={() => setIsCreateDialogOpen(true)}
             className="flex-1 md:flex-initial rounded-full"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -635,12 +651,12 @@ export default function TeachersPage() {
         </TabsList>
 
         <TabsContent value="list">
-          {/* Teachers Table */}
+          {/* Faculties Table */}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden">
             <Table>
               <TableHeader className="bg-gray-50">
                 <TableRow>
-                  <TableHead>Teacher</TableHead>
+                  <TableHead>Faculty</TableHead>
                   <TableHead className="hidden md:table-cell">
                     Subject
                   </TableHead>
@@ -699,17 +715,19 @@ export default function TeachersPage() {
                           <Avatar>
                             <AvatarImage
                               src={teacher.image}
-                              alt={teacher.name}
+                              alt={teacher.firstName}
                             />
                             <AvatarFallback>
-                              {teacher.name
+                              {teacher.firstName
                                 .split(" ")
                                 .map((n) => n[0])
                                 .join("")}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-medium">{teacher.name}</div>
+                            <div className="font-medium">
+                              {teacher.firstName}
+                            </div>
                             <div className="text-sm text-gray-500">
                               {teacher.email}
                             </div>
@@ -758,7 +776,10 @@ export default function TeachersPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => openEditDialog(teacher)}
+                            onClick={() => {
+                              setIsEditDialogOpen(teacher);
+                              setFormData(teacher);
+                            }}
                             aria-label="Edit"
                           >
                             <Edit className="h-4 w-4 text-blue-500" />
@@ -787,63 +808,12 @@ export default function TeachersPage() {
           </div>
 
           {/* Pagination */}
-          {!isLoading && totalPages > 1 && (
-            <Pagination className="mt-4">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.max(prev - 1, 1))
-                    }
-                    isActive={currentPage === 1}
-                  />
-                </PaginationItem>
-
-                {Array.from({ length: totalPages }).map((_, index) => {
-                  const pageNumber = index + 1;
-
-                  // Show first page, current page, last page and pages around current
-                  if (
-                    pageNumber === 1 ||
-                    pageNumber === totalPages ||
-                    (pageNumber >= currentPage - 1 &&
-                      pageNumber <= currentPage + 1)
-                  ) {
-                    return (
-                      <PaginationItem key={pageNumber}>
-                        <PaginationLink
-                          isActive={pageNumber === currentPage}
-                          onClick={() => setCurrentPage(pageNumber)}
-                        >
-                          {pageNumber}
-                        </PaginationLink>
-                      </PaginationItem>
-                    );
-                  }
-
-                  // Show ellipsis for gaps
-                  if (pageNumber === 2 || pageNumber === totalPages - 1) {
-                    return (
-                      <PaginationItem key={`ellipsis-${pageNumber}`}>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    );
-                  }
-
-                  return null;
-                })}
-
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    isActive={currentPage === totalPages}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            className="mt-4"
+          />
         </TabsContent>
 
         <TabsContent value="departments">
@@ -936,28 +906,23 @@ export default function TeachersPage() {
       </Tabs>
 
       {/* Create Teacher Dialog */}
-      <AddFacultyModal
-        {...{
-          isCreateDialogOpen,
-          setIsCreateDialogOpen,
-          formData,
-          setFormData,
-          handleInputChange,
-          departments,
-          handleAddTeacher,
-        }}
+      <FacultyFormModal
+        isDialogOpen={isCreateDialogOpen}
+        setIsDialogOpen={setIsCreateDialogOpen}
+        formData={formData}
+        setFormData={setFormData}
+        departments={departments}
+        handleSave={handleAddFaculty}
       />
       {/* Edit Teacher Dialog */}
-      <UpdateFacultyModal
-        {...{
-          isEditDialogOpen,
-          setIsEditDialogOpen,
-          formData,
-          setFormData,
-          handleInputChange,
-          departments,
-          handleUpdateTeacher,
-        }}
+      <FacultyFormModal
+        isEditing={true}
+        isDialogOpen={isEditDialogOpen}
+        setIsDialogOpen={setIsEditDialogOpen}
+        formData={formData}
+        setFormData={setFormData}
+        departments={departments}
+        handleSave={handleUpdateTeacher}
       />
 
       {/* View Teacher Dialog */}

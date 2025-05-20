@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -12,59 +12,63 @@ import {
   PenTool,
   DownloadIcon,
   Upload,
+  Briefcase,
+  GitGraph,
+  LineChart,
+  CircleUserIcon,
+  UsersRound,
+  BookPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import StudentFormModal from "@/components/students/StudentFormModal";
 
 // This is the shared layout component for all curriculum pages
 export default function ClassesCurriculumLayout({ children }) {
   const pathname = usePathname();
-  const [addStudent, setAddStudent] = useState(false);
 
   // Define our tabs with their paths and icons
   const tabs = [
     {
-      name: "Overview",
-      path: "/students/all",
-      icon: <Users className="mr-2 h-4 w-4" />,
+      name: "Library Books",
+      path: "/library/books",
+      icon: <BookPlus className="mr-2 h-4 w-4" />,
     },
     {
-      name: "Admissions",
-      path: "/students/admissions",
+      name: "Books Issue",
+      path: "/library/issue-book",
       icon: <Clock className="mr-2 h-4 w-4" />,
     },
     {
-      name: "attendance",
-      path: "/students/attendance",
+      name: "Books Returns",
+      path: "/library/return-book",
       icon: <BookOpen className="mr-2 h-4 w-4" />,
     },
     {
-      name: "Behavior Records",
-      path: "/students/behavior",
-      icon: <FileText className="mr-2 h-4 w-4" />,
+      name: "Students",
+      path: "/library/students",
+      icon: <UsersRound className="mr-2 h-4 w-4" />,
     },
     {
-      name: "Student Portfolio",
-      path: "/students/portfolios",
-      icon: <PenTool className="mr-2 h-4 w-4" />,
+      name: "Analytics",
+      path: "/library/analytics",
+      icon: <LineChart className="mr-2 h-4 w-4" />,
     },
   ];
 
   // Function to check if a tab is active
   const isActiveTab = (path) => {
-    if (path === "/students" && pathname === "/students") {
+    if (path === "/library" && pathname === "/library") {
       return true;
     }
-    return path !== "/students" && pathname.startsWith(path);
+    return path !== "/library" && pathname.startsWith(path);
   };
 
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Student Management</h1>
-          <p className="text-gray-500">
-            Manage all student records and applications
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold">Library Management System</h1>
+          <p className="text-gray-400">
+            Manage books, track issues, and monitor library resources
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -78,10 +82,11 @@ export default function ClassesCurriculumLayout({ children }) {
           </Button>
           <Button
             variant="primary"
-            className="bg-black text-white"
-            onClick={() => {
-              setAddStudent(true);
-            }}
+            className="rounded-full bg-black text-white"
+            // onClick={() => {
+            //   setSelectedUser(null);
+            //   setAddStudent(true);
+            // }}
           >
             Add Student
           </Button>
@@ -89,13 +94,13 @@ export default function ClassesCurriculumLayout({ children }) {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b mb-4 sticky top-0 bg-white z-1">
+      <div className="flex border-b mb-6 sticky top-0 bg-white">
         {tabs.map((tab) => (
           <Link
             key={tab.path}
             href={tab.path}
             className={cn(
-              "px-4 py-2 flex items-center font-medium text-sm transition-colors focus:outline-none",
+              "px-4 py-2 flex items-center font-medium text-sm transition-colors focus:outline-none ",
               isActiveTab(tab.path)
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-600 hover:text-blue-600"
@@ -109,15 +114,6 @@ export default function ClassesCurriculumLayout({ children }) {
 
       {/* Page Content */}
       {children}
-
-      <StudentFormModal
-        isOpen={addStudent}
-        onClose={() => setAddStudent(false)}
-        onSuccess={() => {
-          setAddStudent(false);
-          fetchStudents();
-        }}
-      />
     </div>
   );
 }
