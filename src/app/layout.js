@@ -31,6 +31,7 @@ export default function RootLayout({ children }) {
   const [isOpen, setIsOpen] = useState(false); // Start closed on mobile, will adjust in effect
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
+  const [previousPathname, setPreviousPathname] = useState(pathname);
 
   // Responsive sidebar handler - memoized for performance
   const handleResize = useCallback(() => {
@@ -58,12 +59,16 @@ export default function RootLayout({ children }) {
     };
   }, [handleResize]);
 
-  // Close mobile sidebar on navigation
+  // Only close mobile sidebar on page navigation, not on every pathname change
   useEffect(() => {
-    if (isMobileOpen) {
-      setIsMobileOpen(false);
+    // Check if pathname actually changed (real navigation occurred)
+    if (pathname !== previousPathname) {
+      setPreviousPathname(pathname);
+      if (isMobileOpen) {
+        setIsMobileOpen(false);
+      }
     }
-  }, [pathname, isMobileOpen]);
+  }, [pathname, previousPathname, isMobileOpen]);
 
   // Detect if we're on an auth page
   const isAuthPage = AUTH_ROUTES.includes(pathname);

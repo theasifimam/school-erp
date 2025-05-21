@@ -105,21 +105,21 @@ export const booksApi = {
 };
 
 export const issueBookApi = {
-  getAll: (filters) => fetcher(`/books?${new URLSearchParams(filters)}`),
-  searchBooks: (filter) => fetcher(`/books/search?query=${filter}`),
-  getById: (id) => fetcher(`/books/${id}`),
-  create: (book) =>
-    fetcher("/books", {
+  getAll: (filters) => fetcher(`/issues?${new URLSearchParams(filters)}`),
+  searchIssuedBooks: (filter) => fetcher(`/issues/search?query=${filter}`),
+  getById: (id) => fetcher(`/issues/${id}`),
+  issueBook: (issueBookData) =>
+    fetcher("/issues", {
       method: "POST",
-      body: JSON.stringify(book),
+      body: JSON.stringify(issueBookData),
     }),
   update: (id, data) =>
-    fetcher(`/books/${id}`, {
+    fetcher(`/issues/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
     }),
   delete: (id) =>
-    fetcher(`/books/${id}`, {
+    fetcher(`/issues/${id}`, {
       method: "DELETE",
     }),
 };

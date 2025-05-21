@@ -142,3 +142,21 @@ export const studentFormData = {
     termsAccepted: false,
   },
 };
+
+export function formatDateToDDMMYY(dateString) {
+  // Create a Date object from the input string
+  const date = new Date(dateString);
+
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    return "";
+  }
+
+  // Extract day, month, and year components
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const year = String(date.getFullYear()).slice(-2); // Get last 2 digits of year
+
+  // Combine in DD-MM-YY format
+  return `${day}-${month}-${year}`;
+}

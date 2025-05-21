@@ -45,12 +45,14 @@ export default function IssueBookFormModal({
   setSelectedBook,
 }) {
   const {
-    createBook,
-    updateBook,
+    fetchBooks,
     isLoading,
     successMessage,
+    issuedBooks,
     books,
     searchBooks,
+    fetchIssuedBooks,
+    issueBook,
   } = useBookstore();
 
   const {
@@ -58,10 +60,6 @@ export default function IssueBookFormModal({
     students,
     isLoading: studentsLoading,
   } = useStudentStore();
-
-  // Debug logs
-  console.log("Books data:", books);
-  console.log("Students data:", students);
 
   // States for book search and selection
   const [bookSearchOpen, setBookSearchOpen] = useState(false);
@@ -89,12 +87,18 @@ export default function IssueBookFormModal({
   } = useForm({
     defaultValues: {
       bookId: "",
-      studentId: "",
+      issuedTo: "",
       issueDate: dateFrom,
       dueDate: dateTo,
       notes: "",
     },
   });
+
+  useEffect(() => {
+    fetchBooks();
+    fetchStudents();
+    fetchIssuedBooks();
+  }, []);
 
   // Function to search books - this would connect to your backend API
   const handleSearchBooks = async (query) => {
@@ -150,7 +154,7 @@ export default function IssueBookFormModal({
   }, [studentSearchQuery]);
 
   // Handles form submission
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (!selectedBookDetails) {
       toast.error("Please select a book");
       return;
@@ -163,9 +167,8 @@ export default function IssueBookFormModal({
 
     try {
       //   toast.success("Book issued successfully!");
-
+      const response = await issueBook({ ...data, issuedToModel: "Student" });
       setIssueDialogOpen(false);
-
       // Reset form
       setSelectedBookDetails(null);
       setSelectedStudentDetails(null);
@@ -235,7 +238,6 @@ export default function IssueBookFormModal({
                       {books &&
                         Array.isArray(books) &&
                         books.map((book) => {
-                          console.log("Rendering book:", book);
                           return (
                             <CommandItem
                               key={book._id || book.id}
@@ -309,18 +311,13 @@ export default function IssueBookFormModal({
                       {students &&
                         Array.isArray(students) &&
                         students.map((student) => {
-                          console.log("Rendering student:", student);
                           return (
                             <CommandItem
                               key={student.id || student._id}
                               value={student.id || student._id}
                               onSelect={() => {
-                                console.log("Selected student:", student);
                                 setSelectedStudentDetails(student);
-                                setValue(
-                                  "studentId",
-                                  student.id || student._id
-                                );
+                                setValue("issuedTo", student.id || student._id);
                                 setStudentSeachOpen(false);
                               }}
                             >

@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { booksApi } from "../../api/endpoints";
+import { booksApi, issueBookApi } from "../../api/endpoints";
 import { toast } from "sonner";
 
 export const useBookstore = create(
   persist(
     (set, get) => ({
       books: [],
+      issuedBooks: [],
       currentBook: null,
       isLoading: false,
       error: null,
@@ -157,14 +158,14 @@ export const useBookstore = create(
       issueBook: async (data) => {
         set({ isLoading: true, error: null, successMessage: null });
         try {
-          const response = await booksApi.create(data);
+          const response = await issueBookApi.issueBook(data);
           set((state) => ({
-            books: [...state.books, response.data],
+            issuedBooks: [...state.books, response.data],
             isLoading: false,
-            successMessage: "Book added successfully!",
+            successMessage: "Book issued successfully!",
           }));
-          toast("Book information added!", {
-            description: "Book has been added successfully.",
+          toast("Book issued!", {
+            description: "Book has been issued successfully.",
             action: {
               label: "X",
               onClick: () => console.log("remove"),
@@ -173,10 +174,33 @@ export const useBookstore = create(
           return response.data;
         } catch (error) {
           set({
-            error: error.response?.data?.message || "Failed to create Book",
+            error: error.response?.data?.message || "Failed to issue Book",
             isLoading: false,
           });
           throw error;
+        }
+      },
+
+      fetchIssuedBooks: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          const data = await issueBookApi.getAll();
+
+          set({ issuedBooks: data, isLoading: false });
+        } catch (error) {
+          if (error.status === 401) {
+            // Handle unauthorized (token expired or invalid)
+            set({
+              error: "Session expired. Please login again.",
+              isLoading: false,
+            });
+            // Optionally trigger logout here
+          } else {
+            set({
+              error: error.info?.message || "Failed to fetch books",
+              isLoading: false,
+            });
+          }
         }
       },
 

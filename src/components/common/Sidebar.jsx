@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  ChevronDown,
   Home,
   User,
   Settings,
@@ -33,7 +31,6 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
@@ -56,7 +53,10 @@ import {
   transportationSubmenu,
 } from "../navbar/navData";
 import SidebarItem from "./SidebarItem";
-import SidebarSection from "./SidebarSection";
+import SidebarSection, {
+  MobileNavigation,
+  MobileMenuToggle,
+} from "./SidebarSection";
 
 export default function Sidebar({
   isOpen,
@@ -84,25 +84,39 @@ export default function Sidebar({
     setIsMobileOpen(false);
   };
 
+  // Filter main navigation items for mobile bottom navigation
+  const mainNavItems = [
+    { icon: <Home size={20} />, label: "Dashboard", route: "/" },
+    { icon: <Calendar size={20} />, label: "Calendar", route: "/calendar" },
+    {
+      icon: <Megaphone size={20} />,
+      label: "Updates",
+      route: "/announcements",
+      badge: 3,
+    },
+    {
+      icon: <MessageSquareDot size={20} />,
+      label: "Messages",
+      route: "/communication/messages",
+      badge: 5,
+    },
+    { icon: <User size={20} />, label: "Profile", route: "/profile" },
+  ];
+
   return (
     <>
-      {/* Mobile Menu Button */}
-      <div className="lg:hidden fixed top-4 left-4 z-40">
-        <Button
-          variant="outline"
-          size="icon"
-          className="bg-white shadow-md text-black border-gray-200 hover:bg-gray-100 rounded-full"
-          onClick={() => setIsMobileOpen(true)}
-        >
-          <Menu size={20} />
-        </Button>
-      </div>
+      {/* Improved Mobile Menu Button with better accessibility */}
+      <MobileMenuToggle
+        onClick={() => setIsMobileOpen(true)}
+        isOpen={isMobileOpen}
+      />
 
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
           className="fixed inset-0 bg-black/30 backdrop-blur-sm z-30 lg:hidden transition-all duration-300"
           onClick={closeMobileSidebar}
+          aria-hidden="true"
         />
       )}
 
@@ -114,22 +128,30 @@ export default function Sidebar({
           isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           "bg-white text-black rounded-r-3xl"
         )}
+        aria-label="Main Navigation"
+        role="navigation"
       >
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
           {isOpen ? (
             <div className="flex items-center gap-2">
               <div className="bg-gradient-to-br from-gray-800 to-black p-1.5 rounded-full shadow-md">
-                <School className="text-white" size={24} />
+                <School className="text-white" size={24} aria-hidden="true" />
               </div>
-              <h1 className="text-xl font-bold text-gray-800">EduManage Pro</h1>
+              <h1 className="text-xl font-bold text-gray-800">
+                Imam's Academy
+              </h1>
             </div>
           ) : (
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center justify-center w-full">
                   <div className="bg-gradient-to-br from-gray-800 to-black p-1.5 rounded-full shadow-md">
-                    <School className="text-white" size={24} />
+                    <School
+                      className="text-white"
+                      size={24}
+                      aria-hidden="true"
+                    />
                   </div>
                 </div>
               </TooltipTrigger>
@@ -137,7 +159,7 @@ export default function Sidebar({
                 side="right"
                 className="bg-white text-black border-gray-200"
               >
-                EduManage Pro
+                Imam's Academy
               </TooltipContent>
             </Tooltip>
           )}
@@ -149,8 +171,9 @@ export default function Sidebar({
               size="icon"
               className="lg:hidden text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
               onClick={() => setIsMobileOpen(false)}
+              aria-label="Close sidebar"
             >
-              <X size={20} />
+              <X size={20} aria-hidden="true" />
             </Button>
           )}
         </div>
@@ -159,20 +182,27 @@ export default function Sidebar({
         {isOpen && (
           <div className="p-3">
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-black transition-colors" />
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-black transition-colors"
+                aria-hidden="true"
+              />
               <Input
                 type="search"
                 placeholder="Search..."
                 className="w-full pl-9 bg-gray-50 border-gray-200 focus:border-gray-500 text-black placeholder:text-gray-400 rounded-full transition-all focus:ring-2 focus:ring-gray-300"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Search"
               />
             </div>
           </div>
         )}
 
         {/* Sidebar Navigation */}
-        <nav className="flex flex-col mt-2 px-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 scrollbar-track-transparent h-[calc(100vh-180px)]">
+        <nav
+          className="flex flex-col mt-2 px-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent h-[calc(100vh-180px)] hover:scrollbar-thumb-gray-400 transition-all duration-300"
+          aria-label="Sidebar navigation"
+        >
           <SidebarSection title="Main" isOpen={isOpen}>
             <SidebarItem
               icon={
@@ -180,6 +210,7 @@ export default function Sidebar({
                   className={
                     pathname === "/" ? "text-white-600" : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Dashboard"
@@ -196,6 +227,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Announcements"
@@ -213,6 +245,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Task"
@@ -230,6 +263,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="School Calendar"
@@ -239,6 +273,8 @@ export default function Sidebar({
             />
           </SidebarSection>
 
+          {/* Keep the original sidebar sections unchanged... */}
+          {/* Academic Section */}
           <SidebarSection title="Academic" isOpen={isOpen}>
             <SidebarItem
               icon={
@@ -248,6 +284,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Students"
@@ -260,6 +297,7 @@ export default function Sidebar({
               submenu={studentSubmenu}
             />
 
+            {/* Additional academic items... */}
             <SidebarItem
               icon={
                 <User
@@ -268,6 +306,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Faculties"
@@ -287,6 +326,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Classes & Curriculum"
@@ -306,6 +346,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Examinations"
@@ -325,18 +366,16 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Library Management"
               isOpen={isOpen}
-              isActive={pathname?.startsWith("/exams")}
-              // hasSubmenu
-              // isSubmenuOpen={openSubmenu === "exams"}
-              // onSubmenuToggle={() => toggleSubmenu("exams")}
-              // submenu={examSubmenu}
+              isActive={pathname?.startsWith("/library")}
             />
           </SidebarSection>
 
+          {/* Administration section */}
           <SidebarSection title="Administration" isOpen={isOpen}>
             <SidebarItem
               icon={
@@ -346,6 +385,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Health Services"
@@ -365,6 +405,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Transportation"
@@ -384,6 +425,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Food Services"
@@ -396,6 +438,7 @@ export default function Sidebar({
             />
           </SidebarSection>
 
+          {/* Other sections - Finance, Communication, etc. */}
           <SidebarSection title="Finance" isOpen={isOpen}>
             <SidebarItem
               icon={
@@ -405,6 +448,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Financial Management"
@@ -426,6 +470,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Communication"
@@ -446,6 +491,7 @@ export default function Sidebar({
                       ? "text-white-600"
                       : "text-gray-600"
                   }
+                  aria-hidden="true"
                 />
               }
               label="Media Center"
@@ -470,6 +516,7 @@ export default function Sidebar({
                     ? "text-white-600"
                     : "text-gray-600"
                 }
+                aria-hidden="true"
               />
             }
             label="School Administration"
@@ -489,6 +536,7 @@ export default function Sidebar({
                     ? "text-white-600"
                     : "text-gray-600"
                 }
+                aria-hidden="true"
               />
             }
             label="System Settings"
@@ -508,6 +556,7 @@ export default function Sidebar({
                     ? "text-white-600"
                     : "text-gray-600"
                 }
+                aria-hidden="true"
               />
             }
             label="Help & Support"
@@ -532,7 +581,10 @@ export default function Sidebar({
                       PS
                     </AvatarFallback>
                   </Avatar>
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                  <div
+                    className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"
+                    aria-hidden="true"
+                  ></div>
                 </div>
               </TooltipTrigger>
               <TooltipContent
@@ -561,12 +613,15 @@ export default function Sidebar({
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 text-gray-500 hover:text-black hover:bg-gray-100 relative rounded-full"
+                          aria-label="Notifications"
                         >
-                          <Bell size={16} />
-                          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                          <Bell size={16} aria-hidden="true" />
+                          <span
+                            className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center"
+                            aria-hidden="true"
+                          >
                             4
                           </span>
-                          <span className="sr-only">Notifications</span>
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent
@@ -582,9 +637,9 @@ export default function Sidebar({
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
+                          aria-label="Messages"
                         >
-                          <MessageSquare size={16} />
-                          <span className="sr-only">Messages</span>
+                          <MessageSquare size={16} aria-hidden="true" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent
@@ -601,9 +656,9 @@ export default function Sidebar({
                           size="icon"
                           className="h-8 w-8 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
                           onClick={() => router.push("/logout")}
+                          aria-label="Logout"
                         >
-                          <LogOut size={16} />
-                          <span className="sr-only">Logout</span>
+                          <LogOut size={16} aria-hidden="true" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent
@@ -620,8 +675,9 @@ export default function Sidebar({
           </div>
         </div>
       </div>
+
+      {/* Mobile Navigation Bar - Only shown on small screens */}
+      <MobileNavigation pathname={pathname} router={router} />
     </>
   );
 }
-
-// Section component to group menu items

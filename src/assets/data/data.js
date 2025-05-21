@@ -271,3 +271,38 @@ export const categoryDistributionData = [
   { category: "Arts", count: 10 },
   { category: "Business", count: 12 },
 ];
+
+export function getCurrentAndNextBatches() {
+  // Get current date
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth(); // 0-11 (Jan-Dec)
+
+  // Academic year typically starts around June/July
+  // Adjust if your academic year starts differently
+  const academicYearStartMonth = 6; // July (0-11)
+
+  // Determine current academic year
+  let currentAcademicYear;
+  if (currentMonth >= academicYearStartMonth) {
+    // After July - current year to next year (2023-24)
+    currentAcademicYear = `${currentYear}-${(currentYear + 1)
+      .toString()
+      .slice(-2)}`;
+  } else {
+    // Before July - previous year to current year (2022-23)
+    currentAcademicYear = `${currentYear - 1}-${currentYear
+      .toString()
+      .slice(-2)}`;
+  }
+
+  // Generate next 3 batches
+  const batches = [currentAcademicYear];
+  for (let i = 1; i <= 3; i++) {
+    const startYear = currentYear + i;
+    const endYear = startYear + 1;
+    batches.push(`${startYear}-${endYear.toString().slice(-2)}`);
+  }
+
+  return batches;
+}

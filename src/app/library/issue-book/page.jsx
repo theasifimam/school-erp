@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -47,14 +47,22 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import IssueBookFormModal from "@/components/library/IssueBookFormModal";
 import { Pagination } from "@/components/common/Pagination";
+import { useBookstore } from "@/lib/state/stores/bookStore";
+import { formatDateToDDMMYY } from "@/lib/utils";
 
 export default function IssuesPage() {
+  const { issuedBooks, fetchIssuedBooks, successMessage } = useBookstore();
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [returnDialogOpen, setReturnDialogOpen] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
+  useEffect(() => {
+    fetchIssuedBooks();
+  }, [successMessage]);
+
+  console.log("issuedbooks", issuedBooks);
   return (
     <Card className="border-gray-300">
       <CardHeader>
@@ -106,25 +114,29 @@ export default function IssuesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {issuesData.map((issue) => (
-              <TableRow key={issue.id} className="border-gray-300 hover:">
-                <TableCell>{issue.id}</TableCell>
+            {issuedBooks.map((issue) => (
+              <TableRow key={issue._id} className="border-gray-300 hover:">
+                <TableCell>{issue._id}</TableCell>
                 <TableCell>
                   <div>
-                    <div className="font-medium">{issue.bookTitle}</div>
-                    <div className="text-sm text-gray-400">{issue.bookId}</div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div>
-                    <div>{issue.studentName}</div>
+                    <div className="font-medium">{issue.book.title}</div>
                     <div className="text-sm text-gray-400">
-                      {issue.studentId}
+                      {issue.book._id}
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>{issue.issueDate}</TableCell>
-                <TableCell>{issue.dueDate}</TableCell>
+                <TableCell>
+                  <div>
+                    <div>
+                      {issue?.issuedTo?.firstName} {issue?.issuedTo?.lastName}
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {issue.issuedTo._id}
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>{formatDateToDDMMYY(issue.issueDate)}</TableCell>
+                <TableCell>{formatDateToDDMMYY(issue.dueDate)}</TableCell>
                 <TableCell>
                   <Badge
                     className={
@@ -144,7 +156,7 @@ export default function IssuesPage() {
                     {issue.status !== "returned" && (
                       <Dialog
                         open={
-                          returnDialogOpen && selectedIssue?.id === issue.id
+                          returnDialogOpen && selectedIssue?._id === issue._id
                         }
                         onOpenChange={(open) => {
                           setReturnDialogOpen(open);
@@ -165,7 +177,8 @@ export default function IssuesPage() {
                           <DialogHeader>
                             <DialogTitle>Return Book</DialogTitle>
                             <DialogDescription className="text-gray-400">
-                              Confirm book return for {selectedIssue?.bookTitle}
+                              Confirm book return for{" "}
+                              {selectedIssue?.book.title}
                             </DialogDescription>
                           </DialogHeader>
                           <div className="py-4">
@@ -173,13 +186,14 @@ export default function IssuesPage() {
                               <div>
                                 <p className="text-sm text-gray-400">Book</p>
                                 <p className="font-medium">
-                                  {selectedIssue?.bookTitle}
+                                  {selectedIssue?.book.title}
                                 </p>
                               </div>
                               <div>
                                 <p className="text-sm text-gray-400">Student</p>
                                 <p className="font-medium">
-                                  {selectedIssue?.studentName}
+                                  {selectedIssue?.issuedTo.firstName}{" "}
+                                  {selectedIssue?.issuedTo.lastName}
                                 </p>
                               </div>
                             </div>
@@ -188,13 +202,17 @@ export default function IssuesPage() {
                                 <p className="text-sm text-gray-400">
                                   Issue Date
                                 </p>
-                                <p>{selectedIssue?.issueDate}</p>
+                                <p>
+                                  {formatDateToDDMMYY(selectedIssue?.issueDate)}
+                                </p>
                               </div>
                               <div>
                                 <p className="text-sm text-gray-400">
                                   Due Date
                                 </p>
-                                <p>{selectedIssue?.dueDate}</p>
+                                <p>
+                                  {formatDateToDDMMYY(selectedIssue?.dueDate)}
+                                </p>
                               </div>
                             </div>
                             <div className="mb-4">
@@ -209,7 +227,7 @@ export default function IssuesPage() {
                                     <CalendarIcon className="ml-2 h-4 w-4" />
                                   </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0 ">
+                                <PopoverContent className="w-auto p-0 rounded-3xl">
                                   <Calendar
                                     mode="single"
                                     selected={new Date()}

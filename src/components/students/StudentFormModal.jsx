@@ -297,8 +297,8 @@ export default function StudentFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[800px] p-0 rounded-4xl w-[700px] overflow-hidden h-[90vh] flex flex-col">
-        <DialogHeader className="px-6 py-4 bg-black text-white">
+      <DialogContent className="max-w-[800px] w-[800px] overflow-hidden h-[90vh] flex flex-col">
+        <DialogHeader>
           <DialogTitle className="text-lg font-semibold flex items-center">
             <Calendar className="mr-2 h-5 w-5" />
             {mode === "add" ? "Add New Student" : "Edit Student Information"}
@@ -306,7 +306,7 @@ export default function StudentFormModal({
         </DialogHeader>
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap bg-white border-b border-gray-100 p-4 justify-center">
+        <div className="flex flex-wrap bg-white justify-center">
           {formSections.map((section, index) => (
             <div
               key={section.id}
@@ -345,7 +345,7 @@ export default function StudentFormModal({
         </div>
 
         {/* Form Content with Tabs */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-3">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             {/* Personal Information Tab */}
             <TabsContent value="personalInfo" className="mt-0 space-y-6">
@@ -1181,7 +1181,7 @@ export default function StudentFormModal({
         </div>
 
         {/* Action Buttons */}
-        <div className="border-t p-4 flex justify-between bg-gray-50">
+        <div className="rounded-full p-4 flex justify-between bg-gray-50">
           <div className="flex items-center space-x-4">
             <Button
               variant="outline"

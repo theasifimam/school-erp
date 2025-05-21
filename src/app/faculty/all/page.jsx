@@ -51,18 +51,10 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Pagination } from "@/components/common/Pagination";
 import { toast } from "sonner";
 import ViewFacultyModal from "@/components/faculty/ViewFacultyModal";
 import DeleteFacultyModal from "@/components/faculty/DeleteFacultyModal";
@@ -74,8 +66,6 @@ import {
 } from "@/lib/state/stores/facultyStore";
 import FacultyFormModal from "@/components/faculty/FacultyFormModal";
 import useQueryState from "@/lib/hooks/useQueryState";
-import { create } from "zustand";
-import { set } from "date-fns";
 
 // Mock data for teachers
 const initialTeachers = [
@@ -227,7 +217,8 @@ export default function TeachersPage() {
     salary: 0,
     image: "/api/placeholder/128/128",
   });
-  const itemsPerPage = 5;
+
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const fetchFaculties = useFacultyStore((state) => state.fetchFaculties);
   const faculties = useFaculties();
@@ -709,7 +700,7 @@ export default function TeachersPage() {
                     ))
                 ) : paginatedTeachers.length > 0 ? (
                   paginatedTeachers.map((teacher) => (
-                    <TableRow key={teacher.id}>
+                    <TableRow key={teacher._id}>
                       <TableCell className="py-3">
                         <div className="flex items-center gap-3">
                           <Avatar>
@@ -812,6 +803,8 @@ export default function TeachersPage() {
             totalPages={totalPages}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={setItemsPerPage}
             className="mt-4"
           />
         </TabsContent>

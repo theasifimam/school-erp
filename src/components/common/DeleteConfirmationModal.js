@@ -26,7 +26,9 @@ export function DeleteConfirmationModal({
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <Trash2Icon className="h-26 w-26 text-red-500 mx-auto" />
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogDescription className="text-center">
+            {description}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => onOpenChange(false)}>

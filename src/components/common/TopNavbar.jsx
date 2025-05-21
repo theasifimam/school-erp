@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import NotificationsDropdown from "../navbar/NotificationsDropdown";
 import { Button } from "@/components/ui/button";
 import AvatarDropdown from "../navbar/AvatarDropdown";
+import { MobileMenuToggle } from "./SidebarSection";
 
 export default function TopNavbar({
   isMobileOpen,
@@ -158,7 +159,7 @@ export default function TopNavbar({
   return (
     <div className="flex flex-col">
       {/* Main Navigation Bar */}
-      <nav className="bg-white text-gray-800 px-4 flex justify-between items-center h-16 border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+      <nav className="bg-white/80 text-gray-800 px-4 flex justify-between items-center h-18 border-b border-gray-100/50 sticky top-0 z-50 backdrop-blur-lg">
         {/* Left side - Logo/Brand and Main Nav Links */}
         <div className="flex items-center gap-6">
           <Button
@@ -182,6 +183,11 @@ export default function TopNavbar({
             <h1 className="text-xl font-semibold hidden md:block">EduManage</h1>
           </div>
         </div>
+
+        <MobileMenuToggle
+          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          isOpen={isMobileOpen}
+        />
 
         {/* Right side - Search, Notifications, ToDo, User */}
         <div className="flex items-center gap-3">

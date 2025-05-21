@@ -68,6 +68,11 @@ import { DeleteConfirmationModal } from "@/components/common/DeleteConfirmationM
 import { Pagination } from "@/components/common/Pagination";
 import { StatsCards } from "@/components/students/StatsCards";
 import useQueryState from "@/lib/hooks/useQueryState";
+import {
+  getCurrentAndNextBatches,
+  gradeList,
+  sectionsList,
+} from "@/assets/data/data";
 
 export default function StudentManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -77,19 +82,11 @@ export default function StudentManagement() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useQueryState("role", {
-    defaultValue: "all",
-  });
+  const [statusFilter, setStatusFilter] = useQueryState("role", "all");
   const [searchQuery, setSearchQuery] = useQueryState("search", "");
-  const [gradeFilter, setGradeFilter] = useQueryState("grade", {
-    defaultValue: "all",
-  });
-  const [sectionFilter, setSectionFilter] = useQueryState("section", {
-    defaultValue: "all",
-  });
-  const [batchFilter, setBatchFilter] = useQueryState("batch", {
-    defaultValue: "all",
-  });
+  const [gradeFilter, setGradeFilter] = useQueryState("grade", "all");
+  const [sectionFilter, setSectionFilter] = useQueryState("section", "all");
+  const [batchFilter, setBatchFilter] = useQueryState("batch", "all");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [dateRange, setDateRange] = useState({ from: null, to: null });
@@ -117,11 +114,6 @@ export default function StudentManagement() {
     draft: students?.filter((s) => s.status === "draft")?.length || 0,
   };
 
-  // Mock data for grades and sections
-  const grades = ["Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5"];
-  const sections = ["A", "B", "C", "D"];
-  const batches = ["2023-24", "2024-25", "2025-26"];
-
   if (isLoading)
     return <div className="p-10 text-center">Loading students...</div>;
   if (error)
@@ -142,7 +134,7 @@ export default function StudentManagement() {
         user.lastName.toLowerCase().includes(searchQuery?.toLowerCase())) ||
       (user.email &&
         user.email.toLowerCase().includes(searchQuery?.toLowerCase())) ||
-      (user.id && user.id.toString().includes(searchQuery));
+      (user._id && user._id.toString().includes(searchQuery));
 
     // Additional filters (mocked since we don't have this data in original students)
     const gradeMatch =
@@ -229,7 +221,7 @@ export default function StudentManagement() {
         return <AlertCircle className="h-4 w-4 text-gray-500" />;
     }
   };
-
+  console.log("students", students);
   return (
     <div className="min-h-screen">
       <StatsCards overviewStats={overviewStats} />
@@ -338,7 +330,7 @@ export default function StudentManagement() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Grades</SelectItem>
-              {grades.map((grade) => (
+              {gradeList.map((grade) => (
                 <SelectItem key={grade} value={grade}>
                   {grade}
                 </SelectItem>
@@ -352,7 +344,7 @@ export default function StudentManagement() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Sections</SelectItem>
-              {sections.map((section) => (
+              {sectionsList.map((section) => (
                 <SelectItem key={section} value={section}>
                   Section {section}
                 </SelectItem>
@@ -366,7 +358,7 @@ export default function StudentManagement() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Years</SelectItem>
-              {batches.map((batch) => (
+              {getCurrentAndNextBatches().map((batch) => (
                 <SelectItem key={batch} value={batch}>
                   {batch}
                 </SelectItem>
@@ -571,7 +563,7 @@ export default function StudentManagement() {
       <ViewUserModal
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
-        user={selectedUser}
+        student={selectedUser}
         onEdit={() => {
           setIsViewModalOpen(false);
           setIsEditModalOpen(true);
@@ -592,7 +584,7 @@ export default function StudentManagement() {
         onOpenChange={setIsDeleteDialogOpen}
         onConfirm={handleDelete}
         title="Delete Student"
-        description={`Are you sure you want to delete?`}
+        description={`Are you sure you want to delete? This action can't be undone! Think twice before deleting`}
         confirmButtonText="Confirm Delete"
       />
 

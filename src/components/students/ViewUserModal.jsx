@@ -50,7 +50,7 @@ export default function StudentProfileModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl p-6 rounded-3xl">
+      <DialogContent className="max-w-4xl p-6">
         <DialogHeader>
           <div className="flex justify-between items-center">
             <DialogTitle className="text-xl font-bold">
