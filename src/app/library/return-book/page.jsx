@@ -28,11 +28,54 @@ import {
 } from "@/components/ui/popover";
 import { issuesData } from "@/assets/data/data";
 import { Pagination } from "@/components/common/Pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useBookstore } from "@/lib/state/stores/bookStore";
+import { formatDateToDDMMYY } from "@/lib/utils";
+
+export function getConditionBadge(condition) {
+  const conditionStyles = {
+    excellent: {
+      className: "bg-green-600 hover:bg-green-600 text-white rounded-full",
+      label: "Excellent",
+    },
+    good: {
+      className: "bg-green-500 hover:bg-green-500 text-white rounded-full",
+      label: "Good",
+    },
+    fair: {
+      className: "bg-yellow-500 hover:bg-yellow-500 text-white rounded-full",
+      label: "Fair",
+    },
+    poor: {
+      className: "bg-orange-500 hover:bg-orange-500 text-white rounded-full",
+      label: "Poor",
+    },
+    damaged: {
+      className: "bg-red-500 hover:bg-red-500 text-white rounded-full",
+      label: "Damaged",
+    },
+    lost: {
+      className: "bg-red-700 hover:bg-red-700 text-white rounded-full",
+      label: "Lost",
+    },
+  };
+
+  // Default to 'good' if condition is not recognized
+  const style = conditionStyles[condition] || conditionStyles.good;
+
+  return <Badge className={style.className}>{style.label}</Badge>;
+}
 
 export default function ReturnBookPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const { fetchReturnedBooks, returnedBooks, isLoading, error } =
+    useBookstore();
+
+  useEffect(() => {
+    fetchReturnedBooks();
+  }, []);
 
   return (
     <Card className=" border-gray-300">
@@ -92,33 +135,35 @@ export default function ReturnBookPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {issuesData
+            {returnedBooks.data
               .filter((issue) => issue.returnDate)
               .map((issue) => (
-                <TableRow key={issue.id} className="border-gray-300 hover:">
-                  <TableCell>{`R${issue.id.slice(1)}`}</TableCell>
+                <TableRow key={issue._id} className="border-gray-300 hover:">
+                  <TableCell>{`R${issue._id.slice(1)}`}</TableCell>
                   <TableCell>
                     <div>
-                      <div className="font-medium">{issue.bookTitle}</div>
+                      <div className="font-medium">{issue.book?.title}</div>
                       <div className="text-sm text-gray-400">
-                        {issue.bookId}
+                        {issue.book?._id}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
-                      <div>{issue.studentName}</div>
+                      <div>
+                        {issue.issuedTo?.firstName} {issue.issuedTo?.lastName}
+                      </div>
                       <div className="text-sm text-gray-400">
-                        {issue.studentId}
+                        {issue.issuedTo?._id}
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>{issue.issueDate}</TableCell>
-                  <TableCell>{issue.returnDate}</TableCell>
+                  <TableCell>{formatDateToDDMMYY(issue.issueDate)}</TableCell>
+                  <TableCell>{formatDateToDDMMYY(issue.returnDate)}</TableCell>
                   <TableCell>
-                    <Badge className="bg-green-600">Good</Badge>
+                    {getConditionBadge(issue.bookCondition)}
                   </TableCell>
-                  <TableCell>₹0.00</TableCell>
+                  <TableCell>₹{issue.fine || 0}</TableCell>
                 </TableRow>
               ))}
           </TableBody>

@@ -113,6 +113,15 @@ export const issueBookApi = {
       method: "POST",
       body: JSON.stringify(issueBookData),
     }),
+
+  returnBook: (id, issueBookData) =>
+    fetcher(`/issues/${id}/return`, {
+      method: "POST",
+      body: JSON.stringify(issueBookData),
+    }),
+
+  getReturnedBooks: () => fetcher(`/issues/returned`),
+
   update: (id, data) =>
     fetcher(`/issues/${id}`, {
       method: "PUT",

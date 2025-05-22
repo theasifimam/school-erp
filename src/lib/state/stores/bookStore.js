@@ -8,6 +8,7 @@ export const useBookstore = create(
     (set, get) => ({
       books: [],
       issuedBooks: [],
+      returnedBooks: { data: [] },
       currentBook: null,
       isLoading: false,
       error: null,
@@ -160,7 +161,7 @@ export const useBookstore = create(
         try {
           const response = await issueBookApi.issueBook(data);
           set((state) => ({
-            issuedBooks: [...state.books, response.data],
+            issuedBooks: [...state.issuedBooks, response.data],
             isLoading: false,
             successMessage: "Book issued successfully!",
           }));
@@ -178,6 +179,58 @@ export const useBookstore = create(
             isLoading: false,
           });
           throw error;
+        }
+      },
+
+      returnBook: async (id, data) => {
+        set({ isLoading: true, error: null, successMessage: null });
+        try {
+          const response = await issueBookApi.returnBook(id, data);
+          set((state) => ({
+            returnedBooks: [...state.returnedBooks, response.data],
+            isLoading: false,
+            successMessage: "Book returned successfully!",
+          }));
+          toast("Book returned!", {
+            description: "Book has been returned successfully.",
+            action: {
+              label: "X",
+              onClick: () => console.log("remove"),
+            },
+          });
+          return response.data;
+        } catch (error) {
+          set({
+            error: error.response?.data?.message || "Failed to issue Book",
+            isLoading: false,
+          });
+          throw error;
+        }
+      },
+
+      fetchReturnedBooks: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          const data = await issueBookApi.getReturnedBooks();
+
+          set({
+            returnedBooks: data,
+            isLoading: false,
+          });
+        } catch (error) {
+          if (error.status === 401) {
+            // Handle unauthorized (token expired or invalid)
+            set({
+              error: "Session expired. Please login again.",
+              isLoading: false,
+            });
+            // Optionally trigger logout here
+          } else {
+            set({
+              error: error.info?.message || "Failed to fetch books",
+              isLoading: false,
+            });
+          }
         }
       },
 
