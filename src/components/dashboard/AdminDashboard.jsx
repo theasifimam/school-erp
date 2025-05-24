@@ -53,13 +53,7 @@ export default function AdminDashboard({ darkMode }) {
     <>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-8">
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Total Students
@@ -78,13 +72,7 @@ export default function AdminDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Total Teachers
@@ -103,13 +91,7 @@ export default function AdminDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Total Classes
@@ -128,13 +110,7 @@ export default function AdminDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Total Revenue
@@ -159,13 +135,7 @@ export default function AdminDashboard({ darkMode }) {
       {/* Main Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Attendance Trend Chart */}
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader>
             <CardTitle>Attendance Trend</CardTitle>
             <CardDescription>Monthly attendance percentage</CardDescription>
@@ -215,13 +185,7 @@ export default function AdminDashboard({ darkMode }) {
         </Card>
 
         {/* Fee Collection Chart */}
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader>
             <CardTitle>Fee Collection</CardTitle>
             <CardDescription>
@@ -265,11 +229,7 @@ export default function AdminDashboard({ darkMode }) {
       </div>
 
       {/* Recent Activity */}
-      <Card
-        className={`${
-          darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-        } shadow-sm`}
-      >
+      <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
         <CardHeader>
           <CardTitle>Recent School Activities</CardTitle>
           <CardDescription>Latest events and notifications</CardDescription>

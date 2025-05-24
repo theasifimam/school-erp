@@ -23,6 +23,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useTheme } from "next-themes";
 
 export const data = {
   classes: 5,
@@ -45,18 +46,14 @@ export const data = {
 };
 
 // Teacher Dashboard Component
-export default function TeacherDashboard({ darkMode }) {
+export default function TeacherDashboard() {
+  const { theme } = useTheme();
+
   return (
     <>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-8">
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Your Classes
@@ -69,13 +66,7 @@ export default function TeacherDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Total Students
@@ -88,13 +79,7 @@ export default function TeacherDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Assignments Due
@@ -107,13 +92,7 @@ export default function TeacherDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Average Attendance
@@ -136,13 +115,7 @@ export default function TeacherDashboard({ darkMode }) {
       {/* Class Schedule and Performance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Class Schedule */}
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader>
             <CardTitle>Today&apos;s Schedule</CardTitle>
             <CardDescription>Your classes for today</CardDescription>
@@ -157,7 +130,7 @@ export default function TeacherDashboard({ darkMode }) {
                   <div className="flex items-center space-x-3">
                     <div
                       className={`p-3 rounded-full ${
-                        darkMode ? "bg-gray-700" : "bg-gray-100"
+                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
                       }`}
                     >
                       <Clock className="h-5 w-5 text-indigo-500" />
@@ -179,13 +152,7 @@ export default function TeacherDashboard({ darkMode }) {
         </Card>
 
         {/* Student Performance */}
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader>
             <CardTitle>Class Performance</CardTitle>
             <CardDescription>
@@ -198,30 +165,30 @@ export default function TeacherDashboard({ darkMode }) {
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke={darkMode ? "#374151" : "#E5E7EB"}
+                  stroke={theme === "dark" ? "#374151" : "#E5E7EB"}
                 />
                 <XAxis
                   dataKey="name"
-                  stroke={darkMode ? "#9CA3AF" : "#6B7280"}
+                  stroke={theme === "dark" ? "#9CA3AF" : "#6B7280"}
                   tickLine={false}
                   axisLine={false}
                 />
                 <YAxis
-                  stroke={darkMode ? "#9CA3AF" : "#6B7280"}
+                  stroke={theme === "dark" ? "#9CA3AF" : "#6B7280"}
                   tickLine={false}
                   axisLine={false}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: darkMode ? "#1F2937" : "#FFFFFF",
-                    borderColor: darkMode ? "#374151" : "#E5E7EB",
+                    backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF",
+                    borderColor: theme === "dark" ? "#374151" : "#E5E7EB",
                     borderRadius: "1rem",
                   }}
                 />
                 <Bar
                   dataKey="students"
                   name="Students"
-                  fill="#000000" // bar color changed to black
+                  fill={theme === "dark" ? "white" : "#000000"} // bar color changed to black
                   radius={[26, 26, 0, 0]}
                 />
               </BarChart>
@@ -231,11 +198,7 @@ export default function TeacherDashboard({ darkMode }) {
       </div>
 
       {/* Assignments to Grade */}
-      <Card
-        className={`${
-          darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-        } shadow-sm mb-8`}
-      >
+      <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
         <CardHeader>
           <div className="flex justify-between items-center">
             <div>
@@ -253,11 +216,7 @@ export default function TeacherDashboard({ darkMode }) {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr
-                  className={`border-b ${
-                    darkMode ? "border-gray-700" : "border-gray-200"
-                  }`}
-                >
+                <tr className={`border-b dark:border-gray-700 border-gray-200`}>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
                     Assignment
                   </th>
@@ -298,11 +257,8 @@ export default function TeacherDashboard({ darkMode }) {
                 ].map((assignment) => (
                   <tr
                     key={assignment.id}
-                    className={`border-b ${
-                      darkMode
-                        ? "border-gray-700 hover:bg-gray-700"
-                        : "border-gray-200 hover:bg-gray-50"
-                    }`}
+                    className={`border-b dark:border-gray-700 dark:hover:bg-gray-700
+                        border-gray-200 hover:bg-gray-50`}
                   >
                     <td className="py-3 px-4 text-sm font-medium">
                       {assignment.title}

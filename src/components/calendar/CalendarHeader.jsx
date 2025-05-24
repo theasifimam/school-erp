@@ -25,7 +25,9 @@ export const CalendarHeader = ({
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">School Calendar</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          School Calendar
+        </h1>
         <p className="text-gray-500">
           Manage classes, events, and leave requests
         </p>

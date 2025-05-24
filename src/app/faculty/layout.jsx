@@ -92,7 +92,7 @@ export default function ClassesCurriculumLayout({ children }) {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b mb-6 sticky top-0 bg-white">
+      <div className="flex border-b mb-6 sticky top-0 bg-white dark:bg-background">
         {tabs.map((tab) => (
           <Link
             key={tab.path}

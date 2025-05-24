@@ -24,18 +24,12 @@ const data = {
 };
 
 // Parent Dashboard Component
-export default function ParentDashboard({ darkMode }) {
+export default function ParentDashboard() {
   return (
     <>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-8">
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Your Children
@@ -48,13 +42,7 @@ export default function ParentDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Average Attendance
@@ -73,13 +61,7 @@ export default function ParentDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Assignments Due
@@ -92,13 +74,7 @@ export default function ParentDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               New Messages
@@ -113,11 +89,7 @@ export default function ParentDashboard({ darkMode }) {
       </div>
 
       {/* Children Information */}
-      <Card
-        className={`${
-          darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-        } shadow-sm mb-8`}
-      >
+      <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
         <CardHeader>
           <CardTitle>Your Children</CardTitle>
           <CardDescription>Academic information for each child</CardDescription>
@@ -127,16 +99,10 @@ export default function ParentDashboard({ darkMode }) {
             {data.childrenData.map((child, index) => (
               <div
                 key={index}
-                className={`p-4 rounded-lg ${
-                  darkMode ? "bg-gray-700" : "bg-gray-50"
-                }`}
+                className={`p-4 rounded-3xl dark:bg-gray-700 bg-gray-50`}
               >
                 <div className="flex items-center space-x-4">
-                  <div
-                    className={`p-3 rounded-lg ${
-                      darkMode ? "bg-gray-600" : "bg-white"
-                    }`}
-                  >
+                  <div className={`p-3 rounded-3xl bg-white dark:bg-gray-800`}>
                     <User className="h-5 w-5 text-indigo-500" />
                   </div>
                   <div>
@@ -148,17 +114,13 @@ export default function ParentDashboard({ darkMode }) {
                 </div>
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   <div
-                    className={`p-3 rounded-lg ${
-                      darkMode ? "bg-gray-600" : "bg-white"
-                    }`}
+                    className={`py-3 px-6 rounded-full dark:bg-gray-800 bg-white`}
                   >
                     <p className="text-sm text-gray-500">Attendance</p>
                     <p className="font-medium">92%</p>
                   </div>
                   <div
-                    className={`p-3 rounded-lg ${
-                      darkMode ? "bg-gray-600" : "bg-white"
-                    }`}
+                    className={`py-3 px-6 rounded-full dark:bg-gray-800 bg-white`}
                   >
                     <p className="text-sm text-gray-500">GPA</p>
                     <p className="font-medium">3.4</p>
@@ -176,13 +138,7 @@ export default function ParentDashboard({ darkMode }) {
       {/* Fee Status and Messages */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Fee Status */}
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader>
             <CardTitle>Fee Payment Status</CardTitle>
             <CardDescription>Current term fee information</CardDescription>
@@ -218,13 +174,7 @@ export default function ParentDashboard({ darkMode }) {
         </Card>
 
         {/* Recent Messages */}
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader>
             <CardTitle>Recent Messages</CardTitle>
             <CardDescription>Communication from teachers</CardDescription>
@@ -256,9 +206,7 @@ export default function ParentDashboard({ darkMode }) {
               ].map((message) => (
                 <div key={message.id} className="flex items-start space-x-3">
                   <div
-                    className={`p-2 rounded-lg ${
-                      darkMode ? "bg-gray-700" : "bg-gray-100"
-                    }`}
+                    className={`p-2 rounded-lg dark:bg-gray-700 bg-gray-100`}
                   >
                     <Mail
                       className={`h-5 w-5 ${

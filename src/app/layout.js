@@ -9,6 +9,7 @@ import { AppProviders } from "@/providers/AppProviders";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/state/stores/authStore";
 import TopNavbar from "@/components/common/TopNavbar";
+import { ThemeProvider } from "next-themes";
 
 // Font optimization - preload fonts
 const geistSans = Geist({
@@ -84,36 +85,43 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased pb-6`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AppProviders>
-          {!isAuthPage ? (
-            <div className="flex h-screen overflow-hidden">
-              {/* Sidebar with conditional rendering for authenticated users */}
-              {isAuthenticated && <Sidebar {...layoutProps} />}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AppProviders>
+            {!isAuthPage ? (
+              <div className="flex h-screen overflow-hidden  pb-6">
+                {/* Sidebar with conditional rendering for authenticated users */}
+                {isAuthenticated && <Sidebar {...layoutProps} />}
 
-              <div className="flex-1 flex flex-col">
-                {/* Top Navbar with conditional rendering */}
-                {isAuthenticated && <TopNavbar {...layoutProps} />}
+                <div className="flex-1 flex flex-col">
+                  {/* Top Navbar with conditional rendering */}
+                  {isAuthenticated && <TopNavbar {...layoutProps} />}
 
-                {/* Main Content (Scrollable) */}
-                <main className="flex-1 overflow-auto">{children}</main>
+                  {/* Main Content (Scrollable) */}
+                  <main className="flex-1 overflow-auto">{children}</main>
+                </div>
               </div>
-            </div>
-          ) : (
-            // Auth pages receive children directly without layout
-            children
-          )}
+            ) : (
+              // Auth pages receive children directly without layout
+              children
+            )}
 
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              className:
-                "!rounded-3xl bg-white shadow-xl border border-gray-200 text-lg text-gray-800",
-              duration: 3000,
-            }}
-          />
-        </AppProviders>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                className:
+                  "!rounded-3xl bg-white shadow-xl border border-gray-200 text-lg text-gray-800",
+                duration: 3000,
+              }}
+            />
+          </AppProviders>
+        </ThemeProvider>
       </body>
     </html>
   );

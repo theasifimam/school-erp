@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -12,59 +12,61 @@ import {
   PenTool,
   DownloadIcon,
   Upload,
+  Briefcase,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import StudentFormModal from "@/components/students/StudentFormModal";
 
 // This is the shared layout component for all curriculum pages
 export default function ClassesCurriculumLayout({ children }) {
   const pathname = usePathname();
-  const [addStudent, setAddStudent] = useState(false);
 
   // Define our tabs with their paths and icons
   const tabs = [
     {
       name: "Overview",
-      path: "/students/all",
+      path: "/finance/all",
       icon: <Users className="mr-2 h-4 w-4" />,
     },
     {
-      name: "Admissions",
-      path: "/students/admissions",
+      name: "Assign Classes",
+      path: "/finance/assign",
       icon: <Clock className="mr-2 h-4 w-4" />,
     },
     {
-      name: "attendance",
-      path: "/students/attendance",
+      name: "Attendance",
+      path: "/finance/attendance",
       icon: <BookOpen className="mr-2 h-4 w-4" />,
     },
     {
-      name: "Behavior Records",
-      path: "/students/behavior",
+      name: "Performance Review",
+      path: "/finance/performance",
       icon: <FileText className="mr-2 h-4 w-4" />,
     },
     {
-      name: "Student Portfolio",
-      path: "/students/portfolios",
+      name: "Professional Development",
+      path: "/finance/development",
       icon: <PenTool className="mr-2 h-4 w-4" />,
     },
   ];
 
   // Function to check if a tab is active
   const isActiveTab = (path) => {
-    if (path === "/students" && pathname === "/students") {
+    if (path === "/finance" && pathname === "/finance") {
       return true;
     }
-    return path !== "/students" && pathname.startsWith(path);
+    return path !== "/finance" && pathname.startsWith(path);
   };
 
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Student Management</h1>
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Briefcase className="h-6 w-6 text-indigo-600" />
+            Finance Management System
+          </h1>
           <p className="text-gray-500">
-            Manage all student records and applications
+            Manage finance, track expenses, and monitor budget
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -78,24 +80,25 @@ export default function ClassesCurriculumLayout({ children }) {
           </Button>
           <Button
             variant="primary"
-            className="bg-black text-white"
-            onClick={() => {
-              setAddStudent(true);
-            }}
+            className="rounded-full bg-black text-white"
+            // onClick={() => {
+            //   setSelectedUser(null);
+            //   setAddStudent(true);
+            // }}
           >
-            Add Student
+            Add Expense
           </Button>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b mb-4 sticky top-0 bg-white dark:bg-background z-1">
+      <div className="flex border-b mb-6 sticky top-0 bg-white dark:bg-background">
         {tabs.map((tab) => (
           <Link
             key={tab.path}
             href={tab.path}
             className={cn(
-              "px-4 py-2 flex items-center font-medium text-sm transition-colors focus:outline-none",
+              "px-4 py-2 flex items-center font-medium text-sm transition-colors focus:outline-none ",
               isActiveTab(tab.path)
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-600 hover:text-blue-600"
@@ -109,15 +112,6 @@ export default function ClassesCurriculumLayout({ children }) {
 
       {/* Page Content */}
       {children}
-
-      <StudentFormModal
-        isOpen={addStudent}
-        onClose={() => setAddStudent(false)}
-        onSuccess={() => {
-          setAddStudent(false);
-          fetchStudents();
-        }}
-      />
     </div>
   );
 }

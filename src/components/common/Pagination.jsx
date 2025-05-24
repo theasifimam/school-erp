@@ -70,7 +70,7 @@ export function Pagination({
 
   return (
     <div
-      className={`flex items-center justify-between rounded-full border-gray-200 bg-gray-50 px-4 py-3 sm:px-6 ${className}`}
+      className={`flex items-center justify-between rounded-full border-gray-200 dark:border-gray-700 px-4 py-3 sm:px-6 ${className}`}
     >
       {/* Mobile view - simple prev/next */}
       <div className="flex flex-1 justify-between sm:hidden">
@@ -113,7 +113,7 @@ export function Pagination({
               setCurrentPage(1); // Reset to first page when changing items per page
             }}
           >
-            <SelectTrigger className="h-8 w-20 bg-white">
+            <SelectTrigger className="h-8 w-20 rounded-3xl">
               <SelectValue placeholder={itemsPerPage} />
             </SelectTrigger>
             <SelectContent>

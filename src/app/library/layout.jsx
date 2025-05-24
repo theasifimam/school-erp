@@ -285,7 +285,7 @@ export default function ClassesCurriculumLayout({ children }) {
       </div>
 
       {/* Desktop Navigation Tabs */}
-      <div className="border-b mb-6 sticky top-0 bg-white z-30 overflow-x-auto">
+      <div className="border-b mb-6 sticky top-0 bg-white dark:bg-background z-30 overflow-x-auto">
         <div className="flex min-w-max">
           {tabs.map((tab) => (
             <Link
@@ -321,53 +321,53 @@ export default function ClassesCurriculumLayout({ children }) {
         <div className="px-4 md:px-0 pb-20 md:pb-0">{children}</div>
 
         {/* Bottom Navigation for Mobile */}
-        <BottomNavigation />
+        {/* <BottomNavigation /> */}
       </div>
     </div>
   );
 }
 // Bottom Navigation for Mobile (Alternative approach)
-const BottomNavigation = () => (
-  <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-40">
-    <div className="flex">
-      {tabs.slice(0, 4).map((tab) => (
-        <Link
-          key={tab.path}
-          href={tab.path}
-          className={cn(
-            "flex-1 flex flex-col items-center py-2 px-1 text-xs transition-colors",
-            isActiveTab(tab.path) ? "text-blue-600" : "text-gray-600"
-          )}
-        >
-          <div className="mb-1">
-            {React.cloneElement(tab.icon, {
-              className: "h-5 w-5",
-              style: { margin: 0 },
-            })}
-          </div>
-          <span className="truncate w-full text-center">{tab.shortName}</span>
-        </Link>
-      ))}
+// const BottomNavigation = () => (
+//   <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-40">
+//     <div className="flex">
+//       {tabs.slice(0, 4).map((tab) => (
+//         <Link
+//           key={tab.path}
+//           href={tab.path}
+//           className={cn(
+//             "flex-1 flex flex-col items-center py-2 px-1 text-xs transition-colors",
+//             isActiveTab(tab.path) ? "text-blue-600" : "text-gray-600"
+//           )}
+//         >
+//           <div className="mb-1">
+//             {React.cloneElement(tab.icon, {
+//               className: "h-5 w-5",
+//               style: { margin: 0 },
+//             })}
+//           </div>
+//           <span className="truncate w-full text-center">{tab.shortName}</span>
+//         </Link>
+//       ))}
 
-      {/* More button for additional tabs */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button className="flex-1 flex flex-col items-center py-2 px-1 text-xs text-gray-600">
-            <MoreHorizontal className="h-5 w-5 mb-1" />
-            <span>More</span>
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-48">
-          {tabs.slice(4).map((tab) => (
-            <DropdownMenuItem key={tab.path} asChild>
-              <Link href={tab.path} className="flex items-center">
-                {tab.icon}
-                {tab.name}
-              </Link>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  </div>
-);
+//       {/* More button for additional tabs */}
+//       <DropdownMenu>
+//         <DropdownMenuTrigger asChild>
+//           <button className="flex-1 flex flex-col items-center py-2 px-1 text-xs text-gray-600">
+//             <MoreHorizontal className="h-5 w-5 mb-1" />
+//             <span>More</span>
+//           </button>
+//         </DropdownMenuTrigger>
+//         <DropdownMenuContent align="end" className="w-48">
+//           {tabs.slice(4).map((tab) => (
+//             <DropdownMenuItem key={tab.path} asChild>
+//               <Link href={tab.path} className="flex items-center">
+//                 {tab.icon}
+//                 {tab.name}
+//               </Link>
+//             </DropdownMenuItem>
+//           ))}
+//         </DropdownMenuContent>
+//       </DropdownMenu>
+//     </div>
+//   </div>
+// );

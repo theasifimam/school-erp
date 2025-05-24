@@ -376,7 +376,7 @@ export default function ExaminationLayout({ children }) {
 
       {/* Desktop Navigation Tabs */}
       {/* Navigation Tabs */}
-      <div className="flex border-b mb-6">
+      <div className="flex border-b mb-6 bg-white dark:bg-background">
         {tabs.map((tab) => (
           <Link
             key={tab.path}

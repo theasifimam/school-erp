@@ -129,8 +129,27 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  * {
+    @apply transition-colors duration-200; /* ← Smooth color transitions */
+  }
 }
 
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-content, .print-content * {
+    visibility: visible;
+  }
+  .print-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
 
 
 .sonner-toast {

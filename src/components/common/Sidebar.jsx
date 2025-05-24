@@ -28,6 +28,7 @@ import {
   Megaphone,
   Image,
   LucideWorkflow,
+  Library,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -126,19 +127,19 @@ export default function Sidebar({
           "fixed lg:relative h-screen transition-all duration-300 ease-in-out z-40 shadow-lg",
           isOpen ? "w-72" : "w-20",
           isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          "bg-white text-black rounded-r-3xl"
+          " text-black rounded-r-3xl"
         )}
         aria-label="Main Navigation"
         role="navigation"
       >
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+        <div className="flex items-center justify-between  h-16 p-4">
           {isOpen ? (
             <div className="flex items-center gap-2">
-              <div className="bg-gradient-to-br from-gray-800 to-black p-1.5 rounded-full shadow-md">
+              <div className="bg-gradient-to-br from-gray-800 to-black p-1.5 rounded-full">
                 <School className="text-white" size={24} aria-hidden="true" />
               </div>
-              <h1 className="text-xl font-bold text-gray-800">
+              <h1 className="text-xl font-bold text-gray-800 dark:text-white">
                 Imam's Academy
               </h1>
             </div>
@@ -189,7 +190,7 @@ export default function Sidebar({
               <Input
                 type="search"
                 placeholder="Search..."
-                className="w-full pl-9 bg-gray-50 border-gray-200 focus:border-gray-500 text-black placeholder:text-gray-400 rounded-full transition-all focus:ring-2 focus:ring-gray-300"
+                className="w-full pl-9 bg-gray-50 border-gray-200 dark:border-gray-800 focus:border-gray-800 text-black placeholder:text-gray-400 rounded-full transition-all focus:ring-2 focus:ring-gray-300"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Search"
@@ -360,18 +361,17 @@ export default function Sidebar({
 
             <SidebarItem
               icon={
-                <Medal
+                <Library
                   className={
-                    pathname?.startsWith("/library")
-                      ? "text-white-600"
-                      : "text-gray-600"
+                    pathname === "/library" ? "text-white-600" : "text-gray-600"
                   }
                   aria-hidden="true"
                 />
               }
               label="Library Management"
+              route="/library"
               isOpen={isOpen}
-              isActive={pathname?.startsWith("/library")}
+              isActive={pathname === "/library"}
             />
           </SidebarSection>
 

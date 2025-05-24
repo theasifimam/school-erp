@@ -221,7 +221,7 @@ export default function StudentManagement() {
         return <AlertCircle className="h-4 w-4 text-gray-500" />;
     }
   };
-  console.log("students", students);
+
   return (
     <div className="min-h-screen">
       <StatsCards overviewStats={overviewStats} />
@@ -259,10 +259,10 @@ export default function StudentManagement() {
       </Tabs>
 
       {/* Users Table */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         {/* Action Bar */}
         {selectedUsers.length > 0 && (
-          <div className="m-4 mb-2 p-3 bg-blue-50 rounded-3xl flex justify-between items-center">
+          <div className="m-4 mb-2 p-3 bg-blue-50 dark:bg-gray-900 rounded-3xl flex justify-between items-center">
             <div className="flex items-center gap-2">
               <div className="flex -space-x-2">
                 {students
@@ -274,13 +274,13 @@ export default function StudentManagement() {
                       className="h-8 w-8 border-2 border-blue-50"
                     >
                       <AvatarImage src={user.avatar} alt={user.firstName} />
-                      <AvatarFallback className="text-xs bg-gray-400 text-white">
+                      <AvatarFallback className="text-xs bg-gray-400">
                         {user.firstName ? user.firstName[0] : "U"}
                       </AvatarFallback>
                     </Avatar>
                   ))}
                 {selectedUsers.length > 5 && (
-                  <div className="h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs border-2 border-blue-50">
+                  <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-xs border-2 border-blue-50">
                     +{selectedUsers.length - 5}
                   </div>
                 )}
@@ -409,7 +409,7 @@ export default function StudentManagement() {
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="">
               <tr>
                 <th className="w-12 px-4 py-3 text-left">
                   <input
@@ -448,13 +448,16 @@ export default function StudentManagement() {
             <tbody className="divide-y divide-gray-200">
               {currentItems.length > 0 ? (
                 currentItems.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
+                  <tr
+                    key={user.id}
+                    className="dark:hover:bg-gray-900 hover:bg-gray-50  dark:border-gray-700"
+                  >
                     <td className="px-4 py-3">
                       <input
                         type="checkbox"
                         checked={selectedUsers.includes(user.id)}
                         onChange={() => toggleUserSelection(user.id)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-blue-500"
                       />
                     </td>
                     <td className="px-4 py-3 text-sm">

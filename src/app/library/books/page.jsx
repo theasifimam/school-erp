@@ -110,7 +110,7 @@ export default function BooksPage() {
       <CardContent>
         <Table>
           <TableHeader>
-            <TableRow className="border-gray-300">
+            <TableRow className="border-gray-100">
               <TableHead>ID</TableHead>
               <TableHead>Title</TableHead>
               <TableHead>Author</TableHead>
@@ -158,7 +158,7 @@ export default function BooksPage() {
                 ))
             ) : filteredBooks.length > 0 ? (
               filteredBooks.map((book) => (
-                <TableRow key={book._id} className="border-gray-300">
+                <TableRow key={book._id} className="border-gray-100">
                   <TableCell>{book.bookId}</TableCell>
                   <TableCell className="font-medium">{book.title}</TableCell>
                   <TableCell>{book.author}</TableCell>

@@ -226,7 +226,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="firstName"
               placeholder="First name"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.personalInfo.firstName}
             />
@@ -238,7 +238,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="middleName"
               placeholder="Middle name"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.personalInfo.middleName}
             />
@@ -250,7 +250,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="lastName"
               placeholder="Doe"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.personalInfo.lastName}
             />
@@ -262,7 +262,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="preferredName"
               placeholder="Johnny"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.personalInfo.preferredName}
             />
@@ -275,7 +275,7 @@ export default function ModernAdmissionForm() {
               onValueChange={(value) => handleSelectChange("gender", value)}
               value={formData.personalInfo.gender}
             >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
+              <SelectTrigger className="mt-1 bg-white border-gray-300 dark:border-gray-800 w-full rounded-full">
                 <SelectValue placeholder="Select Gender" />
               </SelectTrigger>
               <SelectContent>
@@ -296,7 +296,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="dob"
               type="date"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.personalInfo.dob}
             />
@@ -314,7 +314,7 @@ export default function ModernAdmissionForm() {
             <div className="mt-1 flex items-center">
               <Button
                 variant="outline"
-                className="border-dashed border-gray-300 bg-white hover:bg-gray-50 rounded-full w-full flex items-center justify-center py-5"
+                className="border-dashed border-gray-300 dark:border-gray-800 bg-white hover:bg-gray-50 rounded-full w-full flex items-center justify-center py-5"
               >
                 <ImagePlus className="mr-2 h-4 w-4" /> Upload Photo
               </Button>
@@ -328,7 +328,7 @@ export default function ModernAdmissionForm() {
               onValueChange={(value) => handleSelectChange("bloodGroup", value)}
               value={formData.personalInfo.bloodGroup}
             >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
+              <SelectTrigger className="mt-1 bg-white border-gray-300 dark:border-gray-800 w-full rounded-full">
                 <SelectValue placeholder="Select Blood Group" />
               </SelectTrigger>
               <SelectContent>
@@ -350,7 +350,7 @@ export default function ModernAdmissionForm() {
             <Textarea
               id="medicalConditions"
               placeholder="Please list any medical conditions, allergies, or special needs"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-2xl h-24"
               onChange={handleInputChange}
               value={formData.personalInfo.medicalConditions}
             />
@@ -372,7 +372,7 @@ export default function ModernAdmissionForm() {
               id="email"
               type="email"
               placeholder="student@example.com"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.email}
             />
@@ -385,7 +385,7 @@ export default function ModernAdmissionForm() {
               id="phone"
               type="tel"
               placeholder="(123) 456-7890"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.phone}
             />
@@ -398,7 +398,7 @@ export default function ModernAdmissionForm() {
               id="alternatePhone"
               type="tel"
               placeholder="(123) 456-7890"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.alternatePhone}
             />
@@ -413,7 +413,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="emergencyContactName"
               placeholder="Jane Doe"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.emergencyContactName}
             />
@@ -429,7 +429,7 @@ export default function ModernAdmissionForm() {
               id="emergencyContactPhone"
               type="tel"
               placeholder="(123) 456-7890"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.emergencyContactPhone}
             />
@@ -441,7 +441,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="emergencyRelation"
               placeholder="Parent/Guardian/Relative"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.emergencyRelation}
             />
@@ -453,7 +453,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="address"
               placeholder="123 Main St"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.address}
             />
@@ -465,7 +465,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="city"
               placeholder="New York"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.city}
             />
@@ -477,7 +477,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="state"
               placeholder="NY"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.state}
             />
@@ -489,7 +489,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="country"
               placeholder="United States"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.country}
             />
@@ -501,7 +501,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="zipCode"
               placeholder="10001"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.zipCode}
             />
@@ -522,7 +522,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="fatherName"
               placeholder="John Doe Sr."
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.familyInfo.fatherName}
             />
@@ -534,7 +534,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="fatherOccupation"
               placeholder="Engineer"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.familyInfo.fatherOccupation}
             />
@@ -547,7 +547,7 @@ export default function ModernAdmissionForm() {
               id="fatherPhone"
               type="tel"
               placeholder="(123) 456-7890"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.familyInfo.fatherPhone}
             />
@@ -560,12 +560,12 @@ export default function ModernAdmissionForm() {
               id="fatherEmail"
               type="email"
               placeholder="father@example.com"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.familyInfo.fatherEmail}
             />
           </div>
-          <div className="h-px bg-gray-200 md:col-span-2 my-2" />
+          <div className="h-px bg-gray-200 dark:bg-gray-800 md:col-span-2 my-2" />
           <div>
             <Label htmlFor="motherName" className="text-sm font-medium">
               Mother&apos;s/Guardian 2 Full Name
@@ -573,7 +573,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="motherName"
               placeholder="Jane Doe"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.familyInfo.motherName}
             />
@@ -585,7 +585,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="motherOccupation"
               placeholder="Doctor"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.familyInfo.motherOccupation}
             />
@@ -598,7 +598,7 @@ export default function ModernAdmissionForm() {
               id="motherPhone"
               type="tel"
               placeholder="(123) 456-7890"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.familyInfo.motherPhone}
             />
@@ -611,12 +611,12 @@ export default function ModernAdmissionForm() {
               id="motherEmail"
               type="email"
               placeholder="mother@example.com"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.familyInfo.motherEmail}
             />
           </div>
-          <div className="h-px bg-gray-200 md:col-span-2 my-2" />
+          <div className="h-px bg-gray-200 dark:bg-gray-800 md:col-span-2 my-2" />
           <div>
             <Label htmlFor="siblings" className="text-sm font-medium">
               Number of Siblings
@@ -626,7 +626,7 @@ export default function ModernAdmissionForm() {
               type="number"
               placeholder="0"
               min="0"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.familyInfo.siblings}
             />
@@ -655,7 +655,7 @@ export default function ModernAdmissionForm() {
             <Textarea
               id="familyNotes"
               placeholder="Any additional information about family circumstances that the school should be aware of"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-2xl h-24"
               onChange={handleInputChange}
               value={formData.familyInfo.familyNotes}
             />
@@ -679,7 +679,7 @@ export default function ModernAdmissionForm() {
               }
               value={formData.academicInfo.appliedClass}
             >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
+              <SelectTrigger className="mt-1 bg-white border-gray-300 dark:border-gray-800 w-full rounded-full">
                 <SelectValue placeholder="Select Class" />
               </SelectTrigger>
               <SelectContent>
@@ -708,7 +708,7 @@ export default function ModernAdmissionForm() {
               onValueChange={(value) => handleSelectChange("session", value)}
               value={formData.academicInfo.session}
             >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
+              <SelectTrigger className="mt-1 bg-white border-gray-300 dark:border-gray-800 w-full rounded-full">
                 <SelectValue placeholder="Select Session" />
               </SelectTrigger>
               <SelectContent>
@@ -728,7 +728,7 @@ export default function ModernAdmissionForm() {
               }
               value={formData.academicInfo.admissionType}
             >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
+              <SelectTrigger className="mt-1 bg-white border-gray-300 dark:border-gray-800 w-full rounded-full">
                 <SelectValue placeholder="Select Type" />
               </SelectTrigger>
               <SelectContent>
@@ -746,7 +746,7 @@ export default function ModernAdmissionForm() {
               onValueChange={(value) => handleSelectChange("board", value)}
               value={formData.academicInfo.board}
             >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
+              <SelectTrigger className="mt-1 bg-white border-gray-300 dark:border-gray-800 w-full rounded-full">
                 <SelectValue placeholder="Select Board" />
               </SelectTrigger>
               <SelectContent>
@@ -765,7 +765,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="previousSchool"
               placeholder="ABC School"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.medicalConditions}
             />
@@ -777,7 +777,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="schoolAddress"
               placeholder="123 School St, City"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.medicalConditions}
             />
@@ -789,7 +789,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="lastClass"
               placeholder="e.g. Class 5"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.medicalConditions}
             />
@@ -801,7 +801,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="lastGrade"
               placeholder="e.g. A / 85%"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.contactInfo.medicalConditions}
             />
@@ -834,7 +834,7 @@ export default function ModernAdmissionForm() {
               onValueChange={(value) => handleSelectChange("stream", value)}
               value={formData.academicInfo.stream}
             >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
+              <SelectTrigger className="mt-1 bg-white border-gray-300 dark:border-gray-800 w-full rounded-full">
                 <SelectValue placeholder="Select Stream" />
               </SelectTrigger>
               <SelectContent>
@@ -852,7 +852,7 @@ export default function ModernAdmissionForm() {
             <Textarea
               id="achievements"
               placeholder="List any notable achievements or awards"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-2xl h-24"
               onChange={handleInputChange}
               value={formData.contactInfo.medicalConditions}
             />
@@ -873,7 +873,7 @@ export default function ModernAdmissionForm() {
             <Input
               id="languages"
               placeholder="e.g. English, Spanish, Hindi"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-full"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-full"
               onChange={handleInputChange}
               value={formData.additionalInfo.languages}
             />
@@ -920,7 +920,7 @@ export default function ModernAdmissionForm() {
               onValueChange={(value) => handleSelectChange("activities", value)}
               value={formData.academicInfo.activities}
             >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
+              <SelectTrigger className="mt-1 bg-white border-gray-300 dark:border-gray-800 w-full rounded-full">
                 <SelectValue placeholder="Select Interests" />
               </SelectTrigger>
               <SelectContent>
@@ -960,7 +960,7 @@ export default function ModernAdmissionForm() {
               onValueChange={(value) => handleSelectChange("hearAbout", value)}
               value={formData.additionalInfo.hearAbout}
             >
-              <SelectTrigger className="mt-1 bg-white border-gray-300 w-full rounded-full">
+              <SelectTrigger className="mt-1 bg-white border-gray-300 dark:border-gray-800 w-full rounded-full">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent>
@@ -980,7 +980,7 @@ export default function ModernAdmissionForm() {
             <Textarea
               id="additionalInfo"
               placeholder="Share any additional information that might be relevant to your application"
-              className="mt-1 bg-white border-gray-300 focus:ring-black rounded-2xl h-24"
+              className="mt-1 bg-white border-gray-300 dark:border-gray-800 focus:ring-black rounded-2xl h-24"
               onChange={handleInputChange}
               value={formData.additionalInfo.medicalConditions}
             />
@@ -1030,7 +1030,7 @@ export default function ModernAdmissionForm() {
           </div>
 
           {/* Fixed navigation bar - removed form fields from here */}
-          <div className="flex bg-white border-b border-gray-100 py-4 overflow-x-auto">
+          <div className="flex border-b border-gray-100 dark:border-gray-800 py-4 overflow-x-auto">
             {formSections.map((section, index) => (
               <div
                 key={section.id}
@@ -1054,7 +1054,7 @@ export default function ModernAdmissionForm() {
                 <span
                   className={`text-sm ${
                     activeTab === section.id
-                      ? "text-black font-medium"
+                      ? "text-black font-medium dark:text-white"
                       : "text-gray-500"
                   }`}
                 >
@@ -1098,7 +1098,7 @@ export default function ModernAdmissionForm() {
                             setActiveTab(formSections[currentIndex - 1].id);
                           }
                         }}
-                        className="rounded-full border-gray-300 text-gray-600 hover:bg-gray-50"
+                        className="rounded-full border-gray-300 dark:border-gray-800 text-gray-600 hover:bg-gray-50"
                       >
                         &larr; Previous
                       </Button>
@@ -1108,7 +1108,7 @@ export default function ModernAdmissionForm() {
                       <>
                         <Button
                           variant="outline"
-                          className="ml-auto rounded-full border-gray-300 text-gray-600 hover:bg-gray-50 mr-2"
+                          className="ml-auto rounded-full border-gray-300 dark:border-gray-800 text-gray-600 hover:bg-gray-50 mr-2"
                           onClick={handleSaveDraft}
                         >
                           Save draft

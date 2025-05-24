@@ -32,13 +32,7 @@ export default function StudentDashboard({ darkMode }) {
     <>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-8">
-        <Card
-          className={` ${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Your Classes
@@ -53,13 +47,7 @@ export default function StudentDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Assignments Due
@@ -72,13 +60,7 @@ export default function StudentDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Your Attendance
@@ -99,11 +81,7 @@ export default function StudentDashboard({ darkMode }) {
       </div>
 
       {/* Today's Schedule */}
-      <Card
-        className={`${
-          darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-        } shadow-sm mb-8`}
-      >
+      <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm mb-8">
         <CardHeader>
           <CardTitle>Today&apos;s Schedule</CardTitle>
           <CardDescription>Your classes for today</CardDescription>
@@ -113,16 +91,10 @@ export default function StudentDashboard({ darkMode }) {
             {data.schedule.map((cls, index) => (
               <div
                 key={index}
-                className={`flex items-center justify-between p-4 rounded-lg ${
-                  darkMode ? "bg-gray-700" : "bg-gray-50"
-                }`}
+                className={`flex items-center justify-between p-4 rounded-full dark:bg-gray-800 bg-gray-50`}
               >
                 <div className="flex items-center space-x-4">
-                  <div
-                    className={`p-3 rounded-lg ${
-                      darkMode ? "bg-gray-600" : "bg-white"
-                    }`}
-                  >
+                  <div className={`p-3 rounded-full dark:bg-gray-900 bg-white`}>
                     <Clock className="h-5 w-5 text-indigo-500" />
                   </div>
                   <div>
@@ -144,13 +116,7 @@ export default function StudentDashboard({ darkMode }) {
       {/* Assignments and Grades */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Upcoming Assignments */}
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader>
             <CardTitle>Upcoming Assignments</CardTitle>
             <CardDescription>Assignments due soon</CardDescription>
@@ -180,13 +146,7 @@ export default function StudentDashboard({ darkMode }) {
         </Card>
 
         {/* Recent Grades */}
-        <Card
-          className={`${
-            darkMode
-              ? "bg-gray-800 border-gray-700"
-              : "bg-white border-gray-200"
-          } shadow-sm`}
-        >
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader>
             <CardTitle>Recent Grades</CardTitle>
             <CardDescription>Your latest academic performance</CardDescription>

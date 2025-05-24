@@ -12,6 +12,8 @@ import {
   GripVertical,
   ChevronRight,
   Menu,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -19,6 +21,7 @@ import NotificationsDropdown from "../navbar/NotificationsDropdown";
 import { Button } from "@/components/ui/button";
 import AvatarDropdown from "../navbar/AvatarDropdown";
 import { MobileMenuToggle } from "./SidebarSection";
+import { useTheme } from "next-themes";
 
 export default function TopNavbar({
   isMobileOpen,
@@ -26,6 +29,7 @@ export default function TopNavbar({
   isOpen,
   setIsOpen,
 }) {
+  const { setTheme, theme } = useTheme();
   // To-Do List State
   const [todoOpen, setTodoOpen] = useState(false);
   const [todos, setTodos] = useState([
@@ -159,7 +163,7 @@ export default function TopNavbar({
   return (
     <div className="flex flex-col">
       {/* Main Navigation Bar */}
-      <nav className="bg-white/80 text-gray-800 px-4 flex justify-between items-center h-18 border-b border-gray-100/50 sticky top-0 z-50 backdrop-blur-lg">
+      <nav className=" text-gray-800 px-4 flex justify-between items-center h-16 border-b border-gray-200/50 shadow-sm dark:border-gray-800 sticky top-0 z-50 ">
         {/* Left side - Logo/Brand and Main Nav Links */}
         <div className="flex items-center gap-6">
           <Button
@@ -180,8 +184,14 @@ export default function TopNavbar({
           </Button>
           <div className="flex items-center gap-2">
             <School className="text-indigo-600 w-6 h-6" />
-            <h1 className="text-xl font-semibold hidden md:block">EduManage</h1>
+            <h1 className="text-xl dark:text-white font-semibold hidden md:block">
+              EduManage
+            </h1>
           </div>
+
+          <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+            {theme === "dark" ? <Sun /> : <Moon />}
+          </button>
         </div>
 
         <MobileMenuToggle
@@ -237,7 +247,7 @@ export default function TopNavbar({
                   />
                   <button
                     type="submit"
-                    className="bg-gray-600 text-white p-2 rounded-3xl hover:bg-gray-700"
+                    className="bg-gray-600 text-black p-2 rounded-3xl hover:bg-gray-700"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
