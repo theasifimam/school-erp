@@ -95,28 +95,36 @@ export default function RootLayout({ children }) {
         >
           <AppProviders>
             {!isAuthPage ? (
-              <div className="flex h-screen overflow-hidden  pb-6">
+              <div className="flex h-screen overflow-hidden w-full">
                 {/* Sidebar with conditional rendering for authenticated users */}
                 {isAuthenticated && <Sidebar {...layoutProps} />}
 
-                <div className="flex-1 flex flex-col">
+                <div className="flex-1 flex flex-col w-100">
                   {/* Top Navbar with conditional rendering */}
                   {isAuthenticated && <TopNavbar {...layoutProps} />}
-
                   {/* Main Content (Scrollable) */}
-                  <main className="flex-1 overflow-auto">{children}</main>
+                  <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-background">
+                    {children}
+                  </main>
                 </div>
               </div>
             ) : (
               // Auth pages receive children directly without layout
-              children
+              <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-background">
+                {children}
+              </main>
             )}
 
             <Toaster
               position="top-right"
               toastOptions={{
                 className:
-                  "!rounded-3xl bg-white shadow-xl border border-gray-200 text-lg text-gray-800",
+                  "!rounded-3xl bg-white text-foreground border border-gray-50 dark:border-gray-900 shadow-xl overflow-hidden",
+                style: {
+                  // Fallback for any cases where classes don't apply
+                  // borderRadius: "30px",
+                  color: "hsl(var(--foreground))",
+                },
                 duration: 3000,
               }}
             />

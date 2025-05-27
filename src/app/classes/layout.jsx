@@ -63,7 +63,7 @@ export default function ClassesCurriculumLayout({ children }) {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">Classes & Curriculum</h1>
@@ -84,13 +84,13 @@ export default function ClassesCurriculumLayout({ children }) {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b mb-6">
+      <div className="flex border-b mb-6 bg-gray-50 dark:bg-background">
         {tabs.map((tab) => (
           <Link
             key={tab.path}
             href={tab.path}
             className={cn(
-              "px-4 py-2 flex items-center bg-white dark:bg-background sticky top-0 font-medium text-sm transition-colors",
+              "px-4 py-2 flex items-centersticky top-0 font-medium text-sm transition-colors",
               isActiveTab(tab.path)
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-600 hover:text-blue-600"

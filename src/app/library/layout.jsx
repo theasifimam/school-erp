@@ -101,7 +101,7 @@ export default function ClassesCurriculumLayout({ children }) {
   const MobileNavigation = () => (
     <div className="md:hidden">
       {/* Mobile Header */}
-      <div className="flex items-center justify-between p-4 border-b bg-white sticky top-0 z-50">
+      <div className="flex items-center justify-between p-4 border-b bg-gray-50 dark:bg-background sticky top-0 z-50">
         <div>
           <h1 className="text-lg font-bold">Library System</h1>
           <p className="text-xs text-gray-500">
@@ -129,7 +129,7 @@ export default function ClassesCurriculumLayout({ children }) {
       {/* Bottom Sheet */}
       <div
         className={cn(
-          "fixed bottom-0 left-0 right-0 bg-white rounded-t-4xl shadow-2xl transform transition-all duration-300 ease-out z-50",
+          "fixed bottom-0 left-0 right-0  bg-gray-50 dark:bg-background rounded-t-4xl shadow-2xl transform transition-all duration-300 ease-out z-50",
           isMobileMenuOpen
             ? "translate-y-0 opacity-100"
             : "translate-y-full opacity-0 pointer-events-none"
@@ -285,7 +285,7 @@ export default function ClassesCurriculumLayout({ children }) {
       </div>
 
       {/* Desktop Navigation Tabs */}
-      <div className="border-b mb-6 sticky top-0 bg-white dark:bg-background z-30 overflow-x-auto">
+      <div className="border-b mb-6 sticky top-0 bg-gray-50 dark:bg-background z-30 overflow-x-auto">
         <div className="flex min-w-max">
           {tabs.map((tab) => (
             <Link
@@ -309,20 +309,18 @@ export default function ClassesCurriculumLayout({ children }) {
   );
 
   return (
-    <div className="min-h-screen ">
-      <div className="container mx-auto lg:p-6">
-        {/* Mobile Navigation */}
-        <MobileNavigation />
+    <div className="container mx-auto">
+      {/* Mobile Navigation */}
+      <MobileNavigation />
 
-        {/* Desktop Navigation */}
-        <DesktopNavigation />
+      {/* Desktop Navigation */}
+      <DesktopNavigation />
 
-        {/* Page Content */}
-        <div className="px-4 md:px-0 pb-20 md:pb-0">{children}</div>
+      {/* Page Content */}
+      <div className="px-4 md:px-0 pb-20 md:pb-0">{children}</div>
 
-        {/* Bottom Navigation for Mobile */}
-        {/* <BottomNavigation /> */}
-      </div>
+      {/* Bottom Navigation for Mobile */}
+      {/* <BottomNavigation /> */}
     </div>
   );
 }

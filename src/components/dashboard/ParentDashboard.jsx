@@ -29,7 +29,7 @@ export default function ParentDashboard() {
     <>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Your Children
@@ -42,7 +42,7 @@ export default function ParentDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Average Attendance
@@ -61,7 +61,7 @@ export default function ParentDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Assignments Due
@@ -74,7 +74,7 @@ export default function ParentDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               New Messages
@@ -89,7 +89,7 @@ export default function ParentDashboard() {
       </div>
 
       {/* Children Information */}
-      <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+      <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
         <CardHeader>
           <CardTitle>Your Children</CardTitle>
           <CardDescription>Academic information for each child</CardDescription>
@@ -138,7 +138,7 @@ export default function ParentDashboard() {
       {/* Fee Status and Messages */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Fee Status */}
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader>
             <CardTitle>Fee Payment Status</CardTitle>
             <CardDescription>Current term fee information</CardDescription>
@@ -174,7 +174,7 @@ export default function ParentDashboard() {
         </Card>
 
         {/* Recent Messages */}
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader>
             <CardTitle>Recent Messages</CardTitle>
             <CardDescription>Communication from teachers</CardDescription>

@@ -67,7 +67,10 @@ export function StatsCards({
       className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-4`}
     >
       {stats.map((stat) => (
-        <div key={stat.value} className="p-3 rounded-full shadow-xs border">
+        <div
+          key={stat.value}
+          className="p-3 bg-white dark:bg-black rounded-full shadow-xs border"
+        >
           <div className="flex items-center gap-3">
             <div
               className={`h-10 w-10 ${stat.iconBg} rounded-full flex items-center justify-center`}

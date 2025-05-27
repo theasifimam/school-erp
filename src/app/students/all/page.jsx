@@ -226,40 +226,38 @@ export default function StudentManagement() {
     <div className="min-h-screen">
       <StatsCards overviewStats={overviewStats} />
 
-      {/* Tabs */}
-      <Tabs
-        defaultValue="all"
-        className="mb-6"
-        value={activeTab}
-        onValueChange={(val) => {
-          setActiveTab(val);
-          setStatusFilter(val === "all" ? "all" : val);
-        }}
-      >
-        <TabsList className="border p-1">
-          <TabsTrigger value="all" className="px-3 text-gray-800 ">
-            All
-          </TabsTrigger>
-          <TabsTrigger value="enrolled" className="px-3 text-gray-800 ">
-            Enrolled
-          </TabsTrigger>
-          <TabsTrigger value="submitted" className="px-3 text-gray-800 ">
-            Submitted
-          </TabsTrigger>
-          <TabsTrigger value="under_review" className="px-3 text-gray-800 ">
-            Under Review
-          </TabsTrigger>
-          <TabsTrigger value="accepted" className="px-3 text-gray-800 ">
-            Accepted
-          </TabsTrigger>
-          <TabsTrigger value="rejected" className="px-3 text-gray-800 ">
-            Rejected
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-
-      {/* Users Table */}
-      <div className="rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="rounded-3xl shadow-sm border bg-white dark:bg-black border-gray-200 dark:border-gray-900 overflow-hidden">
+        {/* Tabs */}
+        <Tabs
+          defaultValue="all"
+          className="p-4 pb-2"
+          value={activeTab}
+          onValueChange={(val) => {
+            setActiveTab(val);
+            setStatusFilter(val === "all" ? "all" : val);
+          }}
+        >
+          <TabsList className="border p-1">
+            <TabsTrigger value="all" className="px-3 text-gray-800 ">
+              All
+            </TabsTrigger>
+            <TabsTrigger value="enrolled" className="px-3 text-gray-800 ">
+              Enrolled
+            </TabsTrigger>
+            <TabsTrigger value="submitted" className="px-3 text-gray-800 ">
+              Submitted
+            </TabsTrigger>
+            <TabsTrigger value="under_review" className="px-3 text-gray-800 ">
+              Under Review
+            </TabsTrigger>
+            <TabsTrigger value="accepted" className="px-3 text-gray-800 ">
+              Accepted
+            </TabsTrigger>
+            <TabsTrigger value="rejected" className="px-3 text-gray-800 ">
+              Rejected
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
         {/* Action Bar */}
         {selectedUsers.length > 0 && (
           <div className="m-4 mb-2 p-3 bg-blue-50 dark:bg-gray-900 rounded-3xl flex justify-between items-center">
@@ -407,6 +405,7 @@ export default function StudentManagement() {
           </Popover>
         </div>
 
+        {/* Users Table */}
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="">
@@ -450,14 +449,14 @@ export default function StudentManagement() {
                 currentItems.map((user) => (
                   <tr
                     key={user.id}
-                    className="dark:hover:bg-gray-900 hover:bg-gray-50  dark:border-gray-700"
+                    className="dark:hover:bg-gray-900 hover:bg-gray-50  dark:border-gray-900"
                   >
                     <td className="px-4 py-3">
                       <input
                         type="checkbox"
                         checked={selectedUsers.includes(user.id)}
                         onChange={() => toggleUserSelection(user.id)}
-                        className="rounded border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-gray-300 dark:border-gray-900 text-blue-600 focus:ring-blue-500"
                       />
                     </td>
                     <td className="px-4 py-3 text-sm">

@@ -161,9 +161,9 @@ export default function TopNavbar({
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       {/* Main Navigation Bar */}
-      <nav className=" text-gray-800 px-4 flex justify-between items-center h-16 border-b border-gray-200/50 shadow-sm dark:border-gray-800 sticky top-0 z-50 ">
+      <nav className=" text-gray-800 px-4 flex justify-between border-l-0 items-center h-16 border-b border-gray-200/50 dark:border-gray-900 sticky top-0 z-50 ">
         {/* Left side - Logo/Brand and Main Nav Links */}
         <div className="flex items-center gap-6">
           <Button
@@ -190,7 +190,7 @@ export default function TopNavbar({
           </div>
 
           <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-            {theme === "dark" ? <Sun /> : <Moon />}
+            {theme === "dark" ? <Sun className="text-gray-100" /> : <Moon />}
           </button>
         </div>
 

@@ -11,7 +11,7 @@ import ParentDashboard from "@/components/dashboard/ParentDashboard";
 
 export default function SchoolDashboard() {
   const [darkMode, setDarkMode] = useState(false);
-  const [currentRole, setCurrentRole] = useState("student"); // Default role is "admin"; // Change this to test different roles
+  const [currentRole, setCurrentRole] = useState("admin"); // Default role is "admin"; // Change this to test different roles
 
   // Toggle between roles for demo purposes
   // const switchRole = () => {
@@ -23,7 +23,7 @@ export default function SchoolDashboard() {
 
   return (
     <div className={`neutral-50 min-h-screen transition-colors duration-300`}>
-      <div className="p-6">
+      <div>
         {/* Role-Specific Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>

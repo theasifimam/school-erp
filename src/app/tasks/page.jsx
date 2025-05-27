@@ -216,16 +216,14 @@ export default function KanbanTasksPage() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Task Board</h1>
-            <p className="text-gray-600">
-              Manage and track all ERP system tasks
-            </p>
+            <h1 className="text-3xl font-bold">Task Board</h1>
+            <p>Manage and track all ERP system tasks</p>
           </div>
-          <Button className="rounded-full text-white" onClick={handleAddTask}>
+          <Button className="rounded-full" onClick={handleAddTask}>
             <Plus className="h-4 w-4 mr-2" /> Create New Task
           </Button>
         </div>
@@ -233,7 +231,7 @@ export default function KanbanTasksPage() {
         {/* Analytics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
           {/* Total Tasks */}
-          <Card className="bg-white border-l-4 border-indigo-500 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white dark:bg-background border-l-4 border-indigo-500 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="flex items-start justify-between">
               <div>
                 <div className="text-3xl font-bold">{stats.total}</div>
@@ -258,7 +256,7 @@ export default function KanbanTasksPage() {
           </Card>
 
           {/* Completed */}
-          <Card className="bg-green-50 border-l-4 border-green-500 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-green-50 dark:bg-background border-l-4 border-green-500 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="flex items-start justify-between">
               <div>
                 <div className="text-3xl font-bold text-green-600">
@@ -293,7 +291,7 @@ export default function KanbanTasksPage() {
           </Card>
 
           {/* In Progress */}
-          <Card className="bg-blue-50 border-l-4 border-blue-500 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-blue-50 dark:bg-background border-l-4 border-blue-500 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="flex items-start justify-between">
               <div>
                 <div className="text-3xl font-bold text-blue-600">
@@ -328,7 +326,7 @@ export default function KanbanTasksPage() {
           </Card>
 
           {/* Pending */}
-          <Card className="bg-gray-100 border-l-4 border-gray-500 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-gray-100 dark:bg-background border-l-4 border-gray-500 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="flex items-start justify-between">
               <div>
                 <div className="text-3xl font-bold text-gray-600">
@@ -361,7 +359,7 @@ export default function KanbanTasksPage() {
           </Card>
 
           {/* High Priority */}
-          <Card className="bg-red-50 border-l-4 border-red-500 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-red-50 dark:bg-background border-l-4 border-red-500 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="flex items-start justify-between">
               <div>
                 <div className="text-3xl font-bold text-red-600">
@@ -397,7 +395,7 @@ export default function KanbanTasksPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white p-4 rounded-3xl shadow mb-6">
+        <div className="bg-white dark:bg-black border-gray-700 p-4 rounded-3xl shadow mb-6">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-4">
             <div className="relative w-full md:w-1/3">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -455,8 +453,8 @@ export default function KanbanTasksPage() {
               onDragStart={handleDragStart}
               onTaskClick={handleEditTask}
               icon={<Circle className="h-5 w-5 text-gray-600" />}
-              bgColor="bg-gray-50"
-              borderColor="border-gray-200"
+              bgColor="bg-gray-50 dark:bg-background"
+              borderColor="border-gray-200 dark:border-gray-900"
               textColor="text-gray-800"
             />
 
@@ -469,8 +467,8 @@ export default function KanbanTasksPage() {
               onDragStart={handleDragStart}
               onTaskClick={handleEditTask}
               icon={<Clock className="h-5 w-5 text-blue-600" />}
-              bgColor="bg-blue-50"
-              borderColor="border-blue-200"
+              bgColor="bg-blue-50 dark:bg-background"
+              borderColor="border-blue-200 dark:border-gray-900"
               textColor="text-blue-800"
             />
 
@@ -483,8 +481,8 @@ export default function KanbanTasksPage() {
               onDragStart={handleDragStart}
               onTaskClick={handleEditTask}
               icon={<CheckCircle className="h-5 w-5 text-green-600" />}
-              bgColor="bg-green-50"
-              borderColor="border-green-200"
+              bgColor="bg-green-50 dark:bg-background"
+              borderColor="border-green-200 dark:border-gray-900"
               textColor="text-green-800"
             />
           </div>

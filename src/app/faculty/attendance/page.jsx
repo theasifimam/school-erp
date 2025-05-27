@@ -295,7 +295,7 @@ export default function AttendancePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div className="min-h-screen">
       {/* Modal for taking attendance */}
       <AttendanceModal
         isOpen={isModalOpen}
@@ -344,7 +344,7 @@ export default function AttendancePage() {
         <TabsContent value="daily">
           {/* Filters and Controls */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-6 gap-4 bg-white p-3 rounded-3xl shadow-sm">
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-6 gap-4 p-3 rounded-3xl shadow-sm">
               {/* Date + Controls */}
               <div className="flex items-center gap-1 col-span-2">
                 <CalendarIcon className="h-5 w-5 text-gray-500" />
@@ -537,9 +537,9 @@ export default function AttendancePage() {
           </div>
 
           {/* Attendance Table */}
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <Card className="px-4 py-2">
             <Table>
-              <TableHeader className="bg-gray-50">
+              <TableHeader className="">
                 <TableRow>
                   <TableHead className="w-[50px]">#</TableHead>
                   <TableHead>Faculty Name</TableHead>
@@ -617,7 +617,7 @@ export default function AttendancePage() {
                 )}
               </TableBody>
             </Table>
-          </div>
+          </Card>
 
           {/* Attendance Summary */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">

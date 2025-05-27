@@ -124,10 +124,10 @@ export default function Sidebar({
       {/* Sidebar Container */}
       <div
         className={cn(
-          "fixed lg:relative h-screen transition-all duration-300 ease-in-out z-40 shadow-lg",
+          "fixed lg:relative h-screen-[20px] m-[10px] mr-[0] transition-all duration-300 ease-in-out z-40 shadow-lg",
           isOpen ? "w-72" : "w-20",
           isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          " text-black rounded-r-3xl"
+          " text-black rounded-4xl border-2 border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700"
         )}
         aria-label="Main Navigation"
         role="navigation"
@@ -190,7 +190,7 @@ export default function Sidebar({
               <Input
                 type="search"
                 placeholder="Search..."
-                className="w-full pl-9 bg-gray-50 border-gray-200 dark:border-gray-800 focus:border-gray-800 text-black placeholder:text-gray-400 rounded-full transition-all focus:ring-2 focus:ring-gray-300"
+                className="w-full pl-9 bg-gray-50 border-gray-200 dark:border-gray-900 focus:border-gray-800 text-black placeholder:text-gray-400 rounded-full transition-all focus:ring-2 focus:ring-gray-300"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Search"
@@ -567,7 +567,7 @@ export default function Sidebar({
         </nav>
 
         {/* User Profile & Quick Actions */}
-        <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-gray-200 bg-white">
+        {/* <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-gray-200 bg-white dark:bg-background">
           <div className="flex items-center gap-3">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -577,7 +577,7 @@ export default function Sidebar({
                       src="https://randomuser.me/api/portraits/women/45.jpg"
                       alt="Principal"
                     />
-                    <AvatarFallback className="bg-gradient-to-br from-gray-800 to-black rounded-full text-white">
+                    <AvatarFallback className="bg-gradient-to-br from-gray-800 to-black rounded-full">
                       PS
                     </AvatarFallback>
                   </Avatar>
@@ -599,7 +599,7 @@ export default function Sidebar({
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col truncate">
-                    <span className="font-semibold truncate text-black">
+                    <span className="font-semibold truncate text-black dark:text-white">
                       Asif Imam
                     </span>
                     <span className="text-xs text-gray-500 truncate">
@@ -673,7 +673,7 @@ export default function Sidebar({
               </div>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Mobile Navigation Bar - Only shown on small screens */}

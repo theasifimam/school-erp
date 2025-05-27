@@ -281,7 +281,7 @@ export default function AnnouncementsPage() {
   };
 
   return (
-    <div className="container mx-auto p-10">
+    <div className="container mx-auto">
       {/* <Toaster position="top-right" richColors closeButton /> */}
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">

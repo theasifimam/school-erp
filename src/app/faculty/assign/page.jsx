@@ -387,7 +387,7 @@ export default function ClassAssignment() {
         </TabsList>
 
         <TabsContent value="create">
-          <Card className="rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm">
+          <Card className="rounded-3xl border border-gray-200 dark:border-gray-900 shadow-sm">
             <CardHeader>
               <CardTitle className="text-xl font-semibold flex items-center">
                 {bulkAssign
@@ -701,7 +701,7 @@ export default function ClassAssignment() {
         </TabsContent>
 
         <TabsContent value="assignments">
-          <Card className="rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm">
+          <Card className="rounded-3xl border border-gray-200 dark:border-gray-900 shadow-sm">
             <CardHeader>
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <CardTitle className="text-xl font-semibold flex items-center gap-2">

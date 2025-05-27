@@ -34,7 +34,7 @@ export default function ClassesCurriculumLayout({ children }) {
       icon: <Clock className="mr-2 h-4 w-4" />,
     },
     {
-      name: "attendance",
+      name: "Attendance",
       path: "/students/attendance",
       icon: <BookOpen className="mr-2 h-4 w-4" />,
     },
@@ -59,7 +59,7 @@ export default function ClassesCurriculumLayout({ children }) {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Student Management</h1>
@@ -89,7 +89,7 @@ export default function ClassesCurriculumLayout({ children }) {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b mb-4 sticky top-0 bg-white dark:bg-background z-1">
+      <div className="flex border-b mb-4 sticky top-0 bg-gray-50 dark:bg-background z-1">
         {tabs.map((tab) => (
           <Link
             key={tab.path}

@@ -229,7 +229,7 @@ export default function ModernSchoolCalendar() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-background p-4 md:p-6">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto">
         <CalendarHeader
           unreadCount={unreadCount}

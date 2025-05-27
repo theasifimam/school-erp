@@ -376,7 +376,7 @@ export default function ExaminationLayout({ children }) {
 
       {/* Desktop Navigation Tabs */}
       {/* Navigation Tabs */}
-      <div className="flex border-b mb-6 bg-white dark:bg-background">
+      <div className="flex border-b mb-6 bg-gray-50 dark:bg-background">
         {tabs.map((tab) => (
           <Link
             key={tab.path}
@@ -397,19 +397,17 @@ export default function ExaminationLayout({ children }) {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto lg:p-6">
-        {/* Mobile Navigation */}
-        <MobileNavigation />
+    <div className="container mx-auto">
+      {/* Mobile Navigation */}
+      <MobileNavigation />
 
-        {/* Desktop Navigation */}
-        <DesktopNavigation />
+      {/* Desktop Navigation */}
+      <DesktopNavigation />
 
-        {/* Page Content */}
-        <div className="px-4 md:px-0 pb-20 md:pb-6">
-          <div className="bg-white rounded-3xl shadow-sm border border-gray-200 min-h-[600px]">
-            {children}
-          </div>
+      {/* Page Content */}
+      <div className="px-4 md:px-0 pb-20 md:pb-6">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-200 min-h-[600px]">
+          {children}
         </div>
       </div>
     </div>

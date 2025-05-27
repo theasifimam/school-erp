@@ -92,7 +92,7 @@ export default function ClassesPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Add more stat cards as needed */}

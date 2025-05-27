@@ -53,7 +53,7 @@ export default function TeacherDashboard() {
     <>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Your Classes
@@ -66,7 +66,7 @@ export default function TeacherDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Total Students
@@ -79,7 +79,7 @@ export default function TeacherDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Assignments Due
@@ -92,7 +92,7 @@ export default function TeacherDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
               Average Attendance
@@ -115,7 +115,7 @@ export default function TeacherDashboard() {
       {/* Class Schedule and Performance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Class Schedule */}
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader>
             <CardTitle>Today&apos;s Schedule</CardTitle>
             <CardDescription>Your classes for today</CardDescription>
@@ -152,7 +152,7 @@ export default function TeacherDashboard() {
         </Card>
 
         {/* Student Performance */}
-        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader>
             <CardTitle>Class Performance</CardTitle>
             <CardDescription>
@@ -198,7 +198,7 @@ export default function TeacherDashboard() {
       </div>
 
       {/* Assignments to Grade */}
-      <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-800 shadow-sm">
+      <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
         <CardHeader>
           <div className="flex justify-between items-center">
             <div>

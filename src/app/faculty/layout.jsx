@@ -58,7 +58,7 @@ export default function ClassesCurriculumLayout({ children }) {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -92,7 +92,7 @@ export default function ClassesCurriculumLayout({ children }) {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b mb-6 sticky top-0 bg-white dark:bg-background">
+      <div className="flex border-b mb-6 sticky top-0 bg-gray-50 dark:bg-background">
         {tabs.map((tab) => (
           <Link
             key={tab.path}

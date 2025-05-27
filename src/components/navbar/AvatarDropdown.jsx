@@ -21,7 +21,7 @@ export default function AvatarDropdown() {
         <DropdownMenu.Trigger asChild>
           <button className="flex items-center gap-2 focus:outline-none group pl-2">
             <div className="hidden md:block text-right">
-              <p className="text-lg font-medium">Asif Imam</p>
+              <p className="text-lg font-medium dark:text-white">Asif Imam</p>
               <p className="text-xs text-gray-500">Administrator</p>
             </div>
             <Avatar className="w-9 h-9 cursor-pointer border-2 border-transparent group-hover:border-indigo-300 transition-all">
@@ -36,23 +36,23 @@ export default function AvatarDropdown() {
 
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className="bg-white z-88 shadow-lg rounded-3xl w-64 p-2 border border-gray-200 will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
+            className="bg-white dark:bg-background z-88 shadow-lg rounded-3xl w-64 p-2 border border-gray-200 dark:border-gray-900 will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
             align="end"
             sideOffset={8}
           >
             {/* Profile Section */}
-            <DropdownMenu.Item className="p-3 hover:bg-gray-50 rounded-full cursor-pointer flex items-center gap-3 focus:outline-none">
+            <DropdownMenu.Item className="p-3 hover:bg-gray-50 rounded-full cursor-pointer flex items-center gap-3 focus:outline-none dark:focus:text-gray-900">
               <Avatar className="w-10 h-10">
                 <AvatarImage src="/admin-avatar.jpg" alt="Admin" />
                 <AvatarFallback className="font-medium">PS</AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-sm font-medium">Principal Smith</p>
+                <p className="text-sm font-medium ">Principal Smith</p>
                 <p className="text-xs text-gray-500">principal@edumanage.edu</p>
               </div>
             </DropdownMenu.Item>
 
-            <DropdownMenu.Separator className="h-px bg-gray-100 my-1" />
+            <DropdownMenu.Separator className="h-px bg-gray-100 dark:bg-gray-900 my-1" />
 
             {/* Essential Menu Items */}
             <DropdownMenu.Group>
@@ -87,7 +87,7 @@ export default function AvatarDropdown() {
               </DropdownMenu.Item>
             </DropdownMenu.Group>
 
-            <DropdownMenu.Separator className="h-px bg-gray-100 my-1" />
+            <DropdownMenu.Separator className="h-px bg-gray-100 dark:bg-gray-900 my-1" />
 
             <DropdownMenu.Item asChild>
               <button

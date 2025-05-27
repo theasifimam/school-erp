@@ -5,7 +5,6 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import { Badge } from "../ui/badge";
 import { ChevronDown } from "lucide-react";
 
-// Enhanced Sidebar Item Component
 export default function SidebarItem({
   icon,
   label,
@@ -37,15 +36,15 @@ export default function SidebarItem({
               className={cn(
                 "flex items-center justify-center p-3 mx-1 my-1.5 rounded-full relative transition-all duration-200",
                 isActive
-                  ? "bg-gray-800 text-white shadow-lg"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-black"
+                  ? "bg-primary text-primary-foreground shadow-lg"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >
               <div className="flex items-center justify-center w-5 h-5">
                 {icon}
               </div>
               {badge && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 hover:bg-red-600 text-white rounded-full">
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-primary text-primary-foreground rounded-full">
                   {badge}
                 </Badge>
               )}
@@ -54,7 +53,7 @@ export default function SidebarItem({
         </TooltipTrigger>
         <TooltipContent
           side="right"
-          className="bg-white text-black border-gray-200"
+          className="bg-popover text-popover-foreground border border-border"
         >
           {label}
         </TooltipContent>
@@ -71,8 +70,8 @@ export default function SidebarItem({
             className={cn(
               "flex items-center justify-center p-3 mx-1 my-1.5 rounded-full relative cursor-pointer transition-all duration-200",
               isActive
-                ? "bg-gray-800 text-white shadow-lg"
-                : "text-gray-600 hover:bg-gray-100 hover:text-black"
+                ? "bg-primary text-primary-foreground shadow-lg"
+                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
             )}
             onClick={onSubmenuToggle}
           >
@@ -80,7 +79,7 @@ export default function SidebarItem({
               {icon}
             </div>
             {badge && (
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 hover:bg-red-600 text-white rounded-full">
+              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-primary text-primary-foreground rounded-full">
                 {badge}
               </Badge>
             )}
@@ -88,20 +87,20 @@ export default function SidebarItem({
         </TooltipTrigger>
         <TooltipContent
           side="right"
-          className="p-0 bg-white border-gray-200 overflow-hidden rounded-xl shadow-md"
+          className="p-0 bg-popover text-popover-foreground border border-border overflow-hidden rounded-xl shadow-md"
         >
           <div className="py-1.5 px-2">
-            <p className="font-semibold text-black border-b border-gray-200 pb-1.5">
+            <p className="font-semibold border-b border-border pb-1.5">
               {label}
             </p>
             <div className="space-y-1 mt-1.5">
               {submenu.map((item, index) => (
                 <Link href={item.route} key={index} passHref>
-                  <div className="flex items-center gap-2 py-1.5 px-2 text-sm text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
+                  <div className="flex items-center gap-2 py-1.5 px-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors">
                     {item.icon}
                     <span>{item.label}</span>
                     {item.badge && (
-                      <Badge className="h-5 ml-auto bg-red-500 hover:bg-red-600 text-white">
+                      <Badge className="h-5 ml-auto bg-primary text-primary-foreground">
                         {item.badge}
                       </Badge>
                     )}
@@ -121,10 +120,10 @@ export default function SidebarItem({
       {/* Main Item */}
       <div
         className={cn(
-          "relative flex items-center gap-3 px-3 py-2.5 mx-1.5 my-0.5 rounded-full cursor-pointer group transition-all duration-200",
+          "relative flex items-center gap-3 px-3 py-2.5 mx-1.5 my-0.5 rounded-full group transition-all duration-200",
           isActive
-            ? "bg-gray-800 text-white shadow-md"
-            : "text-gray-700 hover:bg-gray-100 hover:text-black"
+            ? "bg-primary text-primary-foreground shadow-md"
+            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         )}
         onClick={handleItemClick}
       >
@@ -133,7 +132,9 @@ export default function SidebarItem({
             <div
               className={cn(
                 "w-6 h-6 flex items-center justify-center flex-shrink-0",
-                isActive ? "text-white" : "text-gray-600 group-hover:text-black"
+                isActive
+                  ? "text-primary-foreground"
+                  : "group-hover:text-accent-foreground"
               )}
             >
               {icon}
@@ -145,7 +146,9 @@ export default function SidebarItem({
             <div
               className={cn(
                 "w-6 h-6 flex items-center justify-center flex-shrink-0",
-                isActive ? "text-white" : "text-gray-600 group-hover:text-black"
+                isActive
+                  ? "text-primary-foreground"
+                  : "group-hover:text-accent-foreground"
               )}
             >
               {icon}
@@ -157,8 +160,8 @@ export default function SidebarItem({
                   "h-4 w-4 transition-transform",
                   isSubmenuOpen && "transform rotate-180",
                   isActive
-                    ? "text-white"
-                    : "text-gray-500 group-hover:text-black"
+                    ? "text-primary-foreground"
+                    : "text-muted-foreground group-hover:text-accent-foreground"
                 )}
               />
             )}
@@ -169,8 +172,8 @@ export default function SidebarItem({
             className={cn(
               "ml-auto",
               isActive
-                ? "bg-white text-gray-800"
-                : "bg-red-500 hover:bg-red-600 text-white"
+                ? "bg-primary-foreground text-primary"
+                : "bg-primary text-primary-foreground"
             )}
           >
             {badge}
@@ -180,7 +183,7 @@ export default function SidebarItem({
 
       {/* Submenu */}
       {hasSubmenu && isSubmenuOpen && (
-        <div className="mt-1 ml-4 pl-4 border-l border-gray-200 space-y-0.5">
+        <div className="mt-1 ml-4 pl-4 border-l border-border space-y-0.5">
           {submenu.map((item, index) => {
             const isItemActive = pathname === item.route;
             return (
@@ -189,16 +192,16 @@ export default function SidebarItem({
                   className={cn(
                     "flex items-center gap-2 px-3 py-2 rounded-full text-sm group transition-colors",
                     isItemActive
-                      ? "bg-gray-100 text-black font-medium"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-black"
+                      ? "bg-accent text-accent-foreground font-medium"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                   )}
                 >
-                  <div className="w-4 h-4 flex items-center justify-center text-gray-500 group-hover:text-black">
+                  <div className="w-4 h-4 flex items-center justify-center text-muted-foreground group-hover:text-accent-foreground">
                     {item.icon}
                   </div>
                   <span>{item.label}</span>
                   {item.badge && (
-                    <Badge className="ml-auto bg-red-500 hover:bg-red-600 text-white">
+                    <Badge className="ml-auto bg-primary text-primary-foreground">
                       {item.badge}
                     </Badge>
                   )}
