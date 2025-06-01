@@ -1,5 +1,6 @@
 "use client";
 
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -59,8 +60,8 @@ export default function ClassesCurriculumLayout({ children }) {
   };
 
   return (
-    <div className="container mx-auto">
-      <div className="flex justify-between items-center mb-6">
+    <div className="mx-auto">
+      <div className="flex justify-between items-center my-6">
         <div>
           <h1 className="text-2xl font-bold">Student Management</h1>
           <p className="text-gray-500">
@@ -88,24 +89,19 @@ export default function ClassesCurriculumLayout({ children }) {
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex border-b mb-4 sticky top-0 bg-gray-50 dark:bg-background z-1">
-        {tabs.map((tab) => (
-          <Link
-            key={tab.path}
-            href={tab.path}
-            className={cn(
-              "px-4 py-2 flex items-center font-medium text-sm transition-colors focus:outline-none",
-              isActiveTab(tab.path)
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-600 hover:text-blue-600"
-            )}
-          >
-            {tab.icon}
-            {tab.name}
-          </Link>
-        ))}
-      </div>
+      {/* Navigation Tabs using shadcn */}
+      <Tabs defaultValue={tabs[0].path} className="sticky top-3 z-10 mb-4">
+        <TabsList className="">
+          {tabs.map((tab) => (
+            <TabsTrigger key={tab.path} value={tab.path} asChild>
+              <Link href={tab.path} className="flex items-center gap-2">
+                {tab.icon}
+                {tab.name}
+              </Link>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       {/* Page Content */}
       {children}

@@ -103,14 +103,14 @@ export default function RootLayout({ children }) {
                   {/* Top Navbar with conditional rendering */}
                   {isAuthenticated && <TopNavbar {...layoutProps} />}
                   {/* Main Content (Scrollable) */}
-                  <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-background">
+                  <main className="flex-1 overflow-auto p-6 pt-0 bg-gray-50 dark:bg-background">
                     {children}
                   </main>
                 </div>
               </div>
             ) : (
               // Auth pages receive children directly without layout
-              <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-background">
+              <main className="flex-1 overflow-auto p-6 pt-0 bg-gray-50 dark:bg-background">
                 {children}
               </main>
             )}

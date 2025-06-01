@@ -15,6 +15,7 @@ import {
   LucideBookUser,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui";
 
 // This is the shared layout component for all curriculum pages
 export default function ClassesCurriculumLayout({ children }) {
@@ -83,24 +84,19 @@ export default function ClassesCurriculumLayout({ children }) {
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex border-b mb-6 bg-gray-50 dark:bg-background">
-        {tabs.map((tab) => (
-          <Link
-            key={tab.path}
-            href={tab.path}
-            className={cn(
-              "px-4 py-2 flex items-centersticky top-0 font-medium text-sm transition-colors",
-              isActiveTab(tab.path)
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-600 hover:text-blue-600"
-            )}
-          >
-            {tab.icon}
-            {tab.name}
-          </Link>
-        ))}
-      </div>
+      {/* Navigation Tabs using shadcn */}
+      <Tabs defaultValue={tabs[0].path} className="sticky top-3 z-10 mb-4">
+        <TabsList className="">
+          {tabs.map((tab) => (
+            <TabsTrigger key={tab.path} value={tab.path} asChild>
+              <Link href={tab.path} className="flex items-center gap-2">
+                {tab.icon}
+                {tab.name}
+              </Link>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       {/* Page Content */}
       {children}

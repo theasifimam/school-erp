@@ -12,7 +12,7 @@ import {
 import { useAuthStore } from "@/lib/state/stores/authStore";
 
 export default function AvatarDropdown() {
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
 
   return (
     <div>
@@ -21,11 +21,16 @@ export default function AvatarDropdown() {
         <DropdownMenu.Trigger asChild>
           <button className="flex items-center gap-2 focus:outline-none group pl-2">
             <div className="hidden md:block text-right">
-              <p className="text-lg font-medium dark:text-white">Asif Imam</p>
+              <p className="text-lg font-medium dark:text-white">
+                {user?.fullName}
+              </p>
               <p className="text-xs text-gray-500">Administrator</p>
             </div>
             <Avatar className="w-9 h-9 cursor-pointer border-2 border-transparent group-hover:border-indigo-300 transition-all">
-              <AvatarImage src="/admin-avatar.jpg" alt="Admin" />
+              <AvatarImage
+                src={user?.profilePicture || "/admin-avatar.jpg"}
+                alt="Admin"
+              />
               <AvatarFallback className="text-gray-600 font-medium">
                 PS
               </AvatarFallback>
@@ -43,12 +48,17 @@ export default function AvatarDropdown() {
             {/* Profile Section */}
             <DropdownMenu.Item className="p-3 hover:bg-gray-50 rounded-full cursor-pointer flex items-center gap-3 focus:outline-none dark:focus:text-gray-900">
               <Avatar className="w-10 h-10">
-                <AvatarImage src="/admin-avatar.jpg" alt="Admin" />
-                <AvatarFallback className="font-medium">PS</AvatarFallback>
+                <AvatarImage
+                  src={user?.profilePicture || "/admin-avatar.jpg"}
+                  alt="Admin"
+                />
+                <AvatarFallback className="font-medium">
+                  {user?.fullName[0]}
+                </AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-sm font-medium ">Principal Smith</p>
-                <p className="text-xs text-gray-500">principal@edumanage.edu</p>
+                <p className="text-sm font-medium ">{user?.fullName}</p>
+                <p className="text-xs text-gray-500">{user?.email}</p>
               </div>
             </DropdownMenu.Item>
 

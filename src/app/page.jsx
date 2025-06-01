@@ -22,7 +22,9 @@ export default function SchoolDashboard() {
   // };
 
   return (
-    <div className={`neutral-50 min-h-screen transition-colors duration-300`}>
+    <div
+      className={`neutral-50 min-h-screen transition-colors duration-300 mt-8`}
+    >
       <div>
         {/* Role-Specific Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">

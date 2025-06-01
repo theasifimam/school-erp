@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { authApi } from "../../api/endpoints";
+import { authApi, userApi } from "../../api/endpoints";
 
 // This store uses a split authentication approach:
 // 1. The auth token is never stored in the frontend for security
@@ -78,6 +78,72 @@ export const useAuthStore = create(
             isAuthenticated: false,
             isLoading: false,
           });
+        }
+      },
+
+      getMe: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await userApi.getMe();
+          console.log(response.data);
+          set({
+            user: response.data,
+            isLoading: false,
+          });
+        } catch (error) {
+          set({
+            error: error.response?.data?.message || "Failed to fetch user",
+            isLoading: false,
+          });
+        }
+      },
+
+      updateMe: async (userData) => {
+        set({ isLoading: true, error: null, successMessage: null });
+        try {
+          const response = await userApi.updateMe(userData);
+          set((state) => ({
+            user: response.data,
+            isLoading: false,
+            successMessage: "User updated successfully!",
+          }));
+          toast("User information updated!", {
+            description: "User information has been updated successfully.",
+            action: {
+              label: "X",
+              onClick: () => console.log("remove"),
+            },
+          });
+        } catch (error) {
+          set({
+            error: error.response?.data?.message || "Failed to update user",
+            isLoading: false,
+          });
+          throw error;
+        }
+      },
+
+      updatePassword: async (passwords) => {
+        set({ isLoading: true, error: null, successMessage: null });
+        try {
+          const response = await userApi.updatePassword(passwords);
+          set((state) => ({
+            isLoading: false,
+            successMessage: "User updated successfully!",
+          }));
+          toast("User password updated!", {
+            description: "User password has been updated successfully.",
+            action: {
+              label: "X",
+              onClick: () => console.log("remove"),
+            },
+          });
+        } catch (error) {
+          set({
+            error: error.response?.data?.message || "Failed to update user",
+            isLoading: false,
+          });
+          throw error;
         }
       },
     }),

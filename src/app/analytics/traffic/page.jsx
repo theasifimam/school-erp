@@ -40,8 +40,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { DateRangePicker } from "@/components/common/DateRangePicker";
 
 // Sample Data
 const trafficData = [
@@ -127,7 +126,7 @@ export default function TrafficPage() {
               <SelectItem value="yearly">Yearly</SelectItem>
             </SelectContent>
           </Select>
-          <DatePicker
+          <DateRangePicker
             selectsRange={true}
             startDate={startDate}
             endDate={endDate}
@@ -136,7 +135,7 @@ export default function TrafficPage() {
               setStartDate(start);
               setEndDate(end);
             }}
-            className="border rounded-md px-3 py-2 text-sm w-[280px]"
+            className="border rounded-full px-3 py-2 text-sm w-[280px]"
             dateFormat="MMM d, yyyy"
           />
           <Button variant="outline">

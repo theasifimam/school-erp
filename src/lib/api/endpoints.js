@@ -132,3 +132,28 @@ export const issueBookApi = {
       method: "DELETE",
     }),
 };
+
+export const userApi = {
+  // Operations on Self
+  updateMe: (data) =>
+    fetcher("/users/update-me", { method: "POST", body: data }),
+  getMe: () => fetcher("/users/me"),
+  updatePassword: (data) =>
+    fetcher("/users/update-password", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  // Operations on others
+  getAll: () => fetcher("/users"),
+  create: (userData) =>
+    fetcher("/users", {
+      method: "POST",
+      body: JSON.stringify(userData),
+    }),
+  getById: (id) => fetcher(`/users/${id}`),
+  update: (id, data) =>
+    fetcher(`/users/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  delete: (id) => fetcher(`/users/${id}`),
+  toggleUserStatus: (id) => fetcher(`/users/${id}`, { method: "PATCH" }),
+};

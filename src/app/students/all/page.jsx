@@ -4,44 +4,20 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  Filter,
   Search,
   Edit,
   Eye,
   Trash2,
   Download,
-  Upload,
   Calendar,
   GraduationCap,
-  Users,
   Clock,
   AlertCircle,
   CheckCircle,
   XCircle,
   FileText,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsUpDown,
 } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   Popover,
   PopoverContent,
@@ -54,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ViewUserModal from "@/components/students/ViewUserModal";
 import {
   useStudentError,
@@ -73,6 +49,7 @@ import {
   gradeList,
   sectionsList,
 } from "@/assets/data/data";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function StudentManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -115,7 +92,11 @@ export default function StudentManagement() {
   };
 
   if (isLoading)
-    return <div className="p-10 text-center">Loading students...</div>;
+    return (
+      <div className="w-full flex justify-center mt-8">
+        <Spinner size="md" className="bg-black dark:bg-white" />
+      </div>
+    );
   if (error)
     return <div className="p-10 text-center text-red-500">Error: {error}</div>;
   if (!students || students.length === 0)

@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import ConfirmAddStudentModal from "@/components/students/ConfirmAddStudentModal";
 import useAdmissionStore from "@/lib/state/stores/admissionStore";
 import FormSections from "@/components/students/FormSections";
+import { Card } from "@/components/ui";
 
 export default function ModernAdmissionForm() {
   // const [activeTab, setActiveTab] = useState("personalInfo");
@@ -197,124 +198,115 @@ export default function ModernAdmissionForm() {
   };
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-full">
-        <div className="">
-          <div className="">
-            <div className="flex items-center font-semibold text-xl">
-              <Calendar className="mr-2 h-6 w-6" /> Student Admission
-              Application
-            </div>
-            <div className="text-gray-500">
-              Complete all sections to apply for admission to our institution
-            </div>
-          </div>
+    <Card className="min-h-screen px-6">
+      <div className="">
+        <div className="flex items-center font-semibold text-xl">
+          <Calendar className="mr-2 h-6 w-6" /> Student Admission Application
+        </div>
+        <div className="text-gray-500">
+          Complete all sections to apply for admission to our institution
+        </div>
+      </div>
 
-          {/* Fixed navigation bar - removed form fields from here */}
-          <div className="flex border-b border-gray-100 dark:border-gray-900 py-4 overflow-x-auto">
-            {formSections.map((section, index) => (
-              <div
-                key={section.id}
-                className={`flex items-center ${
-                  index > 0 ? "ml-8" : ""
-                } flex-shrink-0`}
-              >
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full mr-2 ${
-                    activeTab === section.id
-                      ? "bg-black text-white"
-                      : "bg-gray-100 text-gray-500"
-                  }`}
-                >
-                  {activeTab === section.id ? (
-                    <Check className="h-4 w-4" />
-                  ) : (
-                    index + 1
-                  )}
-                </div>
-                <span
-                  className={`text-sm ${
-                    activeTab === section.id
-                      ? "text-black font-medium dark:text-white"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {section.label}
-                </span>
-                {index < formSections.length - 1 && (
-                  <ChevronRight className="h-4 w-4 text-gray-300 ml-2" />
+      {/* Fixed navigation bar - removed form fields from here */}
+      <div className="flex border-b border-gray-100 dark:border-gray-900 py-4 overflow-x-auto">
+        {formSections.map((section, index) => (
+          <div
+            key={section.id}
+            className={`flex items-center ${
+              index > 0 ? "ml-8" : ""
+            } flex-shrink-0`}
+          >
+            <div
+              className={`flex items-center justify-center w-10 h-10 rounded-full mr-2 ${
+                activeTab === section.id
+                  ? "bg-black text-white"
+                  : "bg-gray-100 text-gray-500"
+              }`}
+            >
+              {activeTab === section.id ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                index + 1
+              )}
+            </div>
+            <span
+              className={`text-sm ${
+                activeTab === section.id
+                  ? "text-black font-medium dark:text-white"
+                  : "text-gray-500"
+              }`}
+            >
+              {section.label}
+            </span>
+            {index < formSections.length - 1 && (
+              <ChevronRight className="h-4 w-4 text-gray-300 ml-2" />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="hidden">
+            {formSections.map((section) => (
+              <TabsTrigger key={section.id} value={section.id}>
+                {section.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          {formSections.map((section) => (
+            <TabsContent key={section.id} value={section.id} className="mt-0">
+              {/* Form fields are rendered here */}
+              {section.fields}
+
+              <div className="flex items-center justify-between mt-8">
+                {activeTab !== formSections[0].id && (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const currentIndex = formSections.findIndex(
+                        (section) => section.id === activeTab
+                      );
+                      if (currentIndex > 0) {
+                        setActiveTab(formSections[currentIndex - 1].id);
+                      }
+                    }}
+                    className="rounded-full border-gray-300 dark:border-gray-900 text-gray-600 hover:bg-gray-50"
+                  >
+                    &larr; Previous
+                  </Button>
+                )}
+
+                {activeTab !== formSections[formSections.length - 1].id ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      className="ml-auto rounded-full border-gray-300 dark:border-gray-900 text-gray-600 hover:bg-gray-50 mr-2"
+                      onClick={handleSaveDraft}
+                    >
+                      Save draft
+                    </Button>
+                    <Button
+                      onClick={nextTab}
+                      className="rounded-full bg-black text-white hover:bg-gray-800"
+                    >
+                      Next &rarr;
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => setIsModalOpen(true)}
+                    className="ml-auto rounded-full bg-black text-white hover:bg-gray-800"
+                  >
+                    Submit Application
+                  </Button>
                 )}
               </div>
-            ))}
-          </div>
-
-          <div>
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="hidden">
-                {formSections.map((section) => (
-                  <TabsTrigger key={section.id} value={section.id}>
-                    {section.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-
-              {formSections.map((section) => (
-                <TabsContent
-                  key={section.id}
-                  value={section.id}
-                  className="mt-0"
-                >
-                  {/* Form fields are rendered here */}
-                  {section.fields}
-
-                  <div className="flex items-center justify-between mt-8">
-                    {activeTab !== formSections[0].id && (
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          const currentIndex = formSections.findIndex(
-                            (section) => section.id === activeTab
-                          );
-                          if (currentIndex > 0) {
-                            setActiveTab(formSections[currentIndex - 1].id);
-                          }
-                        }}
-                        className="rounded-full border-gray-300 dark:border-gray-900 text-gray-600 hover:bg-gray-50"
-                      >
-                        &larr; Previous
-                      </Button>
-                    )}
-
-                    {activeTab !== formSections[formSections.length - 1].id ? (
-                      <>
-                        <Button
-                          variant="outline"
-                          className="ml-auto rounded-full border-gray-300 dark:border-gray-900 text-gray-600 hover:bg-gray-50 mr-2"
-                          onClick={handleSaveDraft}
-                        >
-                          Save draft
-                        </Button>
-                        <Button
-                          onClick={nextTab}
-                          className="rounded-full bg-black text-white hover:bg-gray-800"
-                        >
-                          Next &rarr;
-                        </Button>
-                      </>
-                    ) : (
-                      <Button
-                        onClick={() => setIsModalOpen(true)}
-                        className="ml-auto rounded-full bg-black text-white hover:bg-gray-800"
-                      >
-                        Submit Application
-                      </Button>
-                    )}
-                  </div>
-                </TabsContent>
-              ))}
-            </Tabs>
-          </div>
-        </div>
+            </TabsContent>
+          ))}
+        </Tabs>
       </div>
 
       <ConfirmAddStudentModal
@@ -323,6 +315,6 @@ export default function ModernAdmissionForm() {
         handleSubmit={handleSubmit}
         formData={formData}
       />
-    </div>
+    </Card>
   );
 }

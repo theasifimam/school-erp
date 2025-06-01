@@ -37,8 +37,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { DateRangePicker } from "@/components/common/DateRangePicker";
 
 const data = [
   { name: "Jan", revenue: 4000, orders: 2400, visitors: 2400, returns: 200 },
@@ -101,7 +100,7 @@ export default function AnalyticsOverview() {
             Export
           </Button>
           <div className="flex items-center gap-2">
-            <DatePicker
+            <DateRangePicker
               selectsRange={true}
               startDate={startDate}
               endDate={endDate}

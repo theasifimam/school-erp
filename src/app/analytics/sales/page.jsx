@@ -4,8 +4,6 @@ import { useState } from "react";
 import {
   LineChart,
   Line,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -22,7 +20,6 @@ import {
   Users,
   Package,
   TrendingUp,
-  Calendar,
   Filter,
   Download,
 } from "lucide-react";
@@ -35,8 +32,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css"; // Make sure to import the CSS
+import { DateRangePicker } from "@/components/common/DateRangePicker";
 
 // Sample Data
 const salesData = [
@@ -71,7 +67,7 @@ export default function AnalyticsPage() {
   const [timeframe, setTimeframe] = useState("monthly");
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -92,7 +88,7 @@ export default function AnalyticsPage() {
               <SelectItem value="yearly">Yearly</SelectItem>
             </SelectContent>
           </Select>
-          <DatePicker
+          <DateRangePicker
             selectsRange={true}
             startDate={startDate}
             endDate={endDate}
@@ -101,7 +97,7 @@ export default function AnalyticsPage() {
               setStartDate(start);
               setEndDate(end);
             }}
-            className="border rounded-md px-3 py-2 text-sm w-[280px]"
+            className="border rounded-full px-3 py-2 text-sm w-[280px]"
             dateFormat="MMM d, yyyy"
           />
           <Button variant="outline">

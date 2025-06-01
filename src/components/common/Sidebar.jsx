@@ -59,12 +59,7 @@ import SidebarSection, {
   MobileMenuToggle,
 } from "./SidebarSection";
 
-export default function Sidebar({
-  isOpen,
-  setIsOpen,
-  isMobileOpen,
-  setIsMobileOpen,
-}) {
+export default function Sidebar({ isOpen, isMobileOpen, setIsMobileOpen }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const router = useRouter();

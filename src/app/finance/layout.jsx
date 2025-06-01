@@ -15,6 +15,7 @@ import {
   Briefcase,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui";
 
 // This is the shared layout component for all curriculum pages
 export default function ClassesCurriculumLayout({ children }) {
@@ -60,7 +61,7 @@ export default function ClassesCurriculumLayout({ children }) {
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <div className="mb-6">
+        <div className="my-6">
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Briefcase className="h-6 w-6 text-indigo-600" />
             Finance Management System
@@ -91,24 +92,19 @@ export default function ClassesCurriculumLayout({ children }) {
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex border-b mb-6 sticky top-0 bg-white dark:bg-background">
-        {tabs.map((tab) => (
-          <Link
-            key={tab.path}
-            href={tab.path}
-            className={cn(
-              "px-4 py-2 flex items-center font-medium text-sm transition-colors focus:outline-none ",
-              isActiveTab(tab.path)
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-600 hover:text-blue-600"
-            )}
-          >
-            {tab.icon}
-            {tab.name}
-          </Link>
-        ))}
-      </div>
+      {/* Navigation Tabs using shadcn */}
+      <Tabs defaultValue={tabs[0].path} className="sticky top-3 z-10 mb-4">
+        <TabsList className="">
+          {tabs.map((tab) => (
+            <TabsTrigger key={tab.path} value={tab.path} asChild>
+              <Link href={tab.path} className="flex items-center gap-2">
+                {tab.icon}
+                {tab.name}
+              </Link>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       {/* Page Content */}
       {children}

@@ -217,8 +217,8 @@ export default function KanbanTasksPage() {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-6">
+      <div className="mx-auto">
+        <div className="flex justify-between items-center my-6">
           <div>
             <h1 className="text-3xl font-bold">Task Board</h1>
             <p>Manage and track all ERP system tasks</p>
