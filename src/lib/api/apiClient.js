@@ -21,7 +21,7 @@ export async function fetcher(endpoint, options = {}) {
       ...options,
       credentials: "include",
       headers,
-      signal: controller.signal,
+      // signal: controller.signal,
     });
 
     clearTimeout(timeoutId);

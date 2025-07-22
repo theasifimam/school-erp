@@ -1,7 +1,5 @@
 "use client";
 
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 

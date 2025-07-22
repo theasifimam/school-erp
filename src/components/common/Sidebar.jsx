@@ -7,12 +7,8 @@ import {
   Home,
   User,
   Settings,
-  LogOut,
-  Menu,
   X,
   Search,
-  Bell,
-  MessageSquare,
   HelpCircle,
   BookOpen,
   GraduationCap,
@@ -30,7 +26,6 @@ import {
   LucideWorkflow,
   Library,
 } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,

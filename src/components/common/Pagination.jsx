@@ -113,7 +113,7 @@ export function Pagination({
               setCurrentPage(1); // Reset to first page when changing items per page
             }}
           >
-            <SelectTrigger className="h-8 w-20 rounded-3xl">
+            <SelectTrigger className="h-8 w-20 rounded-3xl bg-white dark:bg-black">
               <SelectValue placeholder={itemsPerPage} />
             </SelectTrigger>
             <SelectContent>
@@ -125,12 +125,12 @@ export function Pagination({
           </Select>
 
           {/* Page navigation */}
-          <div className="flex gap-1">
+          <div className="flex gap-1 bg-white dark:bg-black rounded-full">
             {/* First page button */}
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
-              className="h-8 w-12 bg-white"
+              className="h-8 w-12"
               onClick={() => handlePageChange(1)}
               disabled={currentPage === 1}
             >
@@ -140,9 +140,9 @@ export function Pagination({
 
             {/* Previous page button */}
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
-              className="h-8 w-8 bg-white"
+              className="h-8 w-8"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
             >
@@ -154,9 +154,9 @@ export function Pagination({
 
             {/* Next page button */}
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
-              className="h-8 w-8 bg-white"
+              className="h-8 w-8"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
@@ -165,9 +165,9 @@ export function Pagination({
 
             {/* Last page button */}
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
-              className="h-8 w-12 bg-white"
+              className="h-8 w-12"
               onClick={() => handlePageChange(totalPages)}
               disabled={currentPage === totalPages}
             >

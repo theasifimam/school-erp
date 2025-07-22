@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Calendar, dateFns } from "lucide-react";
+import React, { useState } from "react";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -71,10 +70,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 
 export default function ExamSchedulePage() {
   const [viewMode, setViewMode] = useState("calendar");

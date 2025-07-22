@@ -53,7 +53,7 @@ export default function AvatarDropdown() {
                   alt="Admin"
                 />
                 <AvatarFallback className="font-medium">
-                  {user?.fullName[0]}
+                  {user?.fullName?.split(" ")[0]}
                 </AvatarFallback>
               </Avatar>
               <div>

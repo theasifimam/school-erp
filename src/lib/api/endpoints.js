@@ -9,6 +9,9 @@ export const authApi = {
   logout: () =>
     fetcher("/auth/logout", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
     }),
   me: () => fetcher("/auth/me"),
 };
@@ -145,13 +148,13 @@ export const userApi = {
     }),
 
   // Operations on others
-  getAll: () => fetcher("/users"),
+  fetchUsers: () => fetcher("/users"),
   create: (userData) =>
     fetcher("/users", {
       method: "POST",
       body: JSON.stringify(userData),
     }),
-  getById: (id) => fetcher(`/users/${id}`),
+  View: (id) => fetcher(`/users/${id}`),
   update: (id, data) =>
     fetcher(`/users/${id}`, { method: "PUT", body: JSON.stringify(data) }),
   delete: (id) => fetcher(`/users/${id}`),

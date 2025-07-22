@@ -50,8 +50,6 @@ export default function LoginPage() {
   const onSubmit = async (data) => {
     try {
       await login(data.username, data.password);
-      // toast.success("Login successful!");
-      // router.push("/"); // Redirect to dashboard after successful login
     } catch (error) {
       toast.error(error?.message || "Invalid credentials. Please try again.");
     }
