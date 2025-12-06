@@ -102,10 +102,12 @@ export default function NotificationsDropdown({
         aria-label="Notifications"
       >
         <Bell
-          className={`w-5 h-5 ${notifOpen ? "text-blue-600" : "text-gray-600"}`}
+          className={`w-5 h-5 ${
+            notifOpen ? "text-black-600" : "text-gray-600"
+          }`}
         />
         {unreadCount > 0 && (
-          <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs p-0 animate-pulse">
+          <Badge className="absolute -top-1 -right-1 bg-gray-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs p-0 animate-pulse">
             {unreadCount > 99 ? "99+" : unreadCount}
           </Badge>
         )}

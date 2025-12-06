@@ -428,7 +428,6 @@ export default function AttendancePage() {
               {/* Actions */}
               <div className="col-span-2 flex gap-2 justify-end items-center">
                 <Button
-                  className="flex-1 md:flex-none bg-indigo-600 hover:bg-indigo-700"
                   onClick={() => setIsModalOpen(true)}
                   disabled={isLoading}
                 >

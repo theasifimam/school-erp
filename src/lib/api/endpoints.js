@@ -157,6 +157,6 @@ export const userApi = {
   View: (id) => fetcher(`/users/${id}`),
   update: (id, data) =>
     fetcher(`/users/${id}`, { method: "PUT", body: JSON.stringify(data) }),
-  delete: (id) => fetcher(`/users/${id}`),
+  delete: (id) => fetcher(`/users/${id}`, { method: "DELETE" }),
   toggleUserStatus: (id) => fetcher(`/users/${id}`, { method: "PATCH" }),
 };

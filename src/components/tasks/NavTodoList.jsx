@@ -109,7 +109,7 @@ export default function NavTodoList({ notifOpen }) {
         onClick={() => setTodoOpen(!todoOpen)}
       >
         <CheckSquare className="w-5 h-5 text-gray-600" />
-        <Badge className="absolute -top-1 -right-1 bg-amber-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs p-0">
+        <Badge className="absolute -top-1 -right-1 bg-gray-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs p-0">
           {todos.filter((t) => !t.completed).length}
         </Badge>
       </button>

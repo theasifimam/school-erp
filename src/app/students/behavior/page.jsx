@@ -578,7 +578,7 @@ export default function StudentBehaviorPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-10 space-y-6">
+    <div className="mx-auto space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold">Student Behavior Record</h1>

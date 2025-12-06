@@ -33,6 +33,8 @@ import AddUserModal from "./AddUserModal";
 import EditUserModal from "./EditUserModal";
 import ViewUserModal from "./ViewUserModal";
 import { Pagination } from "@/components/common/Pagination";
+import { DeleteConfirmationModal } from "@/components/common/DeleteConfirmationModal";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const UserCRUD = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,6 +42,7 @@ const UserCRUD = () => {
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isEditUserOpen, setIsEditUserOpen] = useState(false);
   const [isViewUserOpen, setIsViewUserOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -52,6 +55,7 @@ const UserCRUD = () => {
     create,
     view,
     update,
+    delete: deleteUser,
     toggleUserStatus,
   } = useUserStore();
   const { toast } = useToast();
@@ -175,9 +179,9 @@ const UserCRUD = () => {
    * @returns {Promise<void>}
    * @throws {Error} When deletion fails
    */
-  const handleDeleteUser = async (userId) => {
+  const handleDeleteUser = async () => {
     try {
-      const result = await deleteUser(userId);
+      const result = await deleteUser(showDeleteConfirm.id);
 
       if (result.success) {
         toast({
@@ -192,12 +196,14 @@ const UserCRUD = () => {
           variant: "destructive",
         });
       }
+      setShowDeleteConfirm(null);
     } catch (error) {
       toast({
         title: "Error",
         description: "An unexpected error occurred",
         variant: "destructive",
       });
+      setShowDeleteConfirm(null);
     }
   };
 
@@ -363,17 +369,6 @@ const UserCRUD = () => {
   const endIndex = startIndex + itemsPerPage;
   const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
 
-  if (usersLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex items-center gap-2">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span>Loading users...</span>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -441,106 +436,150 @@ const UserCRUD = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedUsers.map((user) => (
-                      <tr key={user.id} className="border-b last:border-b-0">
-                        <td className="p-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-sm font-medium">
-                              {user.username?.charAt(0)}
+                    {usersLoading ? (
+                      // Skeleton loading state
+                      Array.from({ length: 5 }).map((_, index) => (
+                        <tr key={index} className="border-b last:border-b-0">
+                          <td className="p-4">
+                            <div className="flex items-center gap-3">
+                              <Skeleton className="w-10 h-10 rounded-full" />
+                              <div className="space-y-2">
+                                <Skeleton className="h-4 w-[120px]" />
+                                <Skeleton className="h-3 w-[160px]" />
+                                <Skeleton className="h-3 w-[100px]" />
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-medium">{user.username}</p>
-                              <p className="text-sm">{user.email}</p>
-                              {user.phone && (
-                                <p className="text-xs text-gray-500">
-                                  {user.phone}
+                          </td>
+                          <td className="p-4 space-y-2">
+                            <Skeleton className="h-6 w-[80px]" />
+                            <Skeleton className="h-3 w-[60px]" />
+                          </td>
+                          <td className="p-4">
+                            <Skeleton className="h-6 w-[60px]" />
+                          </td>
+                          <td className="p-4">
+                            <Skeleton className="h-4 w-[120px]" />
+                          </td>
+                          <td className="p-4 text-right">
+                            <div className="flex items-center gap-2 justify-end">
+                              {Array.from({ length: 4 }).map((_, i) => (
+                                <Skeleton
+                                  key={i}
+                                  className="h-8 w-8 rounded-md"
+                                />
+                              ))}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      // Actual data rendering
+                      <>
+                        {paginatedUsers.map((user) => (
+                          <tr
+                            key={user.id}
+                            className="border-b last:border-b-0"
+                          >
+                            <td className="p-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-sm font-medium">
+                                  {user.username?.charAt(0)}
+                                </div>
+                                <div>
+                                  <p className="font-medium">{user.username}</p>
+                                  <p className="text-sm">{user.email}</p>
+                                  {user.phone && (
+                                    <p className="text-xs text-gray-500">
+                                      {user.phone}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              <Badge
+                                variant="outline"
+                                className={userRoleConfigs[user.role]?.color}
+                              >
+                                {userRoleConfigs[user.role]?.title}
+                              </Badge>
+                              {user.department && (
+                                <p className="text-xs text-gray-500 mt-1">
+                                  {user.department}
                                 </p>
                               )}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="p-4">
-                          <Badge
-                            variant="outline"
-                            className={userRoleConfigs[user.role]?.color}
-                          >
-                            {userRoleConfigs[user.role]?.title}
-                          </Badge>
-                          {user.department && (
-                            <p className="text-xs text-gray-500 mt-1">
-                              {user.department}
-                            </p>
-                          )}
-                        </td>
-                        <td className="p-4">
-                          <Badge
-                            variant="outline"
-                            className={
-                              user.isActive
-                                ? "border-green-200 text-green-800 bg-green-50"
-                                : "border-red-200 text-red-800 bg-red-50"
-                            }
-                          >
-                            {user.isActive ? "Active" : "Inactive"}
-                          </Badge>
-                        </td>
-                        <td className="p-4 text-sm">
-                          {user.lastLogin
-                            ? new Date(user.lastLogin).toLocaleString()
-                            : "Never"}
-                        </td>
-                        <td className="p-4 text-right">
-                          <div className="flex items-center gap-2 justify-end">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openViewDialog(user)}
-                              className="hover:bg-blue-50 hover:text-blue-600"
+                            </td>
+                            <td className="p-4">
+                              <Badge
+                                variant="outline"
+                                className={
+                                  user.isActive
+                                    ? "border-green-200 text-green-800 bg-green-50"
+                                    : "border-red-200 text-red-800 bg-red-50"
+                                }
+                              >
+                                {user.isActive ? "Active" : "Inactive"}
+                              </Badge>
+                            </td>
+                            <td className="p-4 text-sm">
+                              {user.lastLogin
+                                ? new Date(user.lastLogin).toLocaleString()
+                                : "Never"}
+                            </td>
+                            <td className="p-4 text-right">
+                              <div className="flex items-center gap-2 justify-end">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => openViewDialog(user)}
+                                  className="hover:bg-blue-50 hover:text-blue-600"
+                                >
+                                  <Eye size={14} />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    openEditDialog(user);
+                                    view(user._id);
+                                  }}
+                                  className="hover:bg-gray-100"
+                                >
+                                  <Edit size={14} />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleToggleUserStatus(user.id)
+                                  }
+                                  className="hover:bg-yellow-50 hover:text-yellow-600 text-xs"
+                                >
+                                  {user.isActive ? "Deactivate" : "Activate"}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setShowDeleteConfirm(user)}
+                                  className="hover:bg-red-50 hover:text-red-600"
+                                >
+                                  <Trash2 size={14} />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                        {paginatedUsers.length === 0 && (
+                          <tr>
+                            <td
+                              colSpan="5"
+                              className="p-8 text-center text-gray-500"
                             >
-                              <Eye size={14} />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                openEditDialog(user);
-                                view(user._id);
-                              }}
-                              className="hover:bg-gray-100"
-                            >
-                              <Edit size={14} />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleToggleUserStatus(user.id)}
-                              className="hover:bg-yellow-50 hover:text-yellow-600 text-xs"
-                            >
-                              {user.status === "active"
-                                ? "Deactivate"
-                                : "Activate"}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeleteUser(user.id)}
-                              className="hover:bg-red-50 hover:text-red-600"
-                            >
-                              <Trash2 size={14} />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                    {paginatedUsers.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan="5"
-                          className="p-8 text-center text-gray-500"
-                        >
-                          No users found matching your criteria
-                        </td>
-                      </tr>
+                              No users found matching your criteria
+                            </td>
+                          </tr>
+                        )}
+                      </>
                     )}
                   </tbody>
                 </table>
@@ -580,6 +619,17 @@ const UserCRUD = () => {
           selectedUser={selectedUser}
           userRoleConfigs={userRoleConfigs}
           fieldConfigs={fieldConfigs}
+        />
+
+        <DeleteConfirmationModal
+          isOpen={showDeleteConfirm}
+          onOpenChange={() => setShowDeleteConfirm(null)}
+          onConfirm={handleDeleteUser}
+          title="Delete Item"
+          description="Are you sure you want to delete this item? This action cannot be undone."
+          confirmButtonText="Delete"
+          cancelButtonText="Cancel"
+          confirmButtonVariant="destructive"
         />
       </div>
     </div>

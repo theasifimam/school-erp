@@ -57,6 +57,12 @@ export const useAuthStore = create(
             isAuthenticated: false,
             isLoading: false,
           });
+
+          // Clear localStorage manually since Zustand might persist
+          localStorage.removeItem("erp-auth-storage");
+
+          // Redirect to login page if requested
+          window.location.href = "/login";
         }
       },
 
@@ -85,7 +91,6 @@ export const useAuthStore = create(
         set({ isLoading: true, error: null });
         try {
           const response = await userApi.getMe();
-          console.log(response.data);
           set({
             user: response.data,
             isLoading: false,

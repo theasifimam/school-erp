@@ -1,20 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  School,
-  Search,
-  CheckSquare,
-  X,
-  Plus,
-  Edit,
-  Trash2,
-  GripVertical,
-  ChevronRight,
-  Menu,
-  Sun,
-  Moon,
-} from "lucide-react";
+import { useState } from "react";
+import { School, X, ChevronRight, Menu, Sun, Moon } from "lucide-react";
 import NotificationsDropdown from "../navbar/NotificationsDropdown";
 import { Button } from "@/components/ui/button";
 import AvatarDropdown from "../navbar/AvatarDropdown";
@@ -88,7 +75,7 @@ export default function TopNavbar({
             )}
           </Button>
           <div className="flex items-center gap-2">
-            <School className="text-indigo-600 w-6 h-6" />
+            <School className="text-black-600 w-6 h-6" />
             <h1 className="text-xl dark:text-white font-semibold hidden md:block">
               Imam's Academy
             </h1>

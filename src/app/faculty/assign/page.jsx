@@ -375,7 +375,7 @@ export default function ClassAssignment() {
   const totalPages = Math.ceil(filteredAssignments.length / itemsPerPage);
 
   return (
-    <div className="space-y-6 bg-white text-black dark:bg-black dark:text-white">
+    <div className="space-y-2">
       <Tabs defaultValue="assignments" className="w-full">
         <TabsList className="grid grid-cols-2 rounded-full mb-4">
           <TabsTrigger value="assignments" className="rounded-full">

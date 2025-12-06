@@ -82,8 +82,8 @@ const ViewUserModal = ({
           </div>
         </div>
 
-        <div className="flex gap-2 pt-4">
-          <Button onClick={onClose} variant="outline" className="flex-1">
+        <div className="flex gap-2 pt-4 justify-end">
+          <Button onClick={onClose} variant="outline" className="flex">
             Close
           </Button>
         </div>

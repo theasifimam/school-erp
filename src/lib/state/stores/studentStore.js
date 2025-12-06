@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { studentsApi } from "../../api/endpoints";
+import { toast } from "sonner";
 
 export const useStudentStore = create(
   persist(
@@ -63,6 +64,11 @@ export const useStudentStore = create(
             isLoading: false,
             successMessage: "Student created successfully!",
           }));
+          const referenceNumber = `REF-${Date.now()}`;
+          toast.success("Application submitted successfully!", {
+            description: `Reference Number: ${referenceNumber}`,
+            duration: 5000,
+          });
           return response.data;
         } catch (error) {
           set({

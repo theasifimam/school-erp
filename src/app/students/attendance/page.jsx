@@ -294,7 +294,7 @@ export default function AttendancePage() {
   }, []);
 
   return (
-    <div className="min-h-screen p-4 md:p-6">
+    <div className="min-h-screen">
       {/* Modal for taking attendance */}
       <AttendanceModal
         isOpen={isModalOpen}
@@ -309,7 +309,7 @@ export default function AttendancePage() {
 
       <div className="mb-6">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <User className="h-6 w-6 text-indigo-600" />
+          <User className="h-6 w-6 text-gray-900" />
           Student Attendance
         </h1>
         <p className="text-gray-500">
@@ -415,7 +415,6 @@ export default function AttendancePage() {
               {/* Actions */}
               <div className="col-span-2 flex gap-2 justify-end items-center">
                 <Button
-                  className="flex-1 md:flex-none rounded-3xl bg-indigo-600 hover:bg-indigo-700"
                   onClick={() => setIsModalOpen(true)}
                   disabled={isLoading}
                 >
@@ -536,7 +535,7 @@ export default function AttendancePage() {
           </div>
 
           {/* Attendance Table */}
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <Card className="p-4 overflow-hidden">
             <Table>
               <TableHeader className="bg-gray-50">
                 <TableRow>
@@ -616,7 +615,7 @@ export default function AttendancePage() {
                 )}
               </TableBody>
             </Table>
-          </div>
+          </Card>
 
           {/* Attendance Summary */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">

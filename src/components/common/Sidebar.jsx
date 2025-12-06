@@ -210,7 +210,7 @@ export default function Sidebar({ isOpen, isMobileOpen, setIsMobileOpen }) {
               isActive={pathname === "/"}
             />
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={
                 <Megaphone
                   className={
@@ -226,7 +226,7 @@ export default function Sidebar({ isOpen, isMobileOpen, setIsMobileOpen }) {
               isOpen={isOpen}
               isActive={pathname === "/announcements"}
               badge={3}
-            />
+            /> */}
 
             <SidebarItem
               icon={

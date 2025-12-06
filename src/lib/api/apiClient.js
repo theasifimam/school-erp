@@ -12,7 +12,7 @@ export async function fetcher(endpoint, options = {}) {
   };
 
   // Add request timeout
-  const timeout = 8000; // 8 seconds
+  const timeout = 800; // 8 seconds
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
 
