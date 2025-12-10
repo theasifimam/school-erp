@@ -31,6 +31,7 @@ import { ClassFormDialog } from "@/components/classes/ClassFormDialog";
 import { Pagination } from "@/components/common/Pagination";
 import { useClassStore } from "@/lib/state/stores/classStore";
 import { gradeList } from "@/assets/data/data";
+import { DeleteConfirmationModal } from "@/components/common/DeleteConfirmationModal";
 
 export default function ClassesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,8 +40,9 @@ export default function ClassesPage() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const { classes, fetchClasses, isLoading } = useClassStore();
+  const { classes, fetchClasses, isLoading, deleteClass } = useClassStore();
 
   // Filter classes
   const filteredClasses = classes.filter((cls) => {
@@ -123,8 +125,8 @@ export default function ClassesPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Class</TableHead>
-                <TableHead>Grade</TableHead>
-                <TableHead>Class Teacher</TableHead>
+                <TableHead>Class Code</TableHead>
+                <TableHead>Class Order</TableHead>
                 <TableHead>Sections</TableHead>
                 <TableHead>Students</TableHead>
                 <TableHead>Subjects</TableHead>
@@ -136,11 +138,8 @@ export default function ClassesPage() {
                 currentClasses?.map((cls) => (
                   <TableRow key={cls.id}>
                     <TableCell className="font-medium">{cls.name}</TableCell>
-                    <TableCell>{cls.grade}</TableCell>
-                    <TableCell>
-                      {cls?.classTeacher?.firstName}{" "}
-                      {cls?.classTeacher?.lastName}{" "}
-                    </TableCell>
+                    <TableCell>{cls.code}</TableCell>
+                    <TableCell>{cls?.order} </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
                         <Badge key={cls.section} variant="outline">
@@ -176,7 +175,14 @@ export default function ClassesPage() {
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setSelectedClass(cls);
+                            setIsDeleteDialogOpen(true);
+                          }}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -214,6 +220,23 @@ export default function ClassesPage() {
         onSuccess={() => {
           // Refresh data or update state
           setIsDialogOpen(false);
+        }}
+      />
+
+      <DeleteConfirmationModal
+        {...{
+          isOpen: isDeleteDialogOpen,
+          onOpenChange: setIsDeleteDialogOpen,
+          selectedClass,
+          title: "Delete Class",
+          itemName: selectedClass?.name,
+          description: `Are you sure you want to delete ${selectedClass?.name}? This action cannot be undone.`,
+          confirmButtonText: "Delete Class",
+          onConfirm: async () => {
+            await deleteClass(selectedClass._id);
+            setIsDeleteDialogOpen(false);
+            setSelectedClass(null);
+          },
         }}
       />
     </div>

@@ -84,7 +84,21 @@ export const classApi = {
   getById: (id) => fetcher(`/classes/${id}`),
   update: (id, data) =>
     fetcher(`/classes/${id}`, { method: "PUT", body: JSON.stringify(data) }),
-  delete: (id) => fetcher(`/classes/${id}`),
+  delete: (id) => fetcher(`/classes/${id}`, { method: "DELETE" }),
+};
+
+export const sectionsApi = {
+  getAll: () => fetcher("/sections", { method: "GET" }),
+  add: () => fetcher(`/sections`, { method: "POST" }),
+  create: (classData) =>
+    fetcher("/sections", {
+      method: "POST",
+      body: JSON.stringify(classData),
+    }),
+  getById: (id) => fetcher(`/sections/${id}`),
+  update: (id, data) =>
+    fetcher(`/sections/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  delete: (id) => fetcher(`/sections/${id}`, { method: "DELETE" }),
 };
 
 export const booksApi = {

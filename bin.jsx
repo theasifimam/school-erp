@@ -2,82 +2,8 @@
 // /src/lib/state/stores/admissionStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Student } from "../../types";
 
-export interface AdmissionFormData {
-  // Personal Info
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-  preferredName?: string;
-  gender?: string;
-  dob?: string;
-  photoUrl?: string;
-  bloodGroup?: string;
-  medicalConditions?: string;
-
-  // Contact Info
-  email: string;
-  phone: string;
-  alternatePhone?: string;
-  emergencyContactName?: string;
-  emergencyContactPhone?: string;
-  emergencyRelation?: string;
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-  zipCode: string;
-
-  // Family Info
-  fatherName?: string;
-  fatherOccupation?: string;
-  fatherPhone?: string;
-  fatherEmail?: string;
-  motherName?: string;
-  motherOccupation?: string;
-  motherPhone?: string;
-  motherEmail?: string;
-  siblings?: number;
-  siblingsAtSchool?: boolean;
-  familyNotes?: string;
-
-  // Academic Info
-  appliedClass: string;
-  session: string;
-  admissionType: string;
-  board?: string;
-  previousSchool?: string;
-  schoolAddress?: string;
-  lastClass?: string;
-  lastGrade?: string;
-  transferCertificate?: boolean;
-  stream?: string;
-  achievements?: string;
-
-  // Additional Info
-  languages?: string;
-  transport?: boolean;
-  hostel?: boolean;
-  activities?: string;
-  specialNeeds?: boolean;
-  hearAbout?: string;
-  additionalInfo?: string;
-  termsAccepted: boolean;
-}
-
-interface AdmissionState {
-  formData: Partial<AdmissionFormData>;
-  activeTab: string;
-  isComplete: boolean;
-  referenceNumber: string | null;
-  updateFormData: (data: Partial<AdmissionFormData>) => void;
-  setActiveTab: (tabId: string) => void;
-  resetForm: () => void;
-  setReferenceNumber: (number: string) => void;
-}
-
-export const useAdmissionStore = create<AdmissionState>()(
+export const useAdmissionStore = create()(
   persist(
     (set) => ({
       formData: {},
@@ -120,33 +46,24 @@ export const useAdmissionStore = create<AdmissionState>()(
 // /src/lib/api/endpoints.ts (add the following to your existing endpoints file)
 
 export const admissionApi = {
-  submit: (formData: Partial<AdmissionFormData>) =>
-    fetcher<{ success: boolean; referenceNumber: string }>("/admissions", {
+  submit: (formData) =>
+    fetcher("/admissions", {
       method: "POST",
       body: JSON.stringify(formData),
     }),
 
-  getStatus: (referenceNumber: string) =>
-    fetcher<{ status: string; stage: string; nextSteps: string }>(
-      `/admissions/${referenceNumber}/status`
-    ),
+  getStatus: (referenceNumber) =>
+    fetcher(`/admissions/${referenceNumber}/status`),
 
-  uploadDocument: (
-    referenceNumber: string,
-    documentType: string,
-    file: File
-  ) => {
+  uploadDocument: (referenceNumber, documentType, file) => {
     const formData = new FormData();
     formData.append("file", file);
 
-    return fetcher<{ success: boolean; fileUrl: string }>(
-      `/admissions/${referenceNumber}/documents/${documentType}`,
-      {
-        method: "POST",
-        body: formData,
-        headers: {}, // Let the browser set the content type for FormData
-      }
-    );
+    return fetcher(`/admissions/${referenceNumber}/documents/${documentType}`, {
+      method: "POST",
+      body: formData,
+      headers: {}, // Let the browser set the content type for FormData
+    });
   },
 };
 
@@ -160,22 +77,14 @@ import { AdmissionFormData } from "../stores/admissionStore";
 
 export function useSubmitAdmission() {
   return useMutation({
-    mutationFn: (formData: Partial<AdmissionFormData>) =>
-      admissionApi.submit(formData),
+    mutationFn: (formData) => admissionApi.submit(formData),
   });
 }
 
 export function useUploadDocument() {
   return useMutation({
-    mutationFn: ({
-      referenceNumber,
-      documentType,
-      file,
-    }: {
-      referenceNumber: string;
-      documentType: string;
-      file: File;
-    }) => admissionApi.uploadDocument(referenceNumber, documentType, file),
+    mutationFn: ({ referenceNumber, documentType, file }) =>
+      admissionApi.uploadDocument(referenceNumber, documentType, file),
   });
 }
 
@@ -249,28 +158,26 @@ export default function ModernAdmissionForm() {
   } = useAdmissionStore();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef < HTMLInputElement > null;
 
   // Use TanStack Query mutations
   const submitAdmission = useSubmitAdmission();
   const uploadDocument = useUploadDocument();
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e) => {
     const { id, value } = e.target;
     updateFormData({ [id]: value });
   };
 
-  const handleSelectChange = (id: string, value: string) => {
+  const handleSelectChange = (id, value) => {
     updateFormData({ [id]: value });
   };
 
-  const handleSwitchChange = (id: string, checked: boolean) => {
+  const handleSwitchChange = (id, checked) => {
     updateFormData({ [id]: checked });
   };
 
-  const handlePhotoUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -283,14 +190,12 @@ export default function ModernAdmissionForm() {
     setPhotoFile(file);
   };
 
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoFile, setPhotoFile] = (useState < File) | (null > null);
 
   const handleSubmit = async () => {
     try {
       // Submit the form data
-      const result = await submitAdmission.mutateAsync(
-        formData as AdmissionFormData
-      );
+      const result = await submitAdmission.mutateAsync(formData);
 
       // Store the reference number
       setReferenceNumber(result.referenceNumber);

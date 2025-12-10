@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -35,8 +35,10 @@ import {
   Users,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { GradeFormDialog } from "@/components/classes/GradeFormDialog";
 import { Pagination } from "@/components/common/Pagination";
+import { SectionFormModal } from "@/components/classes/SectionFormModal";
+import { useClassStore } from "@/lib/state/stores/classStore";
+import { useSectionStore } from "@/lib/state/stores/sectionStore";
 
 export default function GradesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,78 +48,32 @@ export default function GradesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedGrade, setSelectedGrade] = useState(null);
 
-  // Sample data for grades
-  const grades = [
-    {
-      id: "gr-1",
-      name: "Grade 1",
-      coordinator: "Emily Parker",
-      classes: 3,
-      students: 85,
-      subjects: 6,
-      sections: ["A", "B", "C"],
-      maxStudentsPerSection: 30,
-      status: "active",
-      academicYear: "2025-2026",
-    },
-    {
-      id: "gr-2",
-      name: "Grade 2",
-      coordinator: "Michael Wilson",
-      classes: 4,
-      students: 112,
-      subjects: 7,
-      sections: ["A", "B", "C", "D"],
-      maxStudentsPerSection: 30,
-      status: "active",
-      academicYear: "2025-2026",
-    },
-    {
-      id: "gr-3",
-      name: "Grade 3",
-      coordinator: "Sarah Johnson",
-      classes: 3,
-      students: 95,
-      subjects: 8,
-      sections: ["A", "B", "C"],
-      maxStudentsPerSection: 35,
-      status: "active",
-      academicYear: "2025-2026",
-    },
-    {
-      id: "gr-4",
-      name: "Grade 4",
-      coordinator: "David Thompson",
-      classes: 3,
-      students: 90,
-      subjects: 9,
-      sections: ["A", "B", "C"],
-      maxStudentsPerSection: 35,
-      status: "active",
-      academicYear: "2025-2026",
-    },
-    {
-      id: "gr-5",
-      name: "Grade 5",
-      coordinator: "Lisa Anderson",
-      classes: 2,
-      students: 65,
-      subjects: 10,
-      sections: ["A", "B"],
-      maxStudentsPerSection: 35,
-      status: "inactive",
-      academicYear: "2024-2025",
-    },
-    // ... more grades
-  ];
+  const {
+    fetchSections,
+    sections,
+    currentSection,
+    deleteSection,
+    updateSection,
+    successMessage,
+  } = useSectionStore();
+
+  const { fetchClasses } = useClassStore();
+  // Fetch classes on mount
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
+  useEffect(() => {
+    fetchSections();
+  }, [successMessage]);
 
   // Filter grades
-  const filteredGrades = grades.filter((grade) => {
+  const filteredGrades = sections.filter((section) => {
     const matchesSearch =
-      grade.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      grade.coordinator.toLowerCase().includes(searchTerm.toLowerCase());
+      section.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      section.coordinator.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus =
-      statusFilter === "all" || grade.status === statusFilter;
+      statusFilter === "all" || section.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -127,8 +83,8 @@ export default function GradesPage() {
   const currentGrades = filteredGrades.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredGrades.length / itemsPerPage);
 
-  const handleEdit = (grade) => {
-    setSelectedGrade(grade);
+  const handleEdit = (section) => {
+    setSelectedGrade(section);
     setIsDialogOpen(true);
   };
 
@@ -138,32 +94,38 @@ export default function GradesPage() {
   };
 
   // Calculate summary stats
-  const totalStudents = grades.reduce((sum, grade) => sum + grade.students, 0);
-  const totalClasses = grades.reduce((sum, grade) => sum + grade.classes, 0);
-  const totalSections = grades.reduce(
-    (sum, grade) => sum + grade.sections.length,
+  const totalStudents = sections.reduce(
+    (sum, section) => sum + section.students,
     0
   );
-  const activeGrades = grades.filter(
-    (grade) => grade.status === "active"
+  const totalClasses = sections.reduce(
+    (sum, section) => sum + section.classes,
+    0
+  );
+  const totalSections = sections.reduce(
+    (sum, section) => sum + section.sections?.length,
+    0
+  );
+  const activeSections = sections.filter(
+    (section) => section.status === "active"
   ).length;
 
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card className="rounded-full">
+        <Card className="rounded-3xl">
           <CardContent className="p-4 flex items-center gap-3">
             <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
               <GraduationCap className="h-5 w-5 text-blue-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-600">Total Grades</p>
-              <h3 className="text-xl font-bold">{grades.length}</h3>
+              <p className="text-sm text-gray-600">Total Sections</p>
+              <h3 className="text-xl font-bold">{sections.length}</h3>
             </div>
           </CardContent>
         </Card>
-        <Card className="rounded-full">
+        <Card className="rounded-3xl">
           <CardContent className="p-4 flex items-center gap-3">
             <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center">
               <Users className="h-5 w-5 text-green-600" />
@@ -174,7 +136,7 @@ export default function GradesPage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="rounded-full">
+        <Card className="rounded-3xl">
           <CardContent className="p-4 flex items-center gap-3">
             <div className="h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
               <BookOpen className="h-5 w-5 text-purple-600" />
@@ -185,14 +147,14 @@ export default function GradesPage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="rounded-full">
+        <Card className="rounded-3xl">
           <CardContent className="p-4 flex items-center gap-3">
             <div className="h-10 w-10 bg-amber-100 rounded-full flex items-center justify-center">
               <GraduationCap className="h-5 w-5 text-amber-600" />
             </div>
             <div>
               <p className="text-sm text-gray-600">Active Grades</p>
-              <h3 className="text-xl font-bold">{activeGrades}</h3>
+              <h3 className="text-xl font-bold">{activeSections}</h3>
             </div>
           </CardContent>
         </Card>
@@ -225,7 +187,7 @@ export default function GradesPage() {
               </Select>
               <Button className="w-full sm:w-auto" onClick={handleAddNew}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Grade
+                Add Section
               </Button>
             </div>
           </div>
@@ -235,68 +197,42 @@ export default function GradesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Grade Name</TableHead>
-                <TableHead>Coordinator</TableHead>
-                <TableHead>Sections</TableHead>
-                <TableHead>Students</TableHead>
-                <TableHead>Subjects</TableHead>
+                <TableHead>Section Name</TableHead>
+                <TableHead>Room No.</TableHead>
+                <TableHead>Capacity</TableHead>
+                <TableHead>Class</TableHead>
                 <TableHead>Academic Year</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentGrades.length > 0 ? (
-                currentGrades.map((grade) => (
-                  <TableRow key={grade.id}>
-                    <TableCell className="font-medium">{grade.name}</TableCell>
-                    <TableCell>{grade.coordinator}</TableCell>
+              {sections.length > 0 ? (
+                sections.map((section) => (
+                  <TableRow key={section._id}>
+                    <TableCell className="font-medium">
+                      {section.name}
+                    </TableCell>
+                    <TableCell>{section.roomNumber}</TableCell>
+                    <TableCell>{section.capacity}</TableCell>
                     <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {grade.sections.map((section) => (
-                          <Badge key={section} variant="outline">
-                            Section {section}
-                          </Badge>
-                        ))}
-                      </div>
+                      {section.classId ? section.classId.name : "N/A"}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span>{grade.students}</span>
-                        <div className="w-16 bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-blue-600 h-2 rounded-full"
-                            style={{
-                              width: `${
-                                (grade.students /
-                                  (grade.sections.length *
-                                    grade.maxStudentsPerSection)) *
-                                100
-                              }%`,
-                            }}
-                          ></div>
-                        </div>
-                      </div>
+                      {section.academicYear ? section.academicYear : "N/A"}
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">
-                        <BookOpen className="h-3 w-3 mr-1" />
-                        {grade.subjects}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{grade.academicYear}</TableCell>
                     <TableCell>
                       <Badge
                         variant={
-                          grade.status === "active" ? "success" : "secondary"
+                          section.status === "active" ? "success" : "secondary"
                         }
                         className={
-                          grade.status === "active"
+                          section.status === "active"
                             ? "bg-green-100 text-green-800"
                             : "bg-gray-100 text-gray-800"
                         }
                       >
-                        {grade.status === "active" ? "Active" : "Inactive"}
+                        {section.status === "active" ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -304,7 +240,7 @@ export default function GradesPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleEdit(grade)}
+                          onClick={() => handleEdit(section)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -339,7 +275,7 @@ export default function GradesPage() {
       </Card>
 
       {/* Grade Form Dialog */}
-      <GradeFormDialog
+      <SectionFormModal
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         gradeData={selectedGrade}

@@ -10,21 +10,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Loader2, PlusCircle, X } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useClassStore } from "@/lib/state/stores/classStore";
-import { useFacultyStore } from "@/lib/state/stores/facultyStore";
-import { gradeList, sectionsList } from "@/assets/data/data";
 
 export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
   const isEditMode = Boolean(classData);
@@ -38,15 +28,12 @@ export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
     updateClass,
   } = useClassStore();
 
-  const { fetchFaculties, faculties } = useFacultyStore();
-
   // Initialize with default values or existing class data
   const defaultFormData = {
     name: "",
-    grade: "",
-    classTeacher: "",
-    capacity: 30,
-    section: "",
+    code: "",
+    academicYear: "",
+    order: 1,
     description: "",
   };
 
@@ -64,27 +51,31 @@ export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
     }
   }, [open, classData]);
 
-  useEffect(() => {
-    fetchFaculties();
-  }, []);
-
-  // Fixed validation function to match actual form field names
+  // Validation function
   const validateField = (name, value) => {
     switch (name) {
       case "name":
         return value.trim().length < 2
           ? "Class name must be at least 2 characters."
           : "";
-      case "grade":
-        return !value ? "Please select a grade level." : "";
-      case "classTeacher": // Changed from "teacher" to "classTeacher"
-        return !value ? "Please select a teacher." : "";
-      case "capacity":
-        return value < 1 || value > 50
-          ? "Capacity must be between 1 and 50."
+      case "code":
+        return !value.trim()
+          ? "Class code is required."
+          : !/^[A-Za-z0-9]+$/.test(value.trim())
+          ? "Code must contain only letters and numbers."
           : "";
-      case "section":
-        return !value ? "Please, Enter section is required." : "";
+      case "academicYear":
+        return !value.trim()
+          ? "Academic year is required."
+          : !/^\d{4}-\d{4}$/.test(value.trim())
+          ? "Format must be YYYY-YYYY (e.g., 2025-2026)."
+          : "";
+      case "order":
+        return value < 1
+          ? "Order must be at least 1."
+          : !Number.isInteger(Number(value))
+          ? "Order must be a whole number."
+          : "";
       default:
         return "";
     }
@@ -92,8 +83,7 @@ export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
 
   const validateForm = () => {
     const newErrors = {};
-    // Updated field names to match the actual form data
-    const fields = ["name", "grade", "classTeacher", "capacity", "section"];
+    const fields = ["name", "code", "academicYear", "order"];
 
     fields.forEach((field) => {
       const error = validateField(field, formData[field]);
@@ -109,11 +99,9 @@ export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
 
     // Mark all fields as touched for validation
     const allTouched = {};
-    ["name", "grade", "classTeacher", "capacity", "section"].forEach(
-      (field) => {
-        allTouched[field] = true;
-      }
-    );
+    ["name", "code", "academicYear", "order"].forEach((field) => {
+      allTouched[field] = true;
+    });
     setTouched(allTouched);
 
     if (!validateForm()) {
@@ -129,7 +117,6 @@ export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
         await createClass(formData);
       }
 
-      // Modified success handling to not depend on successMessage
       onSuccess({ formData });
       onOpenChange(false);
     } catch (error) {
@@ -144,7 +131,7 @@ export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: name === "order" ? parseInt(value) || "" : value,
     });
 
     // Mark field as touched
@@ -168,22 +155,6 @@ export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
     });
   };
 
-  const handleSelectChange = (name, value) => {
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    // Mark field as touched
-    setTouched({ ...touched, [name]: true });
-
-    // Validate field
-    setErrors({
-      ...errors,
-      [name]: validateField(name, value),
-    });
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
@@ -199,7 +170,7 @@ export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-1 max-h-[50vh] overflow-y-auto ">
+          <div className="grid grid-cols-1 gap-4 px-1 max-h-[50vh] overflow-y-auto">
             <div>
               <Label htmlFor="name" className="mb-1 block">
                 Class Name
@@ -207,7 +178,7 @@ export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
               <Input
                 id="name"
                 name="name"
-                placeholder="e.g., Class 1-A or Grade 3-B"
+                placeholder="e.g., Class 1, Grade 5, 10th"
                 value={formData.name}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
@@ -221,156 +192,93 @@ export function ClassFormDialog({ open, onOpenChange, classData, onSuccess }) {
               )}
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
-              <div className="col-span-2 sm:col-span-1">
-                <Label htmlFor="grade" className="mb-1 block">
-                  Grade Level
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="code" className="mb-1 block">
+                  Class Code
                 </Label>
-                <Select
-                  value={formData.grade}
-                  onValueChange={(value) => handleSelectChange("grade", value)}
-                >
-                  <SelectTrigger
-                    id="grade"
-                    aria-invalid={errors.grade ? "true" : "false"}
-                    aria-describedby={errors.grade ? "grade-error" : undefined}
-                    className="w-full"
-                  >
-                    <SelectValue placeholder="Select grade" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {gradeList.map((grade) => (
-                      <SelectItem key={grade} value={grade}>
-                        {grade}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.grade && (
-                  <p id="grade-error" className="text-sm text-destructive mt-1">
-                    {errors.grade}
+                <Input
+                  id="code"
+                  name="code"
+                  placeholder="e.g., C1, G5, X10"
+                  value={formData.code}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  aria-invalid={errors.code ? "true" : "false"}
+                  aria-describedby={errors.code ? "code-error" : undefined}
+                />
+                {errors.code && (
+                  <p id="code-error" className="text-sm text-destructive mt-1">
+                    {errors.code}
                   </p>
                 )}
               </div>
 
-              <div className="col-span-2 sm:col-span-1">
-                <Label htmlFor="classTeacher" className="mb-1 block">
-                  Class Teacher
+              <div>
+                <Label htmlFor="order" className="mb-1 block">
+                  Order
                 </Label>
-                <Select
-                  value={formData.classTeacher}
-                  onValueChange={(value) =>
-                    handleSelectChange("classTeacher", value)
-                  }
-                >
-                  <SelectTrigger
-                    id="classTeacher"
-                    aria-invalid={errors.classTeacher ? "true" : "false"}
-                    aria-describedby={
-                      errors.classTeacher ? "classTeacher-error" : undefined
-                    }
-                    className="w-full"
-                  >
-                    <SelectValue placeholder="Select teacher" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {faculties.map((teacher) => (
-                      <SelectItem key={teacher._id} value={teacher._id}>
-                        {teacher.firstName} {teacher.lastName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {errors.classTeacher && (
-                  <p
-                    id="classTeacher-error"
-                    className="text-sm text-destructive mt-1"
-                  >
-                    {errors.classTeacher}
+                <Input
+                  id="order"
+                  name="order"
+                  type="number"
+                  min="1"
+                  placeholder="e.g., 1, 2, 3"
+                  value={formData.order}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  aria-invalid={errors.order ? "true" : "false"}
+                  aria-describedby={errors.order ? "order-error" : undefined}
+                />
+                {errors.order && (
+                  <p id="order-error" className="text-sm text-destructive mt-1">
+                    {errors.order}
                   </p>
                 )}
               </div>
             </div>
+
             <div>
-              <Label htmlFor="capacity" className="mb-1 block">
-                Student Capacity
+              <Label htmlFor="academicYear" className="mb-1 block">
+                Academic Year
               </Label>
               <Input
-                id="capacity"
-                name="capacity"
-                type="number"
-                min="1"
-                max="50"
-                value={formData.capacity}
+                id="academicYear"
+                name="academicYear"
+                placeholder="e.g., 2025-2026"
+                value={formData.academicYear}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                aria-invalid={errors.capacity ? "true" : "false"}
+                aria-invalid={errors.academicYear ? "true" : "false"}
                 aria-describedby={
-                  errors.capacity ? "capacity-error" : undefined
+                  errors.academicYear ? "academicYear-error" : undefined
                 }
               />
-              {errors.capacity && (
+              {errors.academicYear && (
                 <p
-                  id="capacity-error"
+                  id="academicYear-error"
                   className="text-sm text-destructive mt-1"
                 >
-                  {errors.capacity}
+                  {errors.academicYear}
                 </p>
               )}
             </div>
 
             <div>
               <Label htmlFor="description" className="mb-1 block">
-                Class Description (Optional)
+                Description (Optional)
               </Label>
-              <Input
+              <Textarea
                 id="description"
                 name="description"
                 placeholder="Brief description of the class"
                 value={formData.description || ""}
                 onChange={handleInputChange}
+                rows={3}
               />
             </div>
-
-            <div>
-              <Label htmlFor="section" className="mb-1 block">
-                Section
-              </Label>
-              <div className="flex gap-2 mt-2 w-full">
-                <Select
-                  value={formData.section}
-                  onValueChange={(value) =>
-                    handleSelectChange("section", value)
-                  }
-                >
-                  <SelectTrigger
-                    id="section"
-                    name="section"
-                    aria-invalid={errors.section ? "true" : "false"}
-                    aria-describedby={
-                      errors.section ? "section-error" : undefined
-                    }
-                    className="w-full"
-                  >
-                    <SelectValue placeholder="Select section" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {sectionsList.map((section) => (
-                      <SelectItem key={section} value={section}>
-                        {section}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {errors.section && (
-                <p id="section-error" className="text-sm text-destructive mt-1">
-                  {errors.section}
-                </p>
-              )}
-            </div>
           </div>
+
           <div className="flex justify-end gap-2 pt-4">
             <Button
               type="button"

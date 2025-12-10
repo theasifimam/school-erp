@@ -1,24 +1,24 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { classApi } from "../../api/endpoints";
+import { sectionsApi } from "../../api/endpoints";
 import { toast } from "sonner";
 
-export const useClassStore = create(
+export const useSectionStore = create(
   persist(
     (set, get) => ({
-      classes: [],
-      currentClass: null,
+      sections: [],
+      currentSection: null,
       isLoading: false,
       error: null,
       successMessage: null,
 
-      // Fetch all classes
-      fetchClasses: async () => {
+      // Fetch all Sections
+      fetchSections: async () => {
         set({ isLoading: true, error: null });
         try {
-          const data = await classApi.getAll();
+          const data = await sectionsApi.getAll();
 
-          set({ classes: data.data, isLoading: false });
+          set({ sections: data.data, isLoading: false });
         } catch (error) {
           if (error.status === 401) {
             // Handle unauthorized (token expired or invalid)
@@ -29,7 +29,7 @@ export const useClassStore = create(
             // Optionally trigger logout here
           } else {
             set({
-              error: error.info?.message || "Failed to fetch classes",
+              error: error.info?.message || "Failed to fetch Sections",
               isLoading: false,
             });
           }
@@ -37,12 +37,12 @@ export const useClassStore = create(
       },
 
       // Fetch single class by ID
-      fetchClass: async (id) => {
+      fetchSection: async (id) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await classApi.getById(id);
+          const response = await sectionsApi.getById(id);
           set({
-            currentClass: response.data,
+            currentSection: response.data,
             isLoading: false,
           });
         } catch (error) {
@@ -54,12 +54,12 @@ export const useClassStore = create(
       },
 
       // Create new Class
-      createClass: async (classData) => {
+      createSection: async (classData) => {
         set({ isLoading: true, error: null, successMessage: null });
         try {
-          const response = await classApi.create(classData);
+          const response = await sectionsApi.create(classData);
           set((state) => ({
-            classes: [...state.classes, response.data],
+            sections: [...state.sections, response.data],
             isLoading: false,
             successMessage: "Class created successfully!",
           }));
@@ -81,17 +81,17 @@ export const useClassStore = create(
       },
 
       // Update existing Class
-      updateClass: async (id, classData) => {
+      updateSection: async (id, classData) => {
         set({ isLoading: true, error: null, successMessage: null });
         console.log("Updating class with ID:", id);
         console.log("New Class data:", classData);
         try {
-          const response = await classApi.update(id, classData);
+          const response = await sectionsApi.update(id, classData);
           set((state) => ({
-            classes: state.classes.map((c) =>
+            sections: state.sections.map((c) =>
               c._id === id ? response.data : c
             ),
-            currentClass: response.data,
+            currentSection: response.data,
             isLoading: false,
             successMessage: "Class updated successfully!",
           }));
@@ -112,13 +112,13 @@ export const useClassStore = create(
       },
 
       // Delete Class
-      deleteClass: async (id) => {
+      deleteSection: async (id) => {
         set({ isLoading: true, error: null, successMessage: null });
         try {
-          await classApi.delete(id);
+          await sectionsApi.delete(id);
           set((state) => ({
-            classes: state.classes.filter((c) => String(c._id) !== String(id)),
-            currentClass: null,
+            sections: state.sections.filter((c) => c._id !== id),
+            currentSection: null,
             isLoading: false,
             successMessage: "Class deleted successfully!",
           }));
@@ -131,17 +131,17 @@ export const useClassStore = create(
         }
       },
 
-      setCurrentClass: (c) => {
-        set({ currentClass: c });
+      setCurrentSection: (c) => {
+        set({ currentSection: c });
       },
 
-      setclasses: (classes) => {
-        set({ classes });
+      setSections: (Sections) => {
+        set({ Sections });
       },
 
-      // Clear current Class
-      clearCurrentClass: () => {
-        set({ currentClass: null });
+      // Clear current section
+      clearCurrentSection: () => {
+        set({ currentSection: null });
       },
 
       // Clear messages
@@ -151,21 +151,21 @@ export const useClassStore = create(
     }),
 
     {
-      name: "class-store",
+      name: "section-store",
       storage: createJSONStorage(() => sessionStorage), // Using sessionStorage instead of localStorage
       partialize: (state) => ({
-        classes: state.classes,
-        currentClass: state.currentClass,
+        Sections: state.Sections,
+        currentSection: state.currentSection,
       }),
     }
   )
 );
 
 // Utility functions for easier access
-export const useclasses = () => useClassStore((state) => state.classes);
+export const useSections = () => useClassStore((state) => state.sections);
 
-export const useCurrentClass = () =>
-  useClassStore((state) => state.currentClass);
+export const usecurrentSection = () =>
+  useClassStore((state) => state.currentSection);
 
 export const useClassLoading = () => useClassStore((state) => state.isLoading);
 

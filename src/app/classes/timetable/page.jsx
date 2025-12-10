@@ -554,13 +554,13 @@ export default function TimetablePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
         <Card className="md:col-span-2">
-          <CardHeader>
+          <CardHeader className="flex flex-col items-center w-100%">
             <CardTitle>Calendar</CardTitle>
             <CardDescription>
               Select a date to view the timetable
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col items-center w-100">
             <Calendar
               mode="single"
               selected={selectedDay}

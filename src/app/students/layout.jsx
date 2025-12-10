@@ -193,7 +193,7 @@ export default function StudentsLayout({ children }) {
               <Button
                 size="sm"
                 variant="outline"
-                className="text-orange-700 border-orange-300 hover:bg-orange-100"
+                className="text-orange-700 dark:text-orange-400 border-orange-300 dark:bg-orange-100 hover:bg-orange-100"
                 onClick={handleAddStudent}
               >
                 Continue
@@ -202,6 +202,7 @@ export default function StudentsLayout({ children }) {
                 size="sm"
                 variant="outline"
                 onClick={handleStartNewApplication}
+                class="dark:bg-orange-900 px-3 bg-orange-800 text-white hover:bg-orange-600 rounded-full"
               >
                 Start New
               </Button>

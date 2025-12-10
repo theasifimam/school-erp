@@ -29,8 +29,8 @@ export default function ClassesCurriculumLayout({ children }) {
       icon: <LucideBookUser className="mr-2 h-4 w-4" />,
     },
     {
-      name: "Grades",
-      path: "/classes/grades",
+      name: "Sections",
+      path: "/classes/sections",
       icon: <Users className="mr-2 h-4 w-4" />,
     },
     {
@@ -67,7 +67,7 @@ export default function ClassesCurriculumLayout({ children }) {
     <div className="container mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Classes & Curriculum</h1>
+          <h1 className="text-3xl font-bold">Classes, Sections & Curriculum</h1>
           <p className="text-gray-500">
             Manage classes, timetables, subjects, lesson plans, and curriculum
           </p>
