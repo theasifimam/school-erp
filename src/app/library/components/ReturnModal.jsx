@@ -7,7 +7,7 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
+import { Button } from "../../../components/ui/button";
 import { format } from "date-fns";
 import {
   Select,
@@ -15,13 +15,17 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../../../components/ui/select";
 import { formatDateToDDMMYY } from "@/lib/utils";
-import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
-import { Label } from "../ui/label";
-import { Calendar } from "../ui/calendar";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "../../../components/ui/popover";
+import { Label } from "../../../components/ui/label";
+import { Calendar } from "../../../components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "../../../components/ui/textarea";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";

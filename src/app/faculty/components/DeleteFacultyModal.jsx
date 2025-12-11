@@ -5,10 +5,18 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
-import { Button } from "../ui";
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+} from "../../../components/ui/dialog";
+import { Button } from "../../../components/ui";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "../../../components/ui/alert";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../../components/ui/avatar";
 import { AlertCircle } from "lucide-react";
 
 export default function DeleteFacultyModal({

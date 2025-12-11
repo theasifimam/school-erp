@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import MessageBubble from "@/components/communication/MessageBubble";
+import MessageBubble from "@/app/communication/components/MessageBubble";
 
 export default function MessageView({ chat, onSendMessage, onBack }) {
   const [newMessage, setNewMessage] = useState("");

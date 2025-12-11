@@ -53,12 +53,19 @@ import SidebarSection, {
   MobileNavigation,
   MobileMenuToggle,
 } from "./SidebarSection";
+import { useAuthStore } from "@/lib/state/stores/authStore";
+import { roleBasedSidebarConfig } from "@/lib/data/controlData";
 
 export default function Sidebar({ isOpen, isMobileOpen, setIsMobileOpen }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const router = useRouter();
   const pathname = usePathname();
+  const { user } = useAuthStore();
+
+  const userRole = user?.role || "guest";
+  const roleConfig =
+    roleBasedSidebarConfig[userRole] || roleBasedSidebarConfig.guest;
 
   // Close submenus when sidebar collapses
   useEffect(() => {
@@ -75,24 +82,18 @@ export default function Sidebar({ isOpen, isMobileOpen, setIsMobileOpen }) {
     setIsMobileOpen(false);
   };
 
-  // Filter main navigation items for mobile bottom navigation
-  const mainNavItems = [
-    { icon: <Home size={20} />, label: "Dashboard", route: "/" },
-    { icon: <Calendar size={20} />, label: "Calendar", route: "/calendar" },
-    {
-      icon: <Megaphone size={20} />,
-      label: "Updates",
-      route: "/announcements",
-      badge: 3,
-    },
-    {
-      icon: <MessageSquareDot size={20} />,
-      label: "Messages",
-      route: "/communication/messages",
-      badge: 5,
-    },
-    { icon: <User size={20} />, label: "Profile", route: "/profile" },
-  ];
+  // Check if section should be visible for current role
+  const canAccessSection = (section) => {
+    return roleConfig.sections.includes(section);
+  };
+
+  // Check if specific item should be visible
+  const canAccessItem = (section, itemKey) => {
+    if (roleConfig.hasFullAccess) return true;
+    if (!roleConfig.limitedItems) return true;
+    if (!roleConfig.limitedItems[section]) return false;
+    return roleConfig.limitedItems[section].includes(itemKey);
+  };
 
   return (
     <>
@@ -194,350 +195,376 @@ export default function Sidebar({ isOpen, isMobileOpen, setIsMobileOpen }) {
           className="flex flex-col mt-2 px-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent h-[calc(100vh-180px)] hover:scrollbar-thumb-gray-400 transition-all duration-300"
           aria-label="Sidebar navigation"
         >
-          <SidebarSection title="Main" isOpen={isOpen}>
-            <SidebarItem
-              icon={
-                <Home
-                  className={
-                    pathname === "/" ? "text-white-600" : "text-gray-600"
+          {/* Main Section */}
+          {canAccessSection("main") && (
+            <SidebarSection title="Main" isOpen={isOpen}>
+              {canAccessItem("main", "dashboard") && (
+                <SidebarItem
+                  icon={
+                    <Home
+                      className={
+                        pathname === "/" ? "text-white-600" : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="Dashboard"
+                  route="/"
+                  isOpen={isOpen}
+                  isActive={pathname === "/"}
                 />
-              }
-              label="Dashboard"
-              route="/"
-              isOpen={isOpen}
-              isActive={pathname === "/"}
-            />
+              )}
 
-            {/* <SidebarItem
-              icon={
-                <Megaphone
-                  className={
-                    pathname?.startsWith("/announcements")
-                      ? "text-white-600"
-                      : "text-gray-600"
+              {canAccessItem("main", "tasks") && (
+                <SidebarItem
+                  icon={
+                    <LucideWorkflow
+                      className={
+                        pathname?.startsWith("/tasks")
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="Task"
+                  route="/tasks"
+                  isOpen={isOpen}
+                  isActive={pathname === "/tasks"}
+                  badge={3}
                 />
-              }
-              label="Announcements"
-              route="/announcements"
-              isOpen={isOpen}
-              isActive={pathname === "/announcements"}
-              badge={3}
-            /> */}
+              )}
 
-            <SidebarItem
-              icon={
-                <LucideWorkflow
-                  className={
-                    pathname?.startsWith("/tasks")
-                      ? "text-white-600"
-                      : "text-gray-600"
+              {canAccessItem("main", "calendar") && (
+                <SidebarItem
+                  icon={
+                    <Calendar
+                      className={
+                        pathname?.startsWith("/calendar")
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="School Calendar"
+                  route="/calendar"
+                  isOpen={isOpen}
+                  isActive={pathname === "/calendar"}
                 />
-              }
-              label="Task"
-              route="/tasks"
-              isOpen={isOpen}
-              isActive={pathname === "/tasks"}
-              badge={3}
-            />
+              )}
+            </SidebarSection>
+          )}
 
-            <SidebarItem
-              icon={
-                <Calendar
-                  className={
-                    pathname?.startsWith("/calendar")
-                      ? "text-white-600"
-                      : "text-gray-600"
-                  }
-                  aria-hidden="true"
-                />
-              }
-              label="School Calendar"
-              route="/calendar"
-              isOpen={isOpen}
-              isActive={pathname === "/calendar"}
-            />
-          </SidebarSection>
-
-          {/* Keep the original sidebar sections unchanged... */}
           {/* Academic Section */}
-          <SidebarSection title="Academic" isOpen={isOpen}>
-            <SidebarItem
-              icon={
-                <GraduationCap
-                  className={
-                    pathname?.startsWith("/students")
-                      ? "text-white-600"
-                      : "text-gray-600"
+          {canAccessSection("academic") && (
+            <SidebarSection title="Academic" isOpen={isOpen}>
+              {canAccessItem("academic", "students") && (
+                <SidebarItem
+                  icon={
+                    <GraduationCap
+                      className={
+                        pathname?.startsWith("/students")
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="Students"
+                  isOpen={isOpen}
+                  hasSubmenu
+                  isSubmenuOpen={openSubmenu === "students"}
+                  onSubmenuToggle={() => toggleSubmenu("students")}
+                  isActive={pathname?.startsWith("/students")}
+                  badge={12}
+                  submenu={studentSubmenu}
                 />
-              }
-              label="Students"
-              isOpen={isOpen}
-              hasSubmenu
-              isSubmenuOpen={openSubmenu === "students"}
-              onSubmenuToggle={() => toggleSubmenu("students")}
-              isActive={pathname?.startsWith("/students")}
-              badge={12}
-              submenu={studentSubmenu}
-            />
+              )}
 
-            {/* Additional academic items... */}
-            <SidebarItem
-              icon={
-                <User
-                  className={
-                    pathname?.startsWith("/faculty")
-                      ? "text-white-600"
-                      : "text-gray-600"
+              {canAccessItem("academic", "faculty") && (
+                <SidebarItem
+                  icon={
+                    <User
+                      className={
+                        pathname?.startsWith("/faculty")
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="Faculties"
+                  isOpen={isOpen}
+                  hasSubmenu
+                  isSubmenuOpen={openSubmenu === "faculty"}
+                  onSubmenuToggle={() => toggleSubmenu("faculty")}
+                  isActive={pathname?.startsWith("/faculty")}
+                  submenu={facultySubmenu}
                 />
-              }
-              label="Faculties"
-              isOpen={isOpen}
-              hasSubmenu
-              isSubmenuOpen={openSubmenu === "faculty"}
-              onSubmenuToggle={() => toggleSubmenu("faculty")}
-              isActive={pathname?.startsWith("/faculty")}
-              submenu={facultySubmenu}
-            />
+              )}
 
-            <SidebarItem
-              icon={
-                <BookOpen
-                  className={
-                    pathname?.startsWith("/classes")
-                      ? "text-white-600"
-                      : "text-gray-600"
+              {canAccessItem("academic", "classes") && (
+                <SidebarItem
+                  icon={
+                    <BookOpen
+                      className={
+                        pathname?.startsWith("/classes")
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="Classes & Curriculum"
+                  isOpen={isOpen}
+                  hasSubmenu
+                  isSubmenuOpen={openSubmenu === "classes"}
+                  onSubmenuToggle={() => toggleSubmenu("classes")}
+                  isActive={pathname?.startsWith("/classes")}
+                  submenu={classSubmenu}
                 />
-              }
-              label="Classes & Curriculum"
-              isOpen={isOpen}
-              hasSubmenu
-              isSubmenuOpen={openSubmenu === "classes"}
-              onSubmenuToggle={() => toggleSubmenu("classes")}
-              isActive={pathname?.startsWith("/classes")}
-              submenu={classSubmenu}
-            />
+              )}
 
-            <SidebarItem
-              icon={
-                <Medal
-                  className={
-                    pathname?.startsWith("/exams")
-                      ? "text-white-600"
-                      : "text-gray-600"
+              {canAccessItem("academic", "exams") && (
+                <SidebarItem
+                  icon={
+                    <Medal
+                      className={
+                        pathname?.startsWith("/exams")
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="Examinations"
+                  isOpen={isOpen}
+                  hasSubmenu
+                  isSubmenuOpen={openSubmenu === "exams"}
+                  onSubmenuToggle={() => toggleSubmenu("exams")}
+                  isActive={pathname?.startsWith("/exams")}
+                  submenu={examSubmenu}
                 />
-              }
-              label="Examinations"
-              isOpen={isOpen}
-              hasSubmenu
-              isSubmenuOpen={openSubmenu === "exams"}
-              onSubmenuToggle={() => toggleSubmenu("exams")}
-              isActive={pathname?.startsWith("/exams")}
-              submenu={examSubmenu}
-            />
+              )}
 
-            <SidebarItem
-              icon={
-                <Library
-                  className={
-                    pathname === "/library" ? "text-white-600" : "text-gray-600"
+              {canAccessItem("academic", "library") && (
+                <SidebarItem
+                  icon={
+                    <Library
+                      className={
+                        pathname === "/library"
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="Library Management"
+                  route="/library"
+                  isOpen={isOpen}
+                  isActive={pathname === "/library"}
                 />
-              }
-              label="Library Management"
-              route="/library"
-              isOpen={isOpen}
-              isActive={pathname === "/library"}
-            />
-          </SidebarSection>
+              )}
+            </SidebarSection>
+          )}
 
-          {/* Administration section */}
-          <SidebarSection title="Administration" isOpen={isOpen}>
-            <SidebarItem
-              icon={
-                <HeartPulse
-                  className={
-                    pathname?.startsWith("/health")
-                      ? "text-white-600"
-                      : "text-gray-600"
+          {/* Administration Section */}
+          {canAccessSection("administration") && (
+            <SidebarSection title="Administration" isOpen={isOpen}>
+              {canAccessItem("administration", "health") && (
+                <SidebarItem
+                  icon={
+                    <HeartPulse
+                      className={
+                        pathname?.startsWith("/health")
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="Health Services"
+                  isOpen={isOpen}
+                  hasSubmenu
+                  isSubmenuOpen={openSubmenu === "health"}
+                  onSubmenuToggle={() => toggleSubmenu("health")}
+                  isActive={pathname?.startsWith("/health")}
+                  submenu={healthSubmenu}
                 />
-              }
-              label="Health Services"
-              isOpen={isOpen}
-              hasSubmenu
-              isSubmenuOpen={openSubmenu === "health"}
-              onSubmenuToggle={() => toggleSubmenu("health")}
-              isActive={pathname?.startsWith("/health")}
-              submenu={healthSubmenu}
-            />
+              )}
 
-            <SidebarItem
-              icon={
-                <Bus
-                  className={
-                    pathname?.startsWith("/transport")
-                      ? "text-white-600"
-                      : "text-gray-600"
+              {canAccessItem("administration", "transport") && (
+                <SidebarItem
+                  icon={
+                    <Bus
+                      className={
+                        pathname?.startsWith("/transport")
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="Transportation"
+                  isOpen={isOpen}
+                  hasSubmenu
+                  isSubmenuOpen={openSubmenu === "transport"}
+                  onSubmenuToggle={() => toggleSubmenu("transport")}
+                  isActive={pathname?.startsWith("/transport")}
+                  submenu={transportationSubmenu}
                 />
-              }
-              label="Transportation"
-              isOpen={isOpen}
-              hasSubmenu
-              isSubmenuOpen={openSubmenu === "transport"}
-              onSubmenuToggle={() => toggleSubmenu("transport")}
-              isActive={pathname?.startsWith("/transport")}
-              submenu={transportationSubmenu}
-            />
+              )}
 
-            <SidebarItem
-              icon={
-                <Utensils
-                  className={
-                    pathname?.startsWith("/food")
-                      ? "text-white-600"
-                      : "text-gray-600"
+              {canAccessItem("administration", "food") && (
+                <SidebarItem
+                  icon={
+                    <Utensils
+                      className={
+                        pathname?.startsWith("/food")
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
                   }
-                  aria-hidden="true"
+                  label="Food Services"
+                  isOpen={isOpen}
+                  hasSubmenu
+                  isSubmenuOpen={openSubmenu === "food"}
+                  onSubmenuToggle={() => toggleSubmenu("food")}
+                  isActive={pathname?.startsWith("/food")}
+                  submenu={foodSubmenu}
                 />
-              }
-              label="Food Services"
-              isOpen={isOpen}
-              hasSubmenu
-              isSubmenuOpen={openSubmenu === "food"}
-              onSubmenuToggle={() => toggleSubmenu("food")}
-              isActive={pathname?.startsWith("/food")}
-              submenu={foodSubmenu}
-            />
-          </SidebarSection>
+              )}
+            </SidebarSection>
+          )}
 
-          {/* Other sections - Finance, Communication, etc. */}
-          <SidebarSection title="Finance" isOpen={isOpen}>
-            <SidebarItem
-              icon={
-                <DollarSign
-                  className={
-                    pathname?.startsWith("/finance")
-                      ? "text-white-600"
-                      : "text-gray-600"
-                  }
-                  aria-hidden="true"
-                />
-              }
-              label="Financial Management"
-              isOpen={isOpen}
-              hasSubmenu
-              isSubmenuOpen={openSubmenu === "finance"}
-              onSubmenuToggle={() => toggleSubmenu("finance")}
-              isActive={pathname?.startsWith("/finance")}
-              submenu={financeSubmenu}
-            />
-          </SidebarSection>
-
-          <SidebarSection title="Communication" isOpen={isOpen}>
-            <SidebarItem
-              icon={
-                <MessageSquareDot
-                  className={
-                    pathname?.startsWith("/communication")
-                      ? "text-white-600"
-                      : "text-gray-600"
-                  }
-                  aria-hidden="true"
-                />
-              }
-              label="Communication"
-              isOpen={isOpen}
-              hasSubmenu
-              isSubmenuOpen={openSubmenu === "communication"}
-              onSubmenuToggle={() => toggleSubmenu("communication")}
-              isActive={pathname?.startsWith("/communication")}
-              badge={5}
-              submenu={communicationSubmenu}
-            />
-
-            <SidebarItem
-              icon={
-                <Image
-                  className={
-                    pathname?.startsWith("/media")
-                      ? "text-white-600"
-                      : "text-gray-600"
-                  }
-                  aria-hidden="true"
-                />
-              }
-              label="Media Center"
-              isOpen={isOpen}
-              hasSubmenu
-              isSubmenuOpen={openSubmenu === "media"}
-              onSubmenuToggle={() => toggleSubmenu("media")}
-              isActive={pathname?.startsWith("/media")}
-              submenu={mediaSubmenu}
-            />
-          </SidebarSection>
-
-          <div className="mt-4 mb-2">
-            <Separator className="bg-gray-200" />
-          </div>
-
-          <SidebarItem
-            icon={
-              <Building
-                className={
-                  pathname?.startsWith("/administration")
-                    ? "text-white-600"
-                    : "text-gray-600"
+          {/* Finance Section */}
+          {canAccessSection("finance") && (
+            <SidebarSection title="Finance" isOpen={isOpen}>
+              <SidebarItem
+                icon={
+                  <DollarSign
+                    className={
+                      pathname?.startsWith("/finance")
+                        ? "text-white-600"
+                        : "text-gray-600"
+                    }
+                    aria-hidden="true"
+                  />
                 }
-                aria-hidden="true"
+                label="Financial Management"
+                isOpen={isOpen}
+                hasSubmenu
+                isSubmenuOpen={openSubmenu === "finance"}
+                onSubmenuToggle={() => toggleSubmenu("finance")}
+                isActive={pathname?.startsWith("/finance")}
+                submenu={financeSubmenu}
               />
-            }
-            label="School Administration"
-            isOpen={isOpen}
-            hasSubmenu
-            isSubmenuOpen={openSubmenu === "administration"}
-            onSubmenuToggle={() => toggleSubmenu("administration")}
-            isActive={pathname?.startsWith("/administration")}
-            submenu={schoolAdminSubmenu}
-          />
+            </SidebarSection>
+          )}
 
-          <SidebarItem
-            icon={
-              <Settings
-                className={
-                  pathname?.startsWith("/settings")
-                    ? "text-white-600"
-                    : "text-gray-600"
+          {/* Communication Section */}
+          {canAccessSection("communication") && (
+            <SidebarSection title="Communication" isOpen={isOpen}>
+              <SidebarItem
+                icon={
+                  <MessageSquareDot
+                    className={
+                      pathname?.startsWith("/communication")
+                        ? "text-white-600"
+                        : "text-gray-600"
+                    }
+                    aria-hidden="true"
+                  />
                 }
-                aria-hidden="true"
+                label="Communication"
+                isOpen={isOpen}
+                hasSubmenu
+                isSubmenuOpen={openSubmenu === "communication"}
+                onSubmenuToggle={() => toggleSubmenu("communication")}
+                isActive={pathname?.startsWith("/communication")}
+                badge={5}
+                submenu={communicationSubmenu}
               />
-            }
-            label="System Settings"
-            isOpen={isOpen}
-            hasSubmenu
-            isSubmenuOpen={openSubmenu === "settings"}
-            onSubmenuToggle={() => toggleSubmenu("settings")}
-            isActive={pathname?.startsWith("/settings")}
-            submenu={settingsSubmenu}
-          />
 
+              {(roleConfig.hasFullAccess ||
+                userRole === "admin" ||
+                userRole === "principal") && (
+                <SidebarItem
+                  icon={
+                    <Image
+                      className={
+                        pathname?.startsWith("/media")
+                          ? "text-white-600"
+                          : "text-gray-600"
+                      }
+                      aria-hidden="true"
+                    />
+                  }
+                  label="Media Center"
+                  isOpen={isOpen}
+                  hasSubmenu
+                  isSubmenuOpen={openSubmenu === "media"}
+                  onSubmenuToggle={() => toggleSubmenu("media")}
+                  isActive={pathname?.startsWith("/media")}
+                  submenu={mediaSubmenu}
+                />
+              )}
+            </SidebarSection>
+          )}
+
+          {/* System Section */}
+          {canAccessSection("system") && (
+            <>
+              <div className="mt-4 mb-2">
+                <Separator className="bg-gray-200" />
+              </div>
+
+              <SidebarItem
+                icon={
+                  <Building
+                    className={
+                      pathname?.startsWith("/administration")
+                        ? "text-white-600"
+                        : "text-gray-600"
+                    }
+                    aria-hidden="true"
+                  />
+                }
+                label="School Administration"
+                isOpen={isOpen}
+                hasSubmenu
+                isSubmenuOpen={openSubmenu === "administration"}
+                onSubmenuToggle={() => toggleSubmenu("administration")}
+                isActive={pathname?.startsWith("/administration")}
+                submenu={schoolAdminSubmenu}
+              />
+
+              <SidebarItem
+                icon={
+                  <Settings
+                    className={
+                      pathname?.startsWith("/settings")
+                        ? "text-white-600"
+                        : "text-gray-600"
+                    }
+                    aria-hidden="true"
+                  />
+                }
+                label="System Settings"
+                isOpen={isOpen}
+                hasSubmenu
+                isSubmenuOpen={openSubmenu === "settings"}
+                onSubmenuToggle={() => toggleSubmenu("settings")}
+                isActive={pathname?.startsWith("/settings")}
+                submenu={settingsSubmenu}
+              />
+            </>
+          )}
+
+          {/* Help & Support - Available to all roles */}
           <SidebarItem
             icon={
               <HelpCircle
@@ -555,117 +582,7 @@ export default function Sidebar({ isOpen, isMobileOpen, setIsMobileOpen }) {
             isActive={pathname === "/support"}
           />
         </nav>
-
-        {/* User Profile & Quick Actions */}
-        {/* <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-gray-200 bg-white dark:bg-background">
-          <div className="flex items-center gap-3">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="relative">
-                  <Avatar className="cursor-pointer border-2 border-gray-200 hover:border-gray-500 transition-colors rounded-full">
-                    <AvatarImage
-                      src="https://randomuser.me/api/portraits/women/45.jpg"
-                      alt="Principal"
-                    />
-                    <AvatarFallback className="bg-gradient-to-br from-gray-800 to-black rounded-full">
-                      PS
-                    </AvatarFallback>
-                  </Avatar>
-                  <div
-                    className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"
-                    aria-hidden="true"
-                  ></div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="right"
-                className="bg-white text-black border-gray-200"
-              >
-                User Profile
-              </TooltipContent>
-            </Tooltip>
-
-            {isOpen && (
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-center">
-                  <div className="flex flex-col truncate">
-                    <span className="font-semibold truncate text-black dark:text-white">
-                      Asif Imam
-                    </span>
-                    <span className="text-xs text-gray-500 truncate">
-                      asifimam@hustleCode.dev
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1 ml-2">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-gray-500 hover:text-black hover:bg-gray-100 relative rounded-full"
-                          aria-label="Notifications"
-                        >
-                          <Bell size={16} aria-hidden="true" />
-                          <span
-                            className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center"
-                            aria-hidden="true"
-                          >
-                            4
-                          </span>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent
-                        side="top"
-                        className="bg-white text-black border-gray-200"
-                      >
-                        Notifications
-                      </TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
-                          aria-label="Messages"
-                        >
-                          <MessageSquare size={16} aria-hidden="true" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent
-                        side="top"
-                        className="bg-white text-black border-gray-200"
-                      >
-                        Messages
-                      </TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"
-                          onClick={() => router.push("/logout")}
-                          aria-label="Logout"
-                        >
-                          <LogOut size={16} aria-hidden="true" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent
-                        side="top"
-                        className="bg-white text-black border-gray-200"
-                      >
-                        Logout
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div> */}
       </div>
-
       {/* Mobile Navigation Bar - Only shown on small screens */}
       <MobileNavigation pathname={pathname} router={router} />
     </>

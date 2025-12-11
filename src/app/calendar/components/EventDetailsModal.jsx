@@ -8,10 +8,10 @@ import {
   User,
   XCircle,
 } from "lucide-react";
-import { Badge } from "../ui/badge";
-import { Dialog, DialogContent } from "../ui/dialog";
+import { Badge } from "../../../components/ui/badge";
+import { Dialog, DialogContent } from "../../../components/ui/dialog";
 import { format } from "date-fns";
-import { Button } from "../ui";
+import { Button } from "../../../components/ui";
 
 const EventDetailsModal = ({
   selectedEvent,

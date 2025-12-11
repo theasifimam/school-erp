@@ -44,11 +44,11 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import IssueBookFormModal from "@/components/library/IssueBookFormModal";
+import IssueBookFormModal from "@/app/library/components/IssueBookFormModal";
 import { Pagination } from "@/components/common/Pagination";
 import { useBookstore } from "@/lib/state/stores/bookStore";
 import { formatDateToDDMMYY } from "@/lib/utils";
-import ReturnModal from "@/components/library/ReturnModal";
+import ReturnModal from "@/app/library/components/ReturnModal";
 
 export default function IssuesPage() {
   const { issuedBooks, fetchIssuedBooks, successMessage } = useBookstore();

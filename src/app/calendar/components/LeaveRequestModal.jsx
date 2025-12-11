@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
 import { format } from "date-fns";
-import { Label } from "../ui";
+import { Label } from "../../../components/ui";
 
 export const LeaveRequestModal = ({
   showLeaveModal,

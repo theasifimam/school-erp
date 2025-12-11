@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "@/components/common/Pagination";
-import { SectionFormModal } from "@/components/classes/SectionFormModal";
+import { SectionFormModal } from "@/app/classes/components/SectionFormModal";
 import { useClassStore } from "@/lib/state/stores/classStore";
 import { useSectionStore } from "@/lib/state/stores/sectionStore";
 

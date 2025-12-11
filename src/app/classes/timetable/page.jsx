@@ -50,8 +50,8 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
-import AddTimetableModal from "@/components/classes/AddTimetableModal";
-import EditTimetableModal from "@/components/classes/EditTimetableModal";
+import AddTimetableModal from "@/app/classes/components/AddTimetableModal";
+import EditTimetableModal from "@/app/classes/components/EditTimetableModal";
 import { Input } from "@/components/ui/input";
 // Import jspdf-html2canvas for simple PDF generation
 // We'll use a simpler approach since jspdf-autotable is causing issues
@@ -554,7 +554,7 @@ export default function TimetablePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
         <Card className="md:col-span-2">
-          <CardHeader className="flex flex-col items-center w-100%">
+          <CardHeader>
             <CardTitle>Calendar</CardTitle>
             <CardDescription>
               Select a date to view the timetable

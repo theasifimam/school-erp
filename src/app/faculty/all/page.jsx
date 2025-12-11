@@ -56,15 +56,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Pagination } from "@/components/common/Pagination";
 import { toast } from "sonner";
-import ViewFacultyModal from "@/components/faculty/ViewFacultyModal";
-import DeleteFacultyModal from "@/components/faculty/DeleteFacultyModal";
+import ViewFacultyModal from "@/app/faculty/components/ViewFacultyModal";
+import DeleteFacultyModal from "@/app/faculty/components/DeleteFacultyModal";
 import {
   useFaculties,
   useFacultyError,
   useFacultyLoading,
   useFacultyStore,
 } from "@/lib/state/stores/facultyStore";
-import FacultyFormModal from "@/components/faculty/FacultyFormModal";
+import FacultyFormModal from "@/app/faculty/components/FacultyFormModal";
 import useQueryState from "@/lib/hooks/useQueryState";
 
 const departments = [

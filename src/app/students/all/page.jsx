@@ -31,18 +31,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ViewUserModal from "@/components/students/ViewUserModal";
+import ViewUserModal from "@/app/students/components/ViewUserModal";
 import {
   useStudentError,
   useStudentLoading,
   useStudents,
   useStudentStore,
 } from "@/lib/state/stores/studentStore";
-import StudentFormModal from "@/components/students/StudentFormModal";
+import StudentFormModal from "@/app/students/components/StudentFormModal";
 import { Input } from "@/components/ui";
 import { DeleteConfirmationModal } from "@/components/common/DeleteConfirmationModal";
 import { Pagination } from "@/components/common/Pagination";
-import { StatsCards } from "@/components/students/StatsCards";
+import { StatsCards } from "@/app/students/components/StatsCards";
 import useQueryState from "@/lib/hooks/useQueryState";
 import {
   getCurrentAndNextBatches,

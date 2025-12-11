@@ -1,12 +1,12 @@
 import { User, BookOpen, Home, Phone, FileText, ImagePlus } from "lucide-react";
-import { Input, Label } from "../ui";
+import { Input, Label } from "../../../components/ui";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../ui/select";
+} from "../../../components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";

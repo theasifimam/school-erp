@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { Toaster } from "sonner";
 
-import ChatList from "@/components/communication/ChatList";
-import MessageView from "@/components/communication/MessageView";
-import EmptyState from "@/components/communication/EmptyState";
+import ChatList from "@/app/communication/components/ChatList";
+import MessageView from "@/app/communication/components/MessageView";
+import EmptyState from "@/app/communication/components/EmptyState";
 
 export default function MessagesPage() {
   const router = useRouter();

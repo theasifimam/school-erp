@@ -65,7 +65,7 @@ export default function ClassesCurriculumLayout({ children }) {
 
   return (
     <div className="container mx-auto">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center my-6">
         <div>
           <h1 className="text-3xl font-bold">Classes, Sections & Curriculum</h1>
           <p className="text-gray-500">

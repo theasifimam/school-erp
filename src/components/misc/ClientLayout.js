@@ -20,26 +20,26 @@ export default function ClientLayout({ children }) {
   const pathname = usePathname();
   const [previousPathname, setPreviousPathname] = useState(pathname);
 
-  const handleResize = useCallback(() => {
-    if (typeof window !== "undefined") {
-      setIsOpen(window.innerWidth >= 1024);
-    }
-  }, []);
+  // const handleResize = useCallback(() => {
+  //   if (typeof window !== "undefined") {
+  //     setIsOpen(window.innerWidth >= 1024);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    handleResize();
-    let resizeTimer;
-    const debouncedResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(handleResize, 100);
-    };
+  // useEffect(() => {
+  //   handleResize();
+  //   let resizeTimer;
+  //   const debouncedResize = () => {
+  //     clearTimeout(resizeTimer);
+  //     resizeTimer = setTimeout(handleResize, 100);
+  //   };
 
-    window.addEventListener("resize", debouncedResize);
-    return () => {
-      window.removeEventListener("resize", debouncedResize);
-      clearTimeout(resizeTimer);
-    };
-  }, [handleResize]);
+  //   window.addEventListener("resize", debouncedResize);
+  //   return () => {
+  //     window.removeEventListener("resize", debouncedResize);
+  //     clearTimeout(resizeTimer);
+  //   };
+  // }, [handleResize]);
 
   useEffect(() => {
     if (pathname !== previousPathname) {

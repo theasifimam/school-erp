@@ -1,7 +1,11 @@
 import { Calendar, Edit, Mail, Phone, User } from "lucide-react";
-import { Button } from "../ui";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Badge } from "../ui/badge";
+import { Button } from "../../../components/ui";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../../components/ui/avatar";
+import { Badge } from "../../../components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +13,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
+} from "../../../components/ui/dialog";
 
 export default function ViewFacultyModal({
   isViewDialogOpen,

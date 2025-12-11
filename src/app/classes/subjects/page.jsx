@@ -31,7 +31,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { DeleteConfirmationModal } from "@/components/common/DeleteConfirmationModal";
-import SubjectFormModal from "@/components/classes/SubjectFormModal";
+import SubjectFormModal from "@/app/classes/components/SubjectFormModal";
 import { useSubjectStore } from "@/lib/state/stores/subjectStore";
 
 export default function SubjectsPage() {

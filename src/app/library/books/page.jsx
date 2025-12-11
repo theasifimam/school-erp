@@ -17,15 +17,6 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { booksData } from "@/assets/data/data";
 import { Input } from "@/components/ui/input";
 import {
@@ -35,11 +26,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Plus, Edit, Trash2 } from "lucide-react";
+import { Search, Edit, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { CardFooter, Label } from "@/components/ui";
+import { CardFooter } from "@/components/ui";
 import { Pagination } from "@/components/common/Pagination";
-import BookFormModal from "@/components/library/BookFormModal";
+import BookFormModal from "@/app/library/components/BookFormModal";
 import { useBookstore } from "@/lib/state/stores/bookStore";
 import { Skeleton } from "@/components/ui/skeleton";
 

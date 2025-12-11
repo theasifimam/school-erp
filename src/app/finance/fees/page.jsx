@@ -23,9 +23,7 @@ import {
   Search,
   Mail,
   Printer,
-  Download,
   Filter,
-  ChevronDown,
   MoreVertical,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -45,8 +43,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import FeePaymentModal from "@/components/finance/FeePaymentModal";
-import FeeReceiptModal from "@/components/finance/FeeReceiptModal";
+import FeePaymentModal from "../components/FeePaymentModal";
+import FeeReceiptModal from "../components/FeeReceiptModal";
 
 // Sample student data with fee information
 export const students = [

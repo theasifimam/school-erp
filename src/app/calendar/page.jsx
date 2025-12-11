@@ -6,12 +6,12 @@ import { format, parse, startOfWeek, getDay, addDays } from "date-fns";
 import { enUS } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-import EventDetailsModal from "@/components/calendar/EventDetailsModal";
-import { CalendarToolbar } from "@/components/calendar/CalendarToolbar";
-import { EventModal } from "@/components/calendar/EventModal";
-import { LeaveRequestModal } from "@/components/calendar/LeaveRequestModal";
-import { CalendarHeader } from "@/components/calendar/CalendarHeader";
-import { CalendarFilters } from "@/components/calendar/CalendarFilters";
+import EventDetailsModal from "@/app/calendar/components/EventDetailsModal";
+import { CalendarToolbar } from "@/app/calendar/components/CalendarToolbar";
+import { EventModal } from "@/app/calendar/components/EventModal";
+import { LeaveRequestModal } from "@/app/calendar/components/LeaveRequestModal";
+import { CalendarHeader } from "@/app/calendar/components/CalendarHeader";
+import { CalendarFilters } from "@/app/calendar/components/CalendarFilters";
 import {
   USER_ROLES,
   currentUser,

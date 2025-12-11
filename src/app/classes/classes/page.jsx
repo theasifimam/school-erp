@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Search, Plus, Edit, Trash2, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { ClassFormDialog } from "@/components/classes/ClassFormDialog";
+import { ClassFormDialog } from "@/app/classes/components/ClassFormDialog";
 import { Pagination } from "@/components/common/Pagination";
 
 export default function ClassesPage() {

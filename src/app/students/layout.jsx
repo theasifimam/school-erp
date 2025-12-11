@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import StudentFormModal from "@/components/students/StudentFormModal";
+import StudentFormModal from "@/app/students/components/StudentFormModal";
 import { useDraftStatus, clearDraftFromStorage } from "@/lib/utils/draft.utils";
 
 // This is the shared layout component for all curriculum pages

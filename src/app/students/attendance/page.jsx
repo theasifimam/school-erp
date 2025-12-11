@@ -45,7 +45,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AttendanceModal } from "@/components/students/AttendanceModal"; // You'd need to create this
+import { AttendanceModal } from "@/app/students/components/AttendanceModal"; // You'd need to create this
 import { toast } from "sonner";
 
 // Mock data - replace with API calls in real implementation

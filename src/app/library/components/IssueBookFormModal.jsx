@@ -16,17 +16,21 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "../../../components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Plus, Calendar as CalendarIcon, Search, Loader2 } from "lucide-react";
-import { Calendar } from "../ui/calendar";
+import { Calendar } from "../../../components/ui/calendar";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useBookstore } from "@/lib/state/stores/bookStore";
 import { toast } from "sonner";
 import { studentsData } from "@/assets/data/data";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "../../../components/ui/textarea";
 import { format } from "date-fns";
 import {
   Command,
@@ -35,7 +39,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../ui/command";
+} from "../../../components/ui/command";
 import { useStudentStore } from "@/lib/state/stores/studentStore";
 
 export default function IssueBookFormModal({

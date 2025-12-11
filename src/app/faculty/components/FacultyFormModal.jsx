@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Input, Label, Switch } from "../ui";
+import { Button, Input, Label, Switch } from "../../../components/ui";
 import {
   Dialog,
   DialogContent,
@@ -7,19 +7,23 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
+} from "../../../components/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Textarea } from "../ui/textarea";
-import { cn } from "../../lib/utils";
+} from "../../../components/ui/select";
+import { Textarea } from "../../../components/ui/textarea";
+import { cn } from "../../../lib/utils";
 import { User, Upload } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { MultiSelect } from "../ui/MultiSelect";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../../components/ui/avatar";
+import { MultiSelect } from "../../../components/ui/MultiSelect";
 
 export default function FacultyFormModal({
   isDialogOpen,

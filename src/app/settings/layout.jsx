@@ -13,7 +13,7 @@ import {
   Settings2Icon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import StudentFormModal from "@/components/students/StudentFormModal";
+import StudentFormModal from "@/app/students/components/StudentFormModal";
 
 // This is the shared layout component for all curriculum pages
 export default function SettingsLayout({ children }) {

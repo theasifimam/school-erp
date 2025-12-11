@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, ChevronRight, Calendar } from "lucide-react";
 import { toast } from "sonner";
-import ConfirmAddStudentModal from "@/components/students/ConfirmAddStudentModal";
+import ConfirmAddStudentModal from "@/app/students/components/ConfirmAddStudentModal";
 import useAdmissionStore from "@/lib/state/stores/admissionStore";
-import FormSections from "@/components/students/FormSections";
+import FormSections from "@/app/students/components/FormSections";
 import { Card } from "@/components/ui";
 
 export default function ModernAdmissionForm() {
