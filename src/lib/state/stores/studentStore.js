@@ -101,6 +101,32 @@ export const useStudentStore = create(
         }
       },
 
+      updateStudentStatus: async (id, status, remarks) => {
+        set({ isLoading: true, error: null, successMessage: null });
+        try {
+          const response = await studentsApi.updateStatus(id, {
+            status,
+            remarks,
+          });
+          set((state) => ({
+            students: state.students.map((student) =>
+              student._id === id ? response.data : student
+            ),
+            currentStudent: response.data,
+            isLoading: false,
+            successMessage: "Student status updated successfully!",
+          }));
+        } catch (error) {
+          set({
+            error:
+              error.response?.data?.message ||
+              "Failed to update student status",
+            isLoading: false,
+          });
+          throw error;
+        }
+      },
+
       // Delete student
       deleteStudent: async (id) => {
         set({ isLoading: true, error: null, successMessage: null });

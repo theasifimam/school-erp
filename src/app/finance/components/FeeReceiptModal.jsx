@@ -196,7 +196,7 @@ const FeeReceiptModal = ({ open, onOpenChange, student, feeRecords }) => {
           >
             {/* School Header */}
             <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold">ABC Public School</h1>
+              <h1 className="text-2xl font-bold">Imam's Academy</h1>
               <p className="text-gray-600">
                 123 Education Street, Knowledge City
               </p>

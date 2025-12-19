@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { School, X, ChevronRight, Menu, Sun, Moon } from "lucide-react";
-import NotificationsDropdown from "../navbar/NotificationsDropdown";
+// import NotificationsDropdown from "../navbar/NotificationsDropdown";
 import { Button } from "@/components/ui/button";
 import AvatarDropdown from "../navbar/AvatarDropdown";
 import { MobileMenuToggle } from "./SidebarSection";
 import { useTheme } from "next-themes";
 import GlobalSearchModal from "./GlobalSearchModal";
-import NavTodoList from "../tasks/NavTodoList";
+// import NavTodoList from "../tasks/NavTodoList";
 
 export default function TopNavbar({
   isMobileOpen,
@@ -100,12 +100,12 @@ export default function TopNavbar({
           <GlobalSearchModal />
 
           {/* Todo List Button */}
-          <NavTodoList notifOpen={notifOpen} />
+          {/* <NavTodoList notifOpen={notifOpen} /> */}
 
           {/* Notifications */}
-          <NotificationsDropdown
+          {/* <NotificationsDropdown
             {...{ notifications, setNotifications, setNotifOpen, notifOpen }}
-          />
+          /> */}
 
           {/* Avatar Dropdown */}
           <AvatarDropdown />

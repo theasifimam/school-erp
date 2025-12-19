@@ -53,15 +53,16 @@ import SidebarSection, {
   MobileNavigation,
   MobileMenuToggle,
 } from "./SidebarSection";
-import { useAuthStore } from "@/lib/state/stores/authStore";
 import { roleBasedSidebarConfig } from "@/lib/data/controlData";
+import { useSession } from "next-auth/react";
 
 export default function Sidebar({ isOpen, isMobileOpen, setIsMobileOpen }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useAuthStore();
+  const { data: session, status } = useSession();
+  const user = session?.user;
 
   const userRole = user?.role || "guest";
   const roleConfig =
@@ -95,6 +96,31 @@ export default function Sidebar({ isOpen, isMobileOpen, setIsMobileOpen }) {
     return roleConfig.limitedItems[section].includes(itemKey);
   };
 
+  if (status === "loading") {
+    // show skeleton of the same ui
+    return (
+      <div className="animate-pulse fixed lg:relative h-screen-[20px] m-[10px] mr-[0] transition-all duration-300 ease-in-out z-40 shadow-lg w-20 text-black rounded-4xl border-2 border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700">
+        <div className="flex items-center justify-between  h-16 p-4">
+          <div className="h-6 w-32 bg-gray-300 rounded-md dark:bg-gray-600"></div>
+        </div>
+        <div className="mt-2 mb-1">
+          <Separator className="bg-gray-200" />
+        </div>
+        <div className="flex flex-col">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+            >
+              {" "}
+              <div className="h-5 w-5 bg-gray-300 rounded-md dark:bg-gray-600"></div>
+              <div className="h-4 w-20 bg-gray-300 rounded-md dark:bg-gray-600"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       {/* Improved Mobile Menu Button with better accessibility */}

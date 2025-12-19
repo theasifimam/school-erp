@@ -26,8 +26,13 @@ export const studentsApi = {
     }),
   update: (id, data) =>
     fetcher(`/students/${id}`, {
+      method: "PUT",
+      body: data,
+    }),
+  updateStatus: (id, statusData) =>
+    fetcher(`/students/${id}/status`, {
       method: "PATCH",
-      body: JSON.stringify(data),
+      body: JSON.stringify(statusData),
     }),
   delete: (id) =>
     fetcher(`/students/${id}`, {

@@ -10,10 +10,15 @@ import {
   User,
 } from "lucide-react";
 import { useAuthStore } from "@/lib/state/stores/authStore";
+import { showRoleName } from "@/lib/data/controlData";
+import { SignOutButton } from "../common/SignOutButton";
+import { useSession } from "next-auth/react";
 
 export default function AvatarDropdown() {
-  const { logout, user } = useAuthStore();
+  // const { logout, user } = useAuthStore();
+  const { data: session, status } = useSession();
 
+  const user = session?.user;
   return (
     <div>
       {/* Avatar Dropdown Menu */}
@@ -22,9 +27,11 @@ export default function AvatarDropdown() {
           <button className="flex items-center gap-2 focus:outline-none group pl-2">
             <div className="hidden md:block text-right">
               <p className="text-lg font-medium dark:text-white">
-                {user?.fullName}
+                {user?.fullName ? user.fullName : user?.username}
               </p>
-              <p className="text-xs text-gray-500">Administrator</p>
+              <p className="text-xs text-gray-500">
+                {showRoleName[user?.role]}
+              </p>
             </div>
             <Avatar className="w-9 h-9 cursor-pointer border-2 border-transparent group-hover:border-indigo-300 transition-all">
               <AvatarImage
@@ -32,7 +39,7 @@ export default function AvatarDropdown() {
                 alt="Admin"
               />
               <AvatarFallback className="text-gray-600 font-medium">
-                PS
+                {user?.username?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors hidden md:block" />
@@ -53,11 +60,15 @@ export default function AvatarDropdown() {
                   alt="Admin"
                 />
                 <AvatarFallback className="font-medium">
-                  {user?.fullName?.split(" ")[0]}
+                  {user?.fullName
+                    ? user.fullName.charAt(0).toUpperCase()
+                    : user?.username.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-sm font-medium ">{user?.fullName}</p>
+                <p className="text-sm font-medium ">
+                  {user?.fullName ? user.fullName : user?.username}
+                </p>
                 <p className="text-xs text-gray-500">{user?.email}</p>
               </div>
             </DropdownMenu.Item>
@@ -100,13 +111,13 @@ export default function AvatarDropdown() {
             <DropdownMenu.Separator className="h-px bg-gray-100 dark:bg-gray-900 my-1" />
 
             <DropdownMenu.Item asChild>
-              <button
-                onClick={logout}
-                className="p-3 hover:bg-red-50 rounded-full w-full cursor-pointer flex items-center text-red-500 gap-3 focus:outline-none text-sm"
+              <SignOutButton
+                // onClick={logout}
+                className="p-3 hover:bg-red-50 rounded-full w-full cursor-pointer flex itemms-start text-red-500 gap-3 focus:outline-none text-sm"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Logout</span>
-              </button>
+              </SignOutButton>
             </DropdownMenu.Item>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>

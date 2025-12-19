@@ -81,13 +81,14 @@ export default function ClassesPage() {
     fetchClasses();
   }, []);
 
+  console.log(classes);
   return (
     <div className="space-y-6">
       {/* Main Classes Table */}
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <CardTitle>Classes & Sections</CardTitle>
+            <CardTitle>Classes</CardTitle>
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <div className="relative w-full sm:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
@@ -124,7 +125,7 @@ export default function ClassesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Class</TableHead>
+                <TableHead>Name</TableHead>
                 <TableHead>Class Code</TableHead>
                 <TableHead>Class Order</TableHead>
                 <TableHead>Sections</TableHead>
@@ -134,8 +135,8 @@ export default function ClassesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentClasses?.length > 0 ? (
-                currentClasses?.map((cls) => (
+              {filteredClasses?.length > 0 ? (
+                filteredClasses?.map((cls) => (
                   <TableRow key={cls.id}>
                     <TableCell className="font-medium">{cls.name}</TableCell>
                     <TableCell>{cls.code}</TableCell>

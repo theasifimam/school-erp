@@ -27,15 +27,24 @@ import {
   Edit,
   Users,
   AlertCircle,
+  CheckCircle,
+  XCircle,
+  Clock,
+  FileText,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useState } from "react";
+import { Label } from "recharts";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function StudentProfileModal({
   isOpen,
   onClose,
   student,
   onEdit,
+  updateStudentStatus,
+  onStatusChange,
 }) {
   if (!student) return null;
 
@@ -48,6 +57,57 @@ export default function StudentProfileModal({
     });
   };
 
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [remarks, setRemarks] = useState("");
+
+  // Reset form when modal opens with new student
+  useEffect(() => {
+    if (isOpen && student) {
+      setSelectedStatus(student.status || "");
+      setRemarks("");
+    }
+  }, [isOpen, student]);
+
+  const statusOptions = [
+    { value: "submitted", label: "Submitted", icon: FileText, color: "blue" },
+    {
+      value: "under_review",
+      label: "Under Review",
+      icon: Clock,
+      color: "yellow",
+    },
+    { value: "accepted", label: "Accepted", icon: CheckCircle, color: "green" },
+    { value: "rejected", label: "Rejected", icon: XCircle, color: "red" },
+    {
+      value: "enrolled",
+      label: "Enrolled",
+      icon: GraduationCap,
+      color: "purple",
+    },
+  ];
+
+  const getColorClasses = (color, isSelected) => {
+    const colors = {
+      blue: isSelected
+        ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+        : "border-gray-200 bg-white hover:border-blue-300 dark:bg-gray-950 dark:border-gray-800 dark:hover:border-blue-700",
+      yellow: isSelected
+        ? "border-yellow-500 bg-yellow-50 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300"
+        : "border-gray-200 bg-white hover:border-yellow-300 dark:bg-gray-950 dark:border-gray-800 dark:hover:border-yellow-700",
+      green: isSelected
+        ? "border-green-500 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300"
+        : "border-gray-200 bg-white hover:border-green-300 dark:bg-gray-950 dark:border-gray-800 dark:hover:border-green-700",
+      red: isSelected
+        ? "border-red-500 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300"
+        : "border-gray-200 bg-white hover:border-red-300 dark:bg-gray-950 dark:border-gray-800 dark:hover:border-red-700",
+      purple: isSelected
+        ? "border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300"
+        : "border-gray-200 bg-white hover:border-purple-300 dark:bg-gray-950 dark:border-gray-800 dark:hover:border-purple-700",
+    };
+    return colors[color] || colors.blue;
+  };
+
+  if (!student) return null;
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl p-6">
@@ -120,11 +180,14 @@ export default function StudentProfileModal({
           </div>
 
           <Tabs defaultValue="basic" className="w-full">
-            <TabsList className="grid grid-cols-4 mb-4">
+            <TabsList className="flex mb-4">
               <TabsTrigger value="basic">Basic Info</TabsTrigger>
               <TabsTrigger value="academic">Academic</TabsTrigger>
               <TabsTrigger value="family">Family</TabsTrigger>
               <TabsTrigger value="additional">Additional</TabsTrigger>
+              {updateStudentStatus && (
+                <TabsTrigger value="action">Action</TabsTrigger>
+              )}
             </TabsList>
 
             <TabsContent
@@ -721,6 +784,102 @@ export default function StudentProfileModal({
                 </div>
               </div>
             </TabsContent>
+            {updateStudentStatus && (
+              <TabsContent
+                value="action"
+                className="space-y-4 max-h-64 overflow-y-auto"
+              >
+                {/* Change Application Status */}
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500 mb-3">
+                    Change Application Status of{" "}
+                    <b>
+                      {student.firstName} {student.lastName}
+                    </b>
+                  </h3>
+                </div>
+
+                <Separator className="my-4" />
+                {/* update application status of student from submitted to under review, accepted, rejected */}
+                <div className="space-y-6 py-4 max-h-[60vh] overflow-y-auto">
+                  {/* Current Status */}
+                  <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-3xl border border-gray-200 dark:border-gray-800">
+                    <Label className="text-sm text-gray-600 dark:text-gray-400 mb-2 block">
+                      Current Status
+                    </Label>
+                    <p className="text-lg font-semibold capitalize">
+                      {student.status?.replace("_", " ")}
+                    </p>
+                  </div>
+
+                  {/* Status Options */}
+                  <div>
+                    <Label className="block mb-3">Select New Status</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {statusOptions.map((option) => {
+                        const Icon = option.icon;
+                        const isSelected = selectedStatus === option.value;
+                        return (
+                          <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => setSelectedStatus(option.value)}
+                            className={`p-4 rounded-full border-2 transition-all flex items-center gap-3 ${getColorClasses(
+                              option.color,
+                              isSelected
+                            )}`}
+                          >
+                            <Icon
+                              className={`h-5 w-5 ${
+                                isSelected
+                                  ? ""
+                                  : "text-gray-400 dark:text-gray-600"
+                              }`}
+                            />
+                            <span className={`font-medium`}>
+                              {option.label}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Remarks */}
+                  <div>
+                    <Label htmlFor="remarks" className="mb-2">
+                      Remarks (Optional)
+                    </Label>
+                    <Textarea
+                      id="remarks"
+                      value={remarks}
+                      onChange={(e) => setRemarks(e.target.value)}
+                      placeholder="Add any notes about this status change..."
+                      className="resize-none"
+                      rows={4}
+                    />
+                  </div>
+
+                  {/* Status Change Info */}
+                  {selectedStatus === "accepted" && (
+                    <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-3xl p-4">
+                      <p className="text-sm text-green-800 dark:text-green-300">
+                        💡 After accepting, you can enroll the student from the
+                        accepted applications list.
+                      </p>
+                    </div>
+                  )}
+                  {selectedStatus === "enrolled" && (
+                    <div className="bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-3xl p-4">
+                      <p className="text-sm text-purple-800 dark:text-purple-300">
+                        💡 This will move the student to the "Enrolled Students"
+                        section. Make sure to assign a section.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+            )}
           </Tabs>
 
           {/* Footer Buttons */}
@@ -732,15 +891,35 @@ export default function StudentProfileModal({
             >
               Close
             </Button>
-            <Button
-              onClick={() => {
-                onEdit(student);
-                onClose();
-              }}
-              className="rounded-full px-6"
-            >
-              Edit Profile
-            </Button>
+            {updateStudentStatus ? (
+              <Button
+                onClick={() => {
+                  if (selectedStatus) {
+                    onStatusChange(student._id, selectedStatus, remarks);
+                    // onClose();
+                    console.log(
+                      "Status updated to:",
+                      selectedStatus,
+                      "student ID:",
+                      student._id
+                    );
+                  }
+                }}
+                className="rounded-full px-6"
+              >
+                Update Status
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  onEdit(student);
+                  onClose();
+                }}
+                className="rounded-full px-6"
+              >
+                Edit Profile
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>
