@@ -1,19 +1,15 @@
 // Role-based sidebar configuration
 export const roleBasedSidebarConfig = {
-  super_admin: {
-    sections: ["main", "academic", "finance", "system"],
-    hasFullAccess: true,
-  },
   admin: {
-    sections: ["main", "academic", "finance", "system"],
+    sections: ["main", "academic", "administration", "finance", "system"],
     hasFullAccess: true,
   },
   principal: {
-    sections: ["main", "academic", "finance", "system"],
+    sections: ["main", "academic", "administration", "finance", "system"],
     hasFullAccess: true,
   },
   vice_principal: {
-    sections: ["main", "academic"],
+    sections: ["main", "academic", "administration"],
     hasFullAccess: false,
   },
   teacher: {
@@ -257,26 +253,4 @@ const roleBasedSidebarConfig_OriginalTarget = {
       main: ["dashboard"],
     },
   },
-};
-
-export const showRoleName = {
-  super_admin: "Super Admin",
-  admin: "Admin",
-  principal: "Principal",
-  vice_principal: "Vice Principal",
-  teacher: "Teacher",
-  faculty: "Faculty",
-  hod: "Head of Department",
-  student: "Student",
-  parent: "Parent",
-  librarian: "Librarian",
-  accountant: "Accountant",
-  hr_manager: "HR Manager",
-  receptionist: "Receptionist",
-  counselor: "Counselor",
-  lab_assistant: "Lab Assistant",
-  transport_incharge: "Transport Incharge",
-  driver: "Driver",
-  security_guard: "Security Guard",
-  maintenance_staff: "Maintenance Staff",
 };

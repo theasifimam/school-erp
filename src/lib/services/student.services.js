@@ -20,7 +20,6 @@ import {
   additionalInfo,
   tabs,
 } from "@/lib/data/student.data";
-import { getAcademicSessions } from "../utils/student.utils";
 
 // Field configurations for each section
 export const FIELD_CONFIGS = {
@@ -106,14 +105,25 @@ export const FIELD_CONFIGS = {
       type: "select",
       label: "Class Applied For*",
       required: true,
-      options: [],
-      isDynamic: true,
+      options: [
+        { value: "nursery", label: "Nursery" },
+        { value: "lkg", label: "LKG" },
+        { value: "ukg", label: "UKG" },
+        ...Array.from({ length: 12 }, (_, i) => ({
+          value: String(i + 1),
+          label: `Class ${i + 1}`,
+        })),
+      ],
     },
     session: {
       type: "select",
       label: "Academic Session*",
       required: true,
-      options: getAcademicSessions(3),
+      options: [
+        { value: "2024-2025", label: "2024-2025" },
+        { value: "2025-2026", label: "2025-2026" },
+        { value: "2026-2027", label: "2026-2027" },
+      ],
     },
     admissionType: {
       type: "select",
@@ -338,48 +348,6 @@ export const validateRequiredFields = (formData) => {
   return missingFields;
 };
 
-// Form section renderer
-export const FormSection = ({
-  sectionKey,
-  formData,
-  handleInputChange,
-  handleSelectChange,
-  handleSwitchChange,
-  dynamicOptions = {}, // Pass all dynamic options as object
-}) => {
-  const sectionConfig = FIELD_CONFIGS[sectionKey];
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {Object.entries(sectionConfig).map(([fieldId, config]) => {
-        const FieldComponent = FieldComponents[config.type];
-        const value =
-          formData[sectionKey]?.[fieldId] ||
-          (config.type === "switch" ? false : "");
-
-        // Override options if dynamic options are provided
-        if (dynamicOptions[fieldId]) {
-          config.options = dynamicOptions[fieldId];
-          config.label = "Class Applied For*";
-        }
-
-        return (
-          <FieldComponent
-            key={fieldId}
-            id={fieldId}
-            config={config}
-            value={value}
-            onChange={handleInputChange}
-            onSelectChange={handleSelectChange}
-            onSwitchChange={handleSwitchChange}
-            section={sectionKey}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
 // Photo upload component
 export const PhotoUpload = ({
   photo,
@@ -469,6 +437,41 @@ export const ProgressBarNavigation = ({ activeTab, setActiveTab }) => {
           {Math.round(progress)}% Complete
         </div>
       </div>
+    </div>
+  );
+};
+
+// Form section renderer
+export const FormSection = ({
+  sectionKey,
+  formData,
+  handleInputChange,
+  handleSelectChange,
+  handleSwitchChange,
+}) => {
+  const sectionConfig = FIELD_CONFIGS[sectionKey];
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {Object.entries(sectionConfig).map(([fieldId, config]) => {
+        const FieldComponent = FieldComponents[config.type];
+        const value =
+          formData[sectionKey]?.[fieldId] ||
+          (config.type === "switch" ? false : "");
+
+        return (
+          <FieldComponent
+            key={fieldId}
+            id={fieldId}
+            config={config}
+            value={value}
+            onChange={handleInputChange}
+            onSelectChange={handleSelectChange}
+            onSwitchChange={handleSwitchChange}
+            section={sectionKey}
+          />
+        );
+      })}
     </div>
   );
 };

@@ -17,21 +17,27 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/lib/state/stores/authStore";
 
+// Define validation schema
 const formSchema = z.object({
-  username: z.string().min(1, "Please enter a valid username"),
+  username: z.string("Please enter a valid username address"),
   password: z
     .string()
-    .min(6, "Password must be at least 6 characters")
+    .min(6, "Password must be at least 8 characters")
     .max(32, "Password must not exceed 32 characters"),
 });
 
 export default function LoginPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    login,
+    isAuthenticated,
+    isLoading: authLoading,
+    error,
+  } = useAuthStore();
 
   const {
     register,
@@ -42,31 +48,19 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data) => {
-    setIsLoading(true);
-
     try {
-      const result = await signIn("credentials", {
-        username: data.username,
-        password: data.password,
-        redirect: false,
-      });
-
-      console.log("Login result:", result);
-
-      if (result?.error) {
-        toast.error("Invalid credentials. Please try again.");
-      } else if (result?.ok) {
-        toast.success("Login successful!");
-        router.push("/dashboard");
-        router.refresh();
-      }
+      await login(data.username, data.password);
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
-      console.error("Login error:", error);
-    } finally {
-      setIsLoading(false);
+      toast.error(error?.message || "Invalid credentials. Please try again.");
     }
   };
+
+  useEffect(() => {
+    // If user is already authenticated, redirect them
+    if (isAuthenticated) {
+      router.push("/");
+    }
+  }, [isAuthenticated, router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
@@ -80,14 +74,13 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">username</Label>
               <Input
                 id="username"
-                type="text"
-                placeholder="Enter your username"
+                type="username"
+                placeholder=""
                 {...register("username")}
                 className={errors.username ? "border-red-500" : ""}
-                disabled={isLoading}
               />
               {errors.username && (
                 <p className="text-sm text-red-500">
@@ -95,7 +88,6 @@ export default function LoginPage() {
                 </p>
               )}
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -103,8 +95,7 @@ export default function LoginPage() {
                 type="password"
                 {...register("password")}
                 className={errors.password ? "border-red-500" : ""}
-                placeholder="password"
-                disabled={isLoading}
+                placeholder="********"
               />
               {errors.password && (
                 <p className="text-sm text-red-500">
@@ -112,13 +103,15 @@ export default function LoginPage() {
                 </p>
               )}
             </div>
-
+            {error && (
+              <p className="text-sm text-red-500 text-center">{error}</p>
+            )}
             <Button
               type="submit"
               className="w-full rounded-full"
-              disabled={isLoading}
+              disabled={authLoading}
             >
-              {isLoading ? (
+              {authLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Signing in...
@@ -129,7 +122,6 @@ export default function LoginPage() {
             </Button>
           </form>
         </CardContent>
-
         <CardFooter className="flex flex-col items-center space-y-2">
           <Link
             href="/reset-password"

@@ -24,19 +24,29 @@ export default function ClassesCurriculumLayout({ children }) {
   // Define our tabs with their paths and icons
   const tabs = [
     {
-      name: "Student Fee",
+      name: "Overview",
       path: "/finance/all",
       icon: <Users className="mr-2 h-4 w-4" />,
     },
     {
-      name: "Salaries",
-      path: "/finance/salaries",
+      name: "Assign Classes",
+      path: "/finance/assign",
       icon: <Clock className="mr-2 h-4 w-4" />,
     },
     {
-      name: "Expenditures",
-      path: "/finance/expenditures",
+      name: "Attendance",
+      path: "/finance/attendance",
       icon: <BookOpen className="mr-2 h-4 w-4" />,
+    },
+    {
+      name: "Performance Review",
+      path: "/finance/performance",
+      icon: <FileText className="mr-2 h-4 w-4" />,
+    },
+    {
+      name: "Professional Development",
+      path: "/finance/development",
+      icon: <PenTool className="mr-2 h-4 w-4" />,
     },
   ];
 

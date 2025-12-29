@@ -89,6 +89,8 @@ export default function StudentsLayout({ children }) {
   // Handle modal close
   const handleModalClose = (submittedData) => {
     if (submittedData) {
+      console.log("Student application submitted:", submittedData);
+
       if (submittedData.referenceNumber) {
         // Application was successfully submitted to backend
         toast.success("Application submitted successfully!", {
@@ -111,6 +113,13 @@ export default function StudentsLayout({ children }) {
       refresh();
     }
     setAddStudent(false);
+  };
+
+  // Mock fetchStudents function - replace with your actual implementation
+  const fetchStudents = () => {
+    // This should be your actual fetch function
+    console.log("Fetching students...");
+    // You might want to refresh the current page data or call a parent callback
   };
 
   return (
@@ -193,7 +202,7 @@ export default function StudentsLayout({ children }) {
                 size="sm"
                 variant="outline"
                 onClick={handleStartNewApplication}
-                className="dark:bg-orange-900 px-3 bg-orange-800 text-white hover:bg-orange-600 rounded-full"
+                class="dark:bg-orange-900 px-3 bg-orange-800 text-white hover:bg-orange-600 rounded-full"
               >
                 Start New
               </Button>
@@ -223,7 +232,7 @@ export default function StudentsLayout({ children }) {
       <StudentFormModal
         isOpen={addStudent}
         onClose={handleModalClose}
-        student={null}
+        studentData={null}
         mode="add"
         enableDraftSaving={true} // Enable localStorage draft saving
       />

@@ -8,11 +8,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+
 import { Calendar, Save, Loader2 } from "lucide-react";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { convertStudentToFormData, studentFormData } from "@/lib/utils";
 import { tabs } from "@/lib/data/student.data";
+
 import {
   getSectionFromFieldId,
   validateRequiredFields,
@@ -22,8 +24,6 @@ import {
   ProgressBarNavigation,
 } from "@/lib/services/student.services";
 import { useStudentStore } from "@/lib/state/stores/studentStore";
-import { transformStudent } from "@/lib/utils/student.utils";
-import { useClassStore } from "@/lib/state/stores/classStore";
 
 // Main component
 export default function StudentFormModal({
@@ -35,15 +35,12 @@ export default function StudentFormModal({
 }) {
   const fileInputRef = useRef(null);
   const [activeTab, setActiveTab] = useState("personalInfo");
-  const [formData, setFormData] = useState(transformStudent(studentData));
+  const [formData, setFormData] = useState(studentFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
-  const [photoFile, setPhotoFile] = useState(null); // Store actual file
 
   const createStudent = useStudentStore((state) => state.createStudent);
-  const updateStudent = useStudentStore((state) => state.updateStudent);
-  const classes = useClassStore((state) => state.classes);
 
   // localStorage keys
   const DRAFT_KEY = "student-form-draft";
@@ -62,21 +59,10 @@ export default function StudentFormModal({
     );
   };
 
-  // Save to localStorage (excluding photo blob)
+  // Save to localStorage
   const saveDraftToStorage = (data, tab) => {
     try {
-      // Create a copy without the photo blob URL
-      const dataToSave = {
-        ...data,
-        personalInfo: {
-          ...data.personalInfo,
-          photo: data.personalInfo?.photo?.startsWith("blob:")
-            ? "" // Don't save blob URLs
-            : data.personalInfo?.photo,
-        },
-      };
-
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(dataToSave));
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
       localStorage.setItem(ACTIVE_TAB_KEY, tab);
       localStorage.setItem(LAST_SAVED_KEY, new Date().toISOString());
       setLastSaved(new Date());
@@ -124,17 +110,18 @@ export default function StudentFormModal({
   useEffect(() => {
     if (isOpen) {
       if (mode === "edit" && studentData) {
+        // Load student data for editing
         const convertedData = convertStudentToFormData(studentData);
         setFormData(convertedData);
         setActiveTab("personalInfo");
-        setPhotoFile(studentData?.photo?.url);
       } else if (mode === "add") {
+        // Try to load draft for add mode
         const draftLoaded = loadDraftFromStorage();
         if (!draftLoaded) {
+          // No draft found, start with empty form
           setFormData(studentFormData);
           setActiveTab("personalInfo");
         }
-        setPhotoFile(null);
       }
     }
   }, [isOpen, studentData, mode]);
@@ -150,19 +137,10 @@ export default function StudentFormModal({
           console.log("Auto-saved draft at", new Date().toLocaleTimeString());
         }
       }
-    }, 30000);
+    }, 30000); // Auto-save every 30 seconds
 
     return () => clearInterval(autoSaveInterval);
   }, [enableDraftSaving, isOpen, mode, formData, activeTab]);
-
-  // Cleanup blob URLs on unmount
-  useEffect(() => {
-    return () => {
-      if (formData.personalInfo?.photo?.startsWith("blob:")) {
-        URL.revokeObjectURL(formData.personalInfo.photo);
-      }
-    };
-  }, [formData.personalInfo?.photo]);
 
   const handleInputChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -181,36 +159,7 @@ export default function StudentFormModal({
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file type
-      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
-      if (!validTypes.includes(file.type)) {
-        toast.error(
-          "Invalid file type. Please upload JPG, PNG, or GIF images only."
-        );
-        return;
-      }
-
-      // Validate file size (max 5MB)
-      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
-      if (file.size > maxSize) {
-        toast.error(
-          "File size too large. Please upload an image smaller than 5MB."
-        );
-        return;
-      }
-
-      // Revoke previous blob URL if exists
-      if (formData.personalInfo?.photo?.startsWith("blob:")) {
-        URL.revokeObjectURL(formData.personalInfo.photo);
-      }
-
-      // Create blob URL for preview
       const imageUrl = URL.createObjectURL(file);
-
-      // Store the actual file
-      setPhotoFile(file);
-
-      // Update form data with preview URL
       setFormData((prev) => ({
         ...prev,
         personalInfo: {
@@ -262,29 +211,6 @@ export default function StudentFormModal({
     }
   };
 
-  // Helper function to upload image to server
-  // const uploadImage = async (file) => {
-  //   const formData = new FormData();
-  //   formData.append("photo", file);
-
-  //   try {
-  //     const response = await fetch("/api/upload/student-photo", {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Image upload failed");
-  //     }
-
-  //     const data = await response.json();
-  //     return data.imageUrl; // Server should return the uploaded image URL
-  //   } catch (error) {
-  //     console.error("Error uploading image:", error);
-  //     throw error;
-  //   }
-  // };
-
   const handleSubmit = async () => {
     const requiredFields = validateRequiredFields(formData);
 
@@ -299,79 +225,40 @@ export default function StudentFormModal({
     try {
       setIsSubmitting(true);
 
-      // Prepare student data
-      const studentPayload = {
-        ...formData.academicInfo,
-        ...formData.additionalInfo,
-        ...formData.contactInfo,
-        ...formData.familyInfo,
-        ...formData.personalInfo,
-      };
-
-      // Handle photo upload
-      if (photoFile) {
-        try {
-          // Option 1: Upload to server and get URL
-          // const imageUrl = await uploadImage(photoFile);
-          studentPayload.photo = photoFile;
-          console.log("Photo file to upload:", photoFile);
-
-          // Option 2: Convert to base64 if your API accepts it
-          // const base64Image = await fileToBase64(photoFile);
-          // studentPayload.photo = base64Image;
-        } catch (error) {
-          toast.error("Failed to upload photo", {
-            description: "Continuing without photo. You can add it later.",
-          });
-          // Remove the blob URL from payload
-          delete studentPayload.photo;
-        }
-      } else {
-        // If no new photo file, handle existing photo URL
-        if (studentPayload.photo?.startsWith("blob:")) {
-          delete studentPayload.photo; // Don't send blob URLs to server
-        }
-      }
-
-      const formDataWithDP = new FormData();
-      Object.entries(studentPayload).forEach(([key, value]) => {
-        formDataWithDP.append(key, value);
-      });
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (mode === "add") {
-        await createStudent(formDataWithDP);
-        toast.success("Student application submitted successfully!", {
-          duration: 3000,
+        // For add mode, generate a reference number
+        createStudent({ ...formData });
+        // const referenceNumber = `REF-${Date.now()}`;
+        // toast.success("Application submitted successfully!", {
+        //   description: `Reference Number: ${referenceNumber}`,
+        //   duration: 5000,
+        // });
+
+        // Clear draft after successful submission
+        clearDraftFromStorage();
+
+        onClose({
+          ...formData,
+          // referenceNumber,
+          submitted: true,
         });
       } else {
-        await updateStudent(studentData._id, formDataWithDP);
-        // Update existing student
         toast.success("Student updated successfully!", {
           duration: 3000,
         });
-        onClose(studentPayload);
+        onClose(formData);
       }
 
-      // Clear draft after successful submission
-      clearDraftFromStorage();
-      setPhotoFile(null);
-
-      // Revoke blob URL
-      if (formData.personalInfo?.photo?.startsWith("blob:")) {
-        URL.revokeObjectURL(formData.personalInfo.photo);
-      }
-
-      onClose({
-        submitted: true,
-      });
+      setIsSubmitting(false);
     } catch (error) {
-      console.error("Submission error:", error);
+      setIsSubmitting(false);
       toast.error("Submission Failed", {
-        description: error.message || "Please try again later",
+        description: error.message,
         duration: 5000,
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -381,6 +268,7 @@ export default function StudentFormModal({
       const nextTabName = tabs[currentIndex + 1];
       setActiveTab(nextTabName);
 
+      // Save progress when moving to next tab
       if (enableDraftSaving && mode === "add") {
         saveDraftToStorage(formData, nextTabName);
       }
@@ -393,6 +281,7 @@ export default function StudentFormModal({
       const prevTabName = tabs[currentIndex - 1];
       setActiveTab(prevTabName);
 
+      // Save progress when moving to previous tab
       if (enableDraftSaving && mode === "add") {
         saveDraftToStorage(formData, prevTabName);
       }
@@ -400,6 +289,7 @@ export default function StudentFormModal({
   };
 
   const handleClose = () => {
+    // Save draft before closing if in add mode
     if (enableDraftSaving && mode === "add" && hasFormData(formData)) {
       saveDraftToStorage(formData, activeTab);
     }
@@ -411,13 +301,7 @@ export default function StudentFormModal({
   };
 
   const confirmClearForm = () => {
-    // Revoke blob URL before clearing
-    if (formData.personalInfo?.photo?.startsWith("blob:")) {
-      URL.revokeObjectURL(formData.personalInfo.photo);
-    }
-
     setFormData(studentFormData);
-    setPhotoFile(null);
     setActiveTab("personalInfo");
     clearDraftFromStorage();
     toast.success("Form cleared successfully");
@@ -494,12 +378,6 @@ export default function StudentFormModal({
                   handleInputChange={handleInputChange}
                   handleSelectChange={handleSelectChange}
                   handleSwitchChange={handleSwitchChange}
-                  dynamicOptions={{
-                    appliedClass: classes.map((c) => ({
-                      label: c.name,
-                      value: c._id,
-                    })),
-                  }}
                 />
               </TabsContent>
             ))}

@@ -6,7 +6,6 @@ export function cn(...inputs) {
 }
 
 export function convertStudentToFormData(student) {
-  if (!student) return studentFormData;
   return {
     personalInfo: {
       firstName: student?.firstName || "",

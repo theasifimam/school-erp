@@ -42,8 +42,8 @@ const data = {
     { month: "May", present: 87, absent: 13 },
   ],
   feeCollection: [
-    { name: "Paid", value: 75, color: "hsl(142.1 76.2% 36.3%)" },
-    { name: "Pending", value: 25, color: "hsl(24.6 95% 53.1%)" },
+    { name: "Paid", value: 75, color: "#10B981" },
+    { name: "Pending", value: 25, color: "#F59E0B" },
   ],
 };
 
@@ -53,19 +53,17 @@ export default function AdminDashboard({ darkMode }) {
     <>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="bg-card border-border shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-gray-500">
               Total Students
             </CardTitle>
-            <Users className="h-5 w-5 text-muted-foreground" />
+            <Users className="h-5 w-5 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {data.students}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1 flex items-center">
-              <span className="text-primary flex items-center">
+            <div className="text-2xl font-bold">{data.students}</div>
+            <p className="text-xs text-gray-500 mt-1 flex items-center">
+              <span className="text-green-500 flex items-center">
                 <ArrowUp className="h-3 w-3 mr-1" />
                 5.2%
               </span>{" "}
@@ -74,19 +72,17 @@ export default function AdminDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-card border-border shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-gray-500">
               Total Teachers
             </CardTitle>
-            <GraduationCap className="h-5 w-5 text-muted-foreground" />
+            <GraduationCap className="h-5 w-5 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {data.teachers}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1 flex items-center">
-              <span className="text-primary flex items-center">
+            <div className="text-2xl font-bold">{data.teachers}</div>
+            <p className="text-xs text-gray-500 mt-1 flex items-center">
+              <span className="text-green-500 flex items-center">
                 <ArrowUp className="h-3 w-3 mr-1" />
                 2.1%
               </span>{" "}
@@ -95,19 +91,17 @@ export default function AdminDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-card border-border shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-gray-500">
               Total Classes
             </CardTitle>
-            <BookOpen className="h-5 w-5 text-muted-foreground" />
+            <BookOpen className="h-5 w-5 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {data.classes}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1 flex items-center">
-              <span className="text-primary flex items-center">
+            <div className="text-2xl font-bold">{data.classes}</div>
+            <p className="text-xs text-gray-500 mt-1 flex items-center">
+              <span className="text-green-500 flex items-center">
                 <ArrowUp className="h-3 w-3 mr-1" />
                 3.5%
               </span>{" "}
@@ -116,19 +110,19 @@ export default function AdminDashboard({ darkMode }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-card border-border shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-gray-500">
               Total Revenue
             </CardTitle>
-            <CreditCard className="h-5 w-5 text-muted-foreground" />
+            <CreditCard className="h-5 w-5 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-2xl font-bold">
               ${data.revenue.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-1 flex items-center">
-              <span className="text-primary flex items-center">
+            <p className="text-xs text-gray-500 mt-1 flex items-center">
+              <span className="text-green-500 flex items-center">
                 <ArrowUp className="h-3 w-3 mr-1" />
                 12.5%
               </span>{" "}
@@ -141,12 +135,10 @@ export default function AdminDashboard({ darkMode }) {
       {/* Main Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Attendance Trend Chart */}
-        <Card className="bg-card border-border shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-foreground">Attendance Trend</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Monthly attendance percentage
-            </CardDescription>
+            <CardTitle>Attendance Trend</CardTitle>
+            <CardDescription>Monthly attendance percentage</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={350}>
@@ -154,38 +146,37 @@ export default function AdminDashboard({ darkMode }) {
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="hsl(var(--border))"
+                  stroke={darkMode ? "#374151" : "#E5E7EB"}
                 />
                 <XAxis
                   dataKey="month"
-                  stroke="hsl(var(--muted-foreground))"
+                  stroke={darkMode ? "#9CA3AF" : "#6B7280"}
                   tickLine={false}
                   axisLine={false}
                 />
                 <YAxis
-                  stroke="hsl(var(--muted-foreground))"
+                  stroke={darkMode ? "#9CA3AF" : "#6B7280"}
                   tickLine={false}
                   axisLine={false}
                 />
                 <RechartsTooltip
                   contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    borderColor: "hsl(var(--border))",
+                    backgroundColor: darkMode ? "#1F2937" : "#FFFFFF",
+                    borderColor: darkMode ? "#374151" : "#E5E7EB",
                     borderRadius: "0.5rem",
-                    color: "hsl(var(--foreground))",
                   }}
                 />
                 <Legend />
                 <Bar
                   dataKey="present"
                   name="Present %"
-                  fill="hsl(var(--primary))"
+                  fill="#4F46E5"
                   radius={[4, 4, 0, 0]}
                 />
                 <Bar
                   dataKey="absent"
                   name="Absent %"
-                  fill="hsl(var(--destructive))"
+                  fill="#EF4444"
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
@@ -194,10 +185,10 @@ export default function AdminDashboard({ darkMode }) {
         </Card>
 
         {/* Fee Collection Chart */}
-        <Card className="bg-card border-border shadow-sm">
+        <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-foreground">Fee Collection</CardTitle>
-            <CardDescription className="text-muted-foreground">
+            <CardTitle>Fee Collection</CardTitle>
+            <CardDescription>
               Current term fee collection status
             </CardDescription>
           </CardHeader>
@@ -221,10 +212,9 @@ export default function AdminDashboard({ darkMode }) {
                 </Pie>
                 <RechartsTooltip
                   contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    borderColor: "hsl(var(--border))",
+                    backgroundColor: darkMode ? "#1F2937" : "#FFFFFF",
+                    borderColor: darkMode ? "#374151" : "#E5E7EB",
                     borderRadius: "0.5rem",
-                    color: "hsl(var(--foreground))",
                   }}
                 />
                 <Legend
@@ -239,14 +229,10 @@ export default function AdminDashboard({ darkMode }) {
       </div>
 
       {/* Recent Activity */}
-      <Card className="bg-card border-border shadow-sm">
+      <Card className="bg-white dark:bg-black border-gray-200 dark:border-gray-900 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-foreground">
-            Recent School Activities
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">
-            Latest events and notifications
-          </CardDescription>
+          <CardTitle>Recent School Activities</CardTitle>
+          <CardDescription>Latest events and notifications</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -283,20 +269,18 @@ export default function AdminDashboard({ darkMode }) {
               },
             ].map((activity) => (
               <div key={activity.id} className="flex items-start space-x-3">
-                <div className="p-2 rounded-lg bg-secondary">
-                  <FileText className="h-5 w-5 text-secondary-foreground" />
+                <div
+                  className={`p-2 rounded-lg ${
+                    darkMode ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                >
+                  <FileText className="h-5 w-5 text-gray-500" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-foreground">
-                    {activity.action}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {activity.details}
-                  </p>
+                  <p className="font-medium">{activity.action}</p>
+                  <p className="text-sm text-gray-500">{activity.details}</p>
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  {activity.time}
-                </div>
+                <div className="text-sm text-gray-500">{activity.time}</div>
               </div>
             ))}
           </div>
